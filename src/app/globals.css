@@ -1,0 +1,299 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ============================================
+   ReZenKi 黑白简约杂志风 Design Token
+   规范见 .harness/design/visual-style-guide.md
+   黑白双模式：白模式（默认）↔ 黑模式（.dark class）
+   所有组件必须使用 token 色（ink/paper/muted/line/code），禁止硬编码色值
+   ============================================ */
+
+/* dark: 变体基于 .dark class（手动切换的黑白模式，而非仅系统偏好） */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* 白模式：白底黑字（默认） */
+  --color-ink: oklch(0.13 0 0); /* 近黑 — 正文/标题 */
+  --color-paper: oklch(0.995 0 0); /* 近白 — 页面背景 */
+  --color-muted: oklch(0.45 0 0); /* 中灰 — 辅助文字 */
+  --color-line: oklch(0.9 0 0); /* 浅灰 — 分割线/边框 */
+  --color-code: oklch(0.97 0 0); /* 代码块背景 */
+
+  /* 字体：花体标题 + Inter 标题 + SF 系统栈正文 */
+  --font-script: var(--font-italianno), "Brush Script MT", cursive;
+  --font-sans:
+    var(--font-inter), -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 黑模式：黑底白字（.dark class，由 header 切换按钮 + localStorage 控制） */
+.dark {
+  --color-ink: oklch(0.92 0 0);
+  --color-paper: oklch(0.13 0 0);
+  --color-muted: oklch(0.62 0 0);
+  --color-line: oklch(0.28 0 0);
+  --color-code: oklch(0.18 0 0);
+}
+
+/* 跟随系统（无手动选择时；.light class 显式锁定白模式） */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --color-ink: oklch(0.92 0 0);
+    --color-paper: oklch(0.13 0 0);
+    --color-muted: oklch(0.62 0 0);
+    --color-line: oklch(0.28 0 0);
+    --color-code: oklch(0.18 0 0);
+  }
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ============================================
+   全站隐藏滚动条（保持滚动功能，v0.10.3）
+   大气观感：无滚动条视觉干扰
+   ============================================ */
+
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / Edge 旧 */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome / Safari / Edge */
+}
+
+/* Reduced Motion：尊重系统动画偏好（见 responsive-and-a11y.md） */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   动效系统（见 .harness/design/motion-and-interaction.md）
+   原则：克制位移（≤16px）、慢速缓动（easeOutQuint）、黑白灰
+   ============================================ */
+
+@keyframes letter-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blur-in {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+/* Hero 拆字浮现（Apple Hello Effect 思路，纯 CSS，零 JS 依赖）
+   --i 为字符序号，stagger 间隔 70ms */
+.animate-letter-in {
+  animation: letter-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+.animate-fade-up {
+  animation: fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-blur-in {
+  animation: blur-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ============================================
+   代码高亮（shiki css-variables 主题，黑白灰层次）
+   全站禁彩色 → 语法区分靠灰阶；跟随 .dark class
+   ============================================ */
+
+:root {
+  --shiki-color-text: oklch(0.25 0 0);
+  --shiki-bg: var(--color-code);
+  --shiki-color-comments: var(--color-muted);
+  --shiki-color-keyword: oklch(0.12 0 0);
+  --shiki-color-strings: oklch(0.38 0 0);
+  --shiki-color-function: oklch(0.2 0 0);
+  --shiki-color-number: oklch(0.42 0 0);
+  --shiki-color-constant: oklch(0.18 0 0);
+  --shiki-color-variable: var(--shiki-color-text);
+}
+
+.dark {
+  --shiki-color-text: oklch(0.85 0 0);
+  --shiki-bg: var(--color-code);
+  --shiki-color-comments: var(--color-muted);
+  --shiki-color-keyword: oklch(0.95 0 0);
+  --shiki-color-strings: oklch(0.68 0 0);
+  --shiki-color-function: oklch(0.9 0 0);
+  --shiki-color-number: oklch(0.6 0 0);
+  --shiki-color-constant: oklch(0.92 0 0);
+  --shiki-color-variable: var(--shiki-color-text);
+}
+
+/* 代码块容器（rehype-pretty-code 输出 pre[data-theme]） */
+pre[data-theme] {
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+pre[data-theme] code {
+  background: transparent;
+  font-family: var(--font-mono, ui-monospace, "Cascadia Code", Consolas, monospace);
+}
+
+/* ============================================
+   覆盖 typography 插件的默认深色 pre/code 背景
+   （Tailwind typography 默认给 pre #1f2937 深色底——mermaid 图表容器被染黑，
+    不跟随黑白主题。统一改为 token 色，绑定黑白切换，v0.7.5 修复）
+   ============================================ */
+
+.prose pre {
+  background-color: var(--color-code) !important;
+  color: var(--color-ink) !important;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  box-shadow: none !important;
+}
+
+.prose :where(code):not(pre code):not(.katex *) {
+  background-color: var(--color-code);
+  color: var(--color-ink);
+  padding: 0.15em 0.35em;
+  border-radius: 2px;
+  font-weight: inherit;
+}
+
+/* 行号（rehype-pretty-code data-line-numbers 属性时） */
+code[data-line-numbers] {
+  counter-reset: line;
+}
+
+code[data-line-numbers] > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 2rem;
+  margin-right: 1rem;
+  text-align: right;
+  color: var(--color-muted);
+  opacity: 0.6;
+}
+
+/* ============================================
+   正文排版（详情页/编辑器预览的 prose 容器）
+   需求：块间距拉开（标题/段落/代码块上下不粘连），字间距保持正常
+   覆盖 Tailwind typography 的默认紧凑间距
+   ============================================ */
+
+.prose :where(h1) {
+  font-size: 2.2em;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 0;
+  margin-bottom: 1.25em;
+}
+
+.prose :where(h2) {
+  font-size: 1.75em;
+  margin-top: 3em;
+  margin-bottom: 1.25em;
+  padding-top: 0.5em;
+  border-top: 1px solid var(--color-line);
+}
+
+.prose :where(h3) {
+  font-size: 1.4em;
+  margin-top: 2.5em;
+  margin-bottom: 1em;
+}
+
+.prose :where(h4) {
+  font-size: 1.15em;
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+}
+
+.prose :where(p) {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.prose :where(p:first-of-type) {
+  margin-top: 0;
+}
+
+.prose :where(ul, ol) {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.prose :where(li) {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose :where(pre) {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.prose :where(blockquote) {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  padding-left: 1.25em;
+}
+
+.prose :where(hr) {
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
+
+.prose :where(img) {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.prose :where(table) {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.prose :where(div[data-callout]) {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}

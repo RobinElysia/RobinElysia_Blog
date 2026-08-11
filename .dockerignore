@@ -1,0 +1,36 @@
+# 依赖与构建产物
+node_modules
+.next
+.next/*
+out
+build
+
+# 环境与本地配置（绝不打进镜像）
+.env
+.env.*
+!.env.example
+
+# Git / 文档 / 工具
+.git
+.gitignore
+.harness
+REVIEW-REPORT.md
+*.md
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# 测试与调试
+coverage
+test-results
+playwright-report
+e2e
+*.test.ts
+vitest.config.ts
+playwright.config.ts
+debug-*.ts
+
+# 其他
+*.tsbuildinfo
+next-env.d.ts
+pnpm-debug.log*

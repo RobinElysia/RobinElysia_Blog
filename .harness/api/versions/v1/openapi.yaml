@@ -1,0 +1,7 @@
+# OpenAPI v1 契约
+# TODO: 待 v1 API 稳定后从 openapi.yaml 复制并冻结
+openapi: "3.1.0"
+info:
+  title: Blog API v1
+  version: "1.0.0"
+paths: {}

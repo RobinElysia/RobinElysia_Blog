@@ -1,0 +1,11 @@
+# pnpm 配置（pnpm 11 不再读取 package.json 中的 pnpm 字段）
+# 见 https://pnpm.io/settings
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+  - unrs-resolver

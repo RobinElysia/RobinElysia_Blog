@@ -1,0 +1,10 @@
+# OpenAPI 契约
+# 当前生效的 OpenAPI 规范
+# TODO: 待外部 API 确定后填充
+
+openapi: "3.1.0"
+info:
+  title: Blog API
+  version: "0.1.0"
+  description: TODO: 待 API 设计确定后填充
+paths: {}

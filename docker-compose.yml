@@ -1,0 +1,62 @@
+# ============================================
+# ReZenKi Blog — Docker Compose（生产）
+# 用法：
+#   1. 修改 .env 中的生产值（SITE_URL/AUTH_SECRET/密码）
+#   2. docker compose up -d --build
+#   3. 反向代理（Nginx/Caddy）指向 http://localhost:3000
+#
+# v0.19.9：environment 插值改用 PROD_* 变量名——
+#   踩坑记录：compose 插值优先读 shell 环境变量，本机终端会话残留旧值
+#   （ADMIN_PASSWORD=rezenki-admin 等）压过 .env；且 desktop 版 env_file 失效。
+#   PROD_* 前缀保证不与任何 shell 残留冲突，值始终来自 .env。
+# ============================================
+
+services:
+  # 应用（Next.js）
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      SITE_URL: ${PROD_SITE_URL:?请在 .env 设置 PROD_SITE_URL}
+      AUTH_SECRET: ${PROD_AUTH_SECRET:?请在 .env 设置 PROD_AUTH_SECRET}
+      AUTH_TRUST_HOST: "true"
+      ADMIN_USERNAME: ${PROD_ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${PROD_ADMIN_PASSWORD:?请在 .env 设置 PROD_ADMIN_PASSWORD}
+      DATABASE_URL: ${PROD_DATABASE_URL:?请在 .env 设置 PROD_DATABASE_URL}
+      AUTH_GITHUB_ID: ${PROD_AUTH_GITHUB_ID:-}
+      AUTH_GITHUB_SECRET: ${PROD_AUTH_GITHUB_SECRET:-}
+      # GitHub 登录白名单（逗号分隔用户名/邮箱，留空=拒绝所有 GitHub 登录）
+      AUTH_GITHUB_ALLOWED_USERS: ${PROD_AUTH_GITHUB_ALLOWED_USERS:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # 数据库（PostgreSQL 16，首次启动按 .env 初始化）
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${PROD_POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${PROD_POSTGRES_PASSWORD:?请在 .env 设置 PROD_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${PROD_POSTGRES_DB:-blog}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # 生产建议：不对外暴露 5432（app 通过 compose 内网访问）
+    # ports:
+    #   - "5432:5432"
+
+volumes:
+  pgdata:
