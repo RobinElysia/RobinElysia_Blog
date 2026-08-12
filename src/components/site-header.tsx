@@ -1,17 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
 
 /**
  * 全局导航 —— 滚动后毛玻璃（黑白灰半透明 + backdrop-blur）
  * 黑白模式切换按钮：白模式显示 Moon（点击切黑），黑模式显示 Sun
- * 持久化 localStorage('theme')；初始跟随系统（layout.tsx 防 FOUC 脚本已应用 class）
+ * 持久化 localStorage('theme') + cookie（SSR 主题，v0.19.4）
+ * dark 状态用 useSyncExternalStore 读 <html> class（SSR 返回 false；
+ * 水合后 MutationObserver 自动同步——避免 setState-in-effect，v0.19.14）
  */
+
+/** 监听 <html> class 变化（主题切换同步） */
+function subscribeTheme(cb: () => void): () => void {
+  if (typeof document === "undefined") return () => {};
+  const observer = new MutationObserver(cb);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+}
+
+function readTheme(): boolean {
+  return (
+    typeof document !== "undefined" &&
+    document.documentElement.classList.contains("dark")
+  );
+}
+
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
-  const [dark, setDark] = useState(false);
+  // 主题状态：直接读 DOM（服务端返回 false；水合后 MutationObserver 实时同步）
+  const dark = useSyncExternalStore(subscribeTheme, readTheme, () => false);
 
   useEffect(() => {
     // capture 监听：首页使用局部滚动容器（data-scroll-container），
@@ -26,14 +48,10 @@ export function SiteHeader() {
       document.removeEventListener("scroll", onScroll, { capture: true } as EventListenerOptions);
   }, []);
 
-  // 水合后同步实际主题（SSR 阶段无 document）
-  useEffect(() => {
-    setDark(document.documentElement.classList.contains("dark"));
-  }, []);
+  // 水合后同步实际主题（SSR 阶段无 document）——useSyncExternalStore 已接管，删除原 effect
 
   const toggleTheme = () => {
     const next = !dark;
-    setDark(next);
     // 三态 class：dark（黑）/ light（显式白，阻止媒体查询回黑）/ 无（跟随系统）
     document.documentElement.classList.toggle("dark", next);
     document.documentElement.classList.toggle("light", !next);

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { isGithubUserAllowed } from "@/lib/auth-allowlist";
 
 describe("GitHub 登录白名单", () => {

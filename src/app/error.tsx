@@ -5,10 +5,8 @@
  * 规范见 .harness/design/loading-and-error-states.md
  */
 export default function GlobalError({
-  error,
   reset,
 }: {
-  error: Error & { digest?: string };
   reset: () => void;
 }) {
   return (

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { posts } from "@/lib/schema";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, sql } from "drizzle-orm";
 import { formatDate } from "@/lib/format";
 import { deletePost } from "@/actions/admin";
 import { DeletePostForm } from "@/components/admin/delete-post-form";

@@ -6,6 +6,15 @@ last-updated: 2025-07-11
 
 # 版本变更日志
 
+## [0.19.14] — 2025-07-11
+
+### Fixed
+- **CI lint 修复（GitHub Actions 报错）**——3 error + 5 warning 全部清零：
+  - `react-hooks/set-state-in-effect` ×2：post-card 图片 URL 水合刷新改用 `useSyncExternalStore`（官方 hydration 安全模式）；site-header 主题同步改为 useSyncExternalStore + MutationObserver 监听 html class
+  - `no-explicit-any`：mdx-components 类型改为 `ComponentType<Record<string, unknown>>`
+  - warnings：删未用 import/变量（eq、Texture、beforeEach）、error.tsx 不再解构 error
+- 验证：eslint 0 问题、build ✅、单测 30/30 ✅、E2E 6/6 ✅
+
 ## [0.19.13] — 2025-07-11
 
 ### Fixed

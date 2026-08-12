@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { motion, useTransform, type MotionValue } from "motion/react";
 import { formatDate } from "@/lib/format";
@@ -12,25 +12,31 @@ import { formatDate } from "@/lib/format";
  */
 const PIC_API = "https://picapi.pai.al/api/scenery.php";
 
+/** 无订阅（useSyncExternalStore 只需要 getSnapshot） */
+function noopSubscribe(): () => void {
+  return () => {};
+}
+
 export function PostCard({
   slug,
   title,
-  publishedAt,
   index = 0,
 }: {
   slug: string;
   title: string;
-  publishedAt: Date | string | null;
   index?: number;
 }) {
-  // 图片：SSR/水合使用稳定 URL（slug 作 query，避免 hydration mismatch）；
-  // 水合后 useEffect 加时间戳刷新为随机图（防浏览器缓存）
-  const [imgSrc, setImgSrc] = useState(() => `${PIC_API}?t=${slug}`);
+  // 图片 URL（hydration 安全模式）：
+  // - SSR 用稳定 URL（slug 作 query）——服务器与客户端水合一致，无 mismatch
+  // - 水合后 useSyncExternalStore 切到带时间戳的 URL（防浏览器缓存，每次随机图）
+  // 不用 useEffect setState（react-hooks/set-state-in-effect），改用官方 useSyncExternalStore
+  const [clientSrc] = useState(() => `${PIC_API}?t=${slug}-${Date.now()}`);
+  const imgSrc = useSyncExternalStore(
+    noopSubscribe,
+    () => clientSrc,
+    () => `${PIC_API}?t=${slug}`,
+  );
   const [imgFailed, setImgFailed] = useState(false);
-
-  useEffect(() => {
-    setImgSrc(`${PIC_API}?t=${slug}-${Date.now()}`);
-  }, [slug]);
 
   return (
     <Link

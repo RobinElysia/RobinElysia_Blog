@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Texture } from "three";
 
 /**
  * 3D 大气水波纹（v0.10.0，用户要求：3D + 大气，替代简约波纹）
@@ -62,12 +61,10 @@ export function WaveOcean() {
       scene.add(mesh);
 
       // 环境反射贴图（PMREM + RoomEnvironment——水面高光/波光）
-      let envMap: Texture | null = null;
       (async () => {
         const { RoomEnvironment } = await import("three/examples/jsm/environments/RoomEnvironment.js");
         const pmrem = new THREE.PMREMGenerator(renderer);
         const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-        envMap = env;
         material.envMap = env;
         material.needsUpdate = true;
         pmrem.dispose();

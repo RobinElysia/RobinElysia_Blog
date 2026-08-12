@@ -2,8 +2,11 @@ import type { ComponentType } from "react";
 import katex from "katex";
 import { ZoomableImage } from "@/components/motion/zoomable-image";
 
-/** next-mdx-remote 的 components 映射类型（宽松版，避免依赖 @types/mdx） */
-type MDXComponents = Record<string, ComponentType<any>>;
+/**
+ * next-mdx-remote 的 components 映射类型。
+ * 子组件 props 用宽松 Record 接受（MDX 组件 props 来自编译产物，类型不定）
+ */
+type MDXComponents = Record<string, ComponentType<Record<string, unknown>>>;
 
 /**
  * MDX 自定义组件映射（next-mdx-remote components 选项）
