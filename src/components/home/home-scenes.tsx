@@ -58,13 +58,14 @@ export function HomeScenes({
     scroller.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
 
-    // wheel 平滑翻页（easeInOut 2s）——灵敏度阻尼（2026-08-20 用户反馈"太灵敏"）：
-    // - TRIGGER：空闲态累积 deltaY 达 260px 才翻页（标准滚轮约 2-3 格 / 触控板明显滑动）
+    // wheel 平滑翻页（easeInOut 2s）——灵敏度阻尼（2026-08-20 用户反馈：
+    // "太灵敏"→ 260px；"又慢了"→ 取中间值 180px，约两格标准滚轮）：
+    // - TRIGGER：空闲态累积 deltaY 达 180px 才翻页
     // - INTERRUPT：动画中累积 420px 才中断直跳（快速连翻仍可达）
     // - COOLDOWN：动画结束后 550ms 惯性冷却——触控板惯性尾巴直接忽略，防连翻
     // - deltaMode 换算：line ×40（Firefox 滚轮）、page ×400（明确整页意图，直接触发）
     // 目标为"锚点"：Hero + 4 卡（等高）与各章顶（offsetTop 动态算，兼容档案章超高）
-    const TRIGGER = 260;
+    const TRIGGER = 180;
     const INTERRUPT = 420;
     const COOLDOWN = 550;
     const pageH = () => scroller.clientHeight;
