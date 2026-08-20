@@ -6,6 +6,19 @@ last-updated: 2026-08-20
 
 # 版本变更日志
 
+## [0.21.3] — 2026-08-20
+
+### Removed
+- **3D 水波纹 Hero 删除**（用户否决"有点屎"）：`wave-ocean.tsx`、three / @types/three 依赖一并移除——"数字生成物与档案气质张力"悬置项结案
+
+### Added
+- **档案图视差舞台 Hero**（用户规格）：全屏固定舞台——超大衬线主标题 RobinElysia（两行 overflow-hidden + translateY(110%) 入场，行间 0.12s，无弹跳）+ 伊甸园蚀刻主图（Wellcome V0034166，MCP 取图，本站未重复使用，multiply 融入纸面）+ 底部 "SCROLL TO EXPLORE" 细线提示
+- **鼠标惯性视差**：normalized -1..1 + lerp 0.06——背景 ±8/6 · 主图 ±18/12（rotateY ±1.5°/rotateX ±1°）· 主图内层反向 ±6/4（景深）· 前景标题 ±28/20；鼠标离开平滑回中心；rAF 循环**收敛即停**（R5 纪律）；reduced-motion 全归零
+- 滚出衔接保留：整台随共享滚动源渐出上移，无缝进入逐卡翻页
+
+### Changed
+- e2e：canvas 断言 → 视差舞台断言（主图/SCROLL 提示）；motion-and-interaction/DESIGN 文档同步（R5 改写为动效性能纪律）
+
 ## [0.21.2] — 2026-08-20
 
 ### Changed

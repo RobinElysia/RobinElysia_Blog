@@ -53,15 +53,15 @@ RobinElysia 是简约复古艺术风（档案馆气质）。**动画必须服务
 |------|------|----------|
 | 水波纹 | 按钮点击 | 白描边按钮上用 scale 波纹（client 组件），保持单色 |
 | 悬停 | 卡片、链接 | 位移 2px / 透明度变化，150ms transition |
-| 滚动视差 | Hero 花体字随滚动轻微上移淡出（滚出转场，属例外区白名单） | 位移 ≤ 60px；驱动源为共享滚动源 `scroll-source.ts`（首页为局部滚动容器，window 不滚动——`useScroll` 监听 window 无效，D8 教训） |
+| 鼠标视差 | Hero 舞台（v0.21.3）：normalized -1..1 + lerp 0.06，背景 ±8/6 · 主图 ±18/12（+rotateY ±1.5°/rotateX ±1°）· 主图内层反向 ±6/4 · 前景标题 ±28/20；鼠标离开回中心 | 仅桌面 pointermove；rAF 循环**收敛即停**（目标 0 且稳定 → 停循环，移动时重启）；reduced-motion 全部归零 |
+| 滚动视差 | Hero 舞台随滚动轻微上移淡出（滚出转场，属例外区白名单） | 位移 ≤ 60px；驱动源为共享滚动源 `scroll-source.ts`（首页为局部滚动容器，window 不滚动——`useScroll` 监听 window 无效，D8 教训） |
 | 骨架屏 | 已在 loading 规范中 | 见 `loading-and-error-states.md` |
 
 ### 文字类
 
 | 效果 | 落地 |
 |------|------|
-| 打字机 | Hero 副标题 "ROBIN AND ELYSIA"（client hook，每字 40ms，仅一次） |
-| 拆字 | Hero 花体 "RobinElysia" 逐字 stagger 浮现（Apple Hello Effect 思路） |
+| 行入场 | Hero 主/副标题两行 overflow-hidden + translateY(110%)→0 + opacity，行间延迟 0.12s（0.08~0.15 区间），cubic-bezier(0.22,1,0.36,1) 无弹跳（v0.21.3，替代逐字拆字） |
 | 波浪字 | 禁用（装饰性过强） |
 | 描边 | 文章标题 hover 下划线动画（`background-size` 过渡） |
 
@@ -108,10 +108,10 @@ RobinElysia 是简约复古艺术风（档案馆气质）。**动画必须服务
 
 ### 章节式长滚动叙事（v0.21.0，2026-08-20 用户要求）
 
-- **当前形态（以代码为准）**：`src/app/page.tsx` → `HomeScenes`：线性纵向四章——Ch.00 序（3D 波浪 Hero）→ Ch.01 最近（逐卡翻页，每卡一屏）→ Ch.02 档案（年份分组时间轴）→ Ch.03 落款；局部滚动容器（`data-scroll-container`）+ 右侧竖向进度指示 + 章节菜单（`nav`/`button`/`aria-current`）。
+- **当前形态（以代码为准）**：`src/app/page.tsx` → `HomeScenes`：线性纵向四章——Ch.00 序（档案图视差舞台 Hero）→ Ch.01 最近（逐卡翻页，每卡一屏）→ Ch.02 档案（年份分组时间轴）→ Ch.03 落款；局部滚动容器（`data-scroll-container`）+ 右侧竖向进度指示 + 章节菜单（`nav`/`button`/`aria-current`）。
 - **wheel 平滑翻页（2026-08-20 用户要求"转场不顿挫、2~3s"；同日两轮灵敏度调校）**：滚轮/触控板接管（preventDefault + easeInOut 2s rAF 动画滚到相邻锚点）。**灵敏度阻尼三层**：① 空闲态累积 deltaY ≥ **180px** 才翻页（约两格标准滚轮；经历 120 太灵 → 260 太慢 → 取中间 180；deltaMode 换算 line×40 / page×400）；② 动画中累积 ≥ **420px** 才中断直跳（快速连翻仍可达）；③ 动画结束后 **550ms 冷却期**忽略惯性尾巴（防触控板连翻）。锚点 = Hero/4 卡等高页 + 各章顶（getBoundingClientRect 动态算，档案章超高兼容）。触摸设备/滚动条拖拽保持原生滚动，reduced-motion 直跳。**快照历史：无 wheel 接管时 snap-mandatory 逐页捕捉（Chrome 过渡 ~300ms），scroll 驱动动效被压缩且 spring 滞后 → 一顿一顿。**
 - **滚动驱动动效（2026-08-20，v0.21.0，wheel 2s 翻页提供时长）**：卡片进出场 45° **对称幅度**——进入从右下 +920px/+10° 滑入、滚出向左上 -920px/-10° 飞出（2026-08-20 用户要求入场幅度与出场相当，原 75px 太小）；档案章帖子**从右往左滑入**（x 48→0 + 淡入，stagger 错峰）、退场**原路返回**（x 0→48 向右，倒序），章题/年份头纯淡入淡出；落款为**签名式入场**（SVG 花体手写描画 draw-stroke 2.4s + 墨色渐入 → 墨线展开 → © 行 → 链接行错峰浮现，总约 3s，current 触发）；档案/落款章各配 **Wellcome 蚀刻局部背景**（multiply 水印式底纹，dark 反转 screen）。全部双向可逆（滚动即时间轴），`prefers-reduced-motion` 下位移/旋转/缩放关闭仅保留淡入（JS matchMedia，CSS 全局降级无效——D4 教训）。
-- **R5 滚动转场性能坑（2026-08-20）**：three.js 波浪 render loop 无可见性暂停——Hero 滚出视口后仍每帧渲染，无 GPU 环境（软件渲染）下吃满主线程（实测 2fps），章节转场卡成"一顿一顿"。→ 滚动驱动动效一律**纯函数映射**（去 useSpring——55/19 弹簧滞后于滚动）；three 渲染循环加 **1s 低频 rect 轮询暂停**（Hero 上边滚出 200px 即停，滚回 ≤1s 内恢复；不用 IntersectionObserver——Chromium 对 WebGL canvas 的 isIntersecting 恒 true）。修复后实测 headless 转场 45fps+。
+- **R5 动效性能纪律（2026-08-20）**：① 滚动驱动动效一律**纯函数映射**（去 useSpring——弹簧滞后于滚动）；② 常驻动画必须**收敛即停**——Hero 鼠标视差的 rAF 循环在目标归零且稳定时停止、移动时重启（无谓循环烧 CPU；前车之鉴：three.js 波浪 render loop 在无 GPU 环境实测吃满主线程 2fps，已随 wave-ocean.tsx 删除）；③ WebGL 除非必要不引入（v0.21.3 用户否决 3D 水波纹，视差改用 CSS transform + motion，效果等同且零 GPU 负担）。
 - **实现纪律**：四步增量（骨架 → 指示器 → 档案章 → 转场），每步独立 commit 独立验收；转场动效最后做且必须随 `prefers-reduced-motion` 降级（JS `matchMedia` 判断，CSS 全局降级对 JS 驱动的 transform 无效——D4 教训）。
 
-> ⚠️ **3D 波浪 Hero 与档案馆定位的张力（待决）**：`wave-ocean.tsx` 的 Three.js 水面是数字生成物，不是档案物，与简约复古艺术风存在气质张力。但它是 v0.10.x 起获用户认可的成果，**不擅自推翻**——是否替换为静态藏品图 Hero 属独立决策，需单独确认。见 `DESIGN.md` §5。
+> **Hero 演进（v0.21.3，2026-08-20）**：3D 水波纹（wave-ocean.tsx，Three.js）已被用户否决删除——"数字生成物与档案气质张力"的悬置项结案：Ch.00 改为**档案图视差舞台**（伊甸园蚀刻主图 + 衬线大标题 + 鼠标惯性视差 + SCROLL TO EXPLORE），既符合档案馆气质又保留交互感。见 `DESIGN.md` §5。

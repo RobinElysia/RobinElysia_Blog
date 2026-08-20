@@ -6,15 +6,15 @@ import { test, expect } from "@playwright/test";
  */
 
 test.describe("博客核心流程", () => {
-  test("首页章节叙事（波浪 Hero + 逐卡翻页 + 档案 + 章节导航）", async ({ page }) => {
+  test("首页章节叙事（视差舞台 Hero + 逐卡翻页 + 档案 + 章节导航）", async ({ page }) => {
     test.setTimeout(60_000);
-    // 跳过 Elysia 手写 intro（非本测试目标；overlay 会挡点击 + 拖慢预算）；
-    // domcontentloaded 即可——后续断言自会等待 canvas/图片
+    // 跳过 RobinElysia 手写 intro（非本测试目标；overlay 会挡点击 + 拖慢预算）
     await page.addInitScript(() => sessionStorage.setItem("intro-played", "1"));
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    // Ch.00 序：花体 Hero + 3D 波浪（canvas 为 three 动态挂载，放宽等待）
+    // Ch.00 序：衬线大标题 + 主图舞台（v0.21.3 删 3D 水波纹，无 canvas）
     await expect(page.getByRole("heading", { name: "RobinElysia", exact: true })).toBeVisible();
-    await expect(page.locator("header canvas").first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Scroll To Explore")).toBeVisible();
+    await expect(page.locator("img[src*='hero-paradise']")).toBeVisible();
     // 滚动容器（scroll-snap）+ 章节导航（4 个章节按钮）
     const scroller = page.locator("[data-scroll-container]");
     await expect(scroller).toBeVisible();
