@@ -18,6 +18,7 @@ build
 .dockerignore
 Dockerfile
 docker-compose.yml
+Caddyfile
 
 # 测试与调试
 coverage

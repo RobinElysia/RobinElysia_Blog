@@ -1,0 +1,23 @@
+# ============================================
+# ReZenKi Blog — Caddy 反向代理 + 自动 HTTPS
+# ============================================
+# 生产：.env 设 PROD_DOMAIN=你的域名（如 blog.meowin.asia），
+#       DNS 解析到服务器后 Caddy 自动申请 Let's Encrypt 证书并自动续期
+# 本地测试：PROD_DOMAIN 留空（默认 localhost），Caddy 用本地 CA 自签证书
+#           （curl -k 或浏览器信任警告后即可看到 HTTPS 生效）
+# 端口：80/443 由 compose 映射（可用 PROD_HTTP_PORT/PROD_HTTPS_PORT 覆盖，本地测试避开冲突）
+
+{$DOMAIN:localhost} {
+	# 压缩：gzip 兜底 + zstd 现代浏览器
+	encode zstd gzip
+
+	# 反向代理到 app 容器（compose 内网，app 不暴露宿主机端口）
+	reverse_proxy app:3000
+
+	header {
+		# 隐藏服务器指纹
+		-Server
+		# HSTS（HTTPS 强制，一年）
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	}
+}

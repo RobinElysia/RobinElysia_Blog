@@ -49,10 +49,13 @@ docker compose up -d --build
 2. Vercel 的 Serverless 超时（10s/60s）不够用
 3. 需要 WebSocket 长连接（Vercel Serverless 不支持）
 
-**Docker 方案要点（v0.19.0）**：
+**Docker 方案要点（v0.19.0 建立，v0.21.1 更新）**：
 - 三阶段构建（deps/builder/runner），构建期 `AUTH_SECRET` 用占位符（NextAuth 生产构建要求）
 - 容器启动自动跑 `scripts/migrate.mjs`（drizzle-orm migrator，无需 drizzle-kit）
 - compose 内置 postgres + pgdata 卷；数据库备份 `pg_dump`
+- **Caddy 反向代理内置 compose（v0.21.1）**：80/443 自动 HTTPS（Let's Encrypt 自动签发/续期，证书持久化 caddy_data 卷）、HTTP→HTTPS 308、HSTS；域名由 `PROD_DOMAIN` 注入 Caddyfile，本地测试留空走 localhost 自签（端口可用 `PROD_HTTP_PORT`/`PROD_HTTPS_PORT` 覆盖避开冲突）
+- app 不暴露宿主机端口（compose 内网由 Caddy 访问）
+- runner 镜像用 `pnpm install --prod`（仅生产依赖，不含 devDeps）——**不用 `output: standalone`**：Next 16 对 pnpm peer-suffix 目录（`drizzle-orm@…_@types+pg…` 等）追踪失效漏包，且 standalone 与 `next start` 互斥（踩坑记录，2026-08-20 实测）
 - 图片上传（BYTEA）在 Docker 下同样工作（数据在数据库卷中）
 
 ## Next.js 配置

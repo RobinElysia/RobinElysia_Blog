@@ -1,23 +1,24 @@
 # ============================================
 # ReZenKi Blog — Docker Compose（生产）
 # 用法：
-#   1. 修改 .env 中的生产值（SITE_URL/AUTH_SECRET/密码）
+#   1. 修改 .env 中的生产值（SITE_URL/AUTH_SECRET/密码/PROD_DOMAIN）
 #   2. docker compose up -d --build
-#   3. 反向代理（Nginx/Caddy）指向 http://localhost:3000
+#   3. Caddy 自动 HTTPS：访问 https://你的域名（80/443 需可达）
+#   本地测试：PROD_HTTP_PORT=3080 PROD_HTTPS_PORT=3443 docker compose up -d --build
 #
 # v0.19.9：environment 插值改用 PROD_* 变量名——
 #   踩坑记录：compose 插值优先读 shell 环境变量，本机终端会话残留旧值
 #   （ADMIN_PASSWORD=rezenki-admin 等）压过 .env；且 desktop 版 env_file 失效。
 #   PROD_* 前缀保证不与任何 shell 残留冲突，值始终来自 .env。
+# v0.21.1：内置 Caddy 反向代理 + 自动 HTTPS（Let's Encrypt）——
+#   app 不再暴露宿主机端口（compose 内网由 Caddy 访问），SSL 全权交给 Caddy。
 # ============================================
 
 services:
-  # 应用（Next.js）
+  # 应用（Next.js，standalone 运行时）
   app:
     build: .
     restart: unless-stopped
-    ports:
-      - "3000:3000"
     environment:
       SITE_URL: ${PROD_SITE_URL:?请在 .env 设置 PROD_SITE_URL}
       AUTH_SECRET: ${PROD_AUTH_SECRET:?请在 .env 设置 PROD_AUTH_SECRET}
@@ -27,7 +28,7 @@ services:
       DATABASE_URL: ${PROD_DATABASE_URL:?请在 .env 设置 PROD_DATABASE_URL}
       AUTH_GITHUB_ID: ${PROD_AUTH_GITHUB_ID:-}
       AUTH_GITHUB_SECRET: ${PROD_AUTH_GITHUB_SECRET:-}
-      # GitHub 登录白名单（逗号分隔用户名/邮箱，留空=拒绝所有 GitHub 登录）
+      # GitHub 登录白名单（逗号分隔用户名/邮箱，留空 = 拒绝所有 GitHub 登录）
       AUTH_GITHUB_ALLOWED_USERS: ${PROD_AUTH_GITHUB_ALLOWED_USERS:-}
     depends_on:
       db:
@@ -58,5 +59,29 @@ services:
     # ports:
     #   - "5432:5432"
 
+  # Caddy 反向代理 + 自动 HTTPS（Let's Encrypt 自动申请/续期）
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "${PROD_HTTP_PORT:-80}:80"
+      - "${PROD_HTTPS_PORT:-443}:443"
+    environment:
+      DOMAIN: ${PROD_DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data        # 证书与私钥持久化（不丢证书、不反复签发）
+      - caddy_config:/config
+    depends_on:
+      - app
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
 volumes:
   pgdata:
+  caddy_data:
+  caddy_config:

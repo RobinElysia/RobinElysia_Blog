@@ -6,6 +6,17 @@ last-updated: 2026-08-20
 
 # 版本变更日志
 
+## [0.21.1] — 2026-08-20
+
+### Added
+- **Caddy 内置 Docker 部署（用户要求，处理 SSL）**：`Caddyfile` + compose 第三服务（caddy:2-alpine，80/443）；**自动 HTTPS**——生产域名自动 Let's Encrypt 签发/续期（caddy_data 卷持久化）、HTTP→HTTPS 308 重定向、HSTS；域名 `PROD_DOMAIN` 注入，本地测试留空走 localhost 自签，端口 `PROD_HTTP_PORT`/`PROD_HTTPS_PORT` 可覆盖避开冲突
+- app 不再暴露宿主机端口（compose 内网由 Caddy 访问）；`.env.example` 补 PROD_* 生产段（含 PROD_DOMAIN）
+
+### Changed
+- **Dockerfile runner 改 `pnpm install --prod`**（仅生产依赖）——实测放弃 `output: standalone`：Next 16 对 pnpm peer-suffix 目录（`drizzle-orm@…_@types+pg…` 等）追踪失效漏包，且 standalone 与 `next start` 互斥
+- **DEPLOY.md 重写**：Caddy 自动 HTTPS（原 Nginx+certbot 段落替换）、内嵌 compose/Caddyfile/.env 三件套、故障排查表补 2 条（pgdata 旧卷密码不匹配；首页 unstable_cache 5 分钟缓存）
+- 本地实测闭环：build → compose up → 迁移自动执行 → 导入真实数据 → HTTPS 200（文章/档案/登录/RSS 全链路）+ 308 重定向 + 自签证书签发
+
 ## [0.21.0] — 2026-08-20
 
 ### Added

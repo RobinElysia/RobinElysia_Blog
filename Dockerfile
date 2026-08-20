@@ -1,8 +1,8 @@
 # ============================================
 # ReZenKi Blog — 多阶段 Docker 构建
 # 阶段 1：依赖（pnpm 全量，含构建脚本批准）
-# 阶段 2：构建（next build）
-# 阶段 3：运行（仅 production 依赖 + 产物）
+# 阶段 2：构建（next build，standalone 输出）
+# 阶段 3：运行（仅 standalone 运行时依赖 + 产物，体积减半）
 # ============================================
 
 # ---------- 阶段 1：依赖 ----------
@@ -39,17 +39,24 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 
+# pnpm 生产依赖（仅 prod deps，无 devDeps——比旧方案全量 node_modules 小得多）
+# 注：不用 standalone 的 node_modules——Next 16 对 pnpm peer-suffix 目录
+# （drizzle-orm@0.45.2_@types+pg... 等）追踪失效，运行时缺包；
+# 完整 prod 依赖保证 migrate 与 SSR 的 drizzle-orm/next-mdx-remote 链齐全
+RUN corepack enable && corepack prepare pnpm@11.18.0 --activate
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --prod --frozen-lockfile
+
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 
-# 构建产物 + production 依赖
+# 构建产物（完整 .next；runner 自装 prod 依赖，见下）
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/next.config.ts ./next.config.ts
-# 数据库迁移 SQL（容器启动时执行 migrate.mjs）
+# 数据库迁移 SQL + 迁移脚本（容器启动时执行）
 COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
-COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.mjs ./scripts/migrate.mjs
 
 USER nextjs
 
