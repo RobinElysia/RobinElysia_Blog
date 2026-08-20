@@ -17,7 +17,11 @@
 services:
   # 应用（Next.js，standalone 运行时）
   app:
-    build: .
+    build:
+      context: .
+      # 国内服务器构建慢/超时：.env 设 PROD_NPM_REGISTRY=https://registry.npmmirror.com
+      args:
+        NPM_REGISTRY: ${PROD_NPM_REGISTRY:-https://registry.npmjs.org}
     restart: unless-stopped
     environment:
       SITE_URL: ${PROD_SITE_URL:?请在 .env 设置 PROD_SITE_URL}
