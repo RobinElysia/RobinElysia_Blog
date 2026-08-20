@@ -45,6 +45,14 @@ last-updated: 2026-08-20
 - **预计修复成本**：中（<1d）
 - **优先级**：低（部署到 serverless 前处理）
 
+### [2026-08-20] explicit-function-return-type warn 收敛（圆桌决议留痕）
+- **影响范围**：全库 74 条（另有 jsx-no-leaked-render 7 条）
+- **债务描述**：eslint 规则为 warn 级（文档承诺"不阻止提交"），当前 74 条存量未补；warn 超过阈值后人会脱敏
+- **理想状态**：目标 v0.21.0 收敛至 <30 条（契约层 src/lib、src/actions 优先补返回值类型），由后续维护者在日常修改中顺带收敛
+- **预计修复成本**：中（<1d，机械性补返回值标注）
+- **优先级**：低（渐进收敛，不设阻断）
+- **关联**：`.claude/conventions/code-style/eslint-notes.md`、codex-review-rt1.md 第 2 轮
+
 ### [2026-08-20] 设计定稿（暖纸五色 + EB Garamond）未落地代码
 - **影响范围**：`src/app/globals.css`（Design Token 仍是黑白灰 chroma=0）、`src/app/layout.tsx`（仍加载 Inter 而非 EB_Garamond，无 `--font-serif`）
 - **债务描述**：`DESIGN.md` 与 `visual-style-guide.md` 已于 2026-08-19 定稿暖纸五色 token（chroma ≤ 0.015）与 EB Garamond 字体体系，代码侧迁移未完成；期间文档描述（暖纸五色）与实际渲染（黑白灰）不一致，属用户待办迁移
