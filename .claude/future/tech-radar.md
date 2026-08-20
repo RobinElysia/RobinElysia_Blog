@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: future
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # 技术雷达
@@ -14,15 +14,22 @@ last-updated: 2025-07-11
 | React 19 (Server Components) | UI 渲染 | ✅ 生产可用 |
 | TypeScript 5 (strict) | 类型系统 | ✅ 生产可用 |
 | Tailwind CSS 4 | 样式方案 | ✅ 生产可用 |
-| **PostgreSQL** | 数据库（posts/comments） | ✅ 生产可用 |
-| **Drizzle ORM** | 数据访问（迁移 ADR-0005） | ✅ 生产可用 |
-| **next-mdx-remote** | Markdown 正文渲染 | ✅ 生产可用 |
+| @tailwindcss/typography | 正文 prose 排版 | ✅ 生产可用 |
+| **PostgreSQL** | 数据库（posts/comments/images 三表） | ✅ 生产可用 |
+| **Drizzle ORM** | 数据访问（ADR-0005） | ✅ 生产可用 |
+| **next-mdx-remote** | 详情页 MDX 编译（RSC） | ✅ 生产可用 |
+| **react-markdown** | 编辑器预览（与详情页同源插件） | ✅ 生产可用 |
+| **shiki** | 代码高亮（自定义黑白灰主题） | ✅ 生产可用 |
+| **remark-math + rehype-katex** | LaTeX 公式（行内 + 块级） | ✅ 生产可用 |
+| **mermaid** | 图表（客户端动态渲染，黑白主题） | ✅ 生产可用 |
+| **three** | 首页 3D 波浪 Hero | ✅ 生产可用 |
 | **zod** | 输入校验（Server Action） | ✅ 生产可用 |
+| **next-auth (v5 beta)** | Dashboard 鉴权（GitHub + Credentials，仅后台） | ✅ 生产可用 |
 | **lucide-react** | 图标（'use client' 组件） | ✅ 生产可用 |
 | ESLint 9 (flat config) | 代码检查 | ✅ 生产可用 |
 | Prettier 3 | 代码格式 | ✅ 生产可用 |
-| Vitest + Testing Library | 单元/组件测试 | ✅ 生产可用 |
-| Playwright | E2E 测试 | ✅ 生产可用 |
+| Vitest + Testing Library | 单元/组件测试（30 单测） | ✅ 生产可用 |
+| Playwright | E2E 测试（6 条核心流程） | ✅ 生产可用 |
 
 ## 试验中
 
@@ -39,8 +46,6 @@ last-updated: 2025-07-11
 | **React Compiler** (自动 memo) | 免手动 `useMemo`/`useCallback` | React 19 中可选，create-next-app 默认关闭；待生态验证 |
 | **Biome** | 替代 ESLint + Prettier（单一工具、更快） | 生态系统尚未成熟，部分规则不如 ESLint 完善 |
 | **Zustand v5** | 客户端状态管理 | 如 ADR-0003 所述，暂不需要全局状态库；需要时首选 |
-| **Drizzle ORM** | 数据库 ORM（替代 Prisma） | ✅ 已采纳（ADR-0005），更轻量、更贴近 SQL |
-| **Content Collections** (Next.js) | 内置 MDX 内容管理 | 已在 ADR-0005 否决——内容存 PostGre，不走文件系统 |
 
 ## 已放弃评估
 
@@ -50,4 +55,5 @@ last-updated: 2025-07-11
 | Redux | ADR-0003 已决定不加全局状态库 |
 | CSS-in-JS (styled-components, Emotion) | RSC 兼容性差，Tailwind 已覆盖需求 |
 | Giscus / Disqus | ADR-0005 已决定评论自建存 PostGre |
-| Prisma | 过度抽象；ADR-0005 选用 Drizzle | 
+| Prisma | 过度抽象；ADR-0005 选用 Drizzle |
+| Content Collections (Next.js) | ADR-0005 否决——内容存 PostGre，不走文件系统 MDX |

@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: future
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # 路线图
@@ -41,11 +41,12 @@ last-updated: 2025-07-11
 - [x] 评论系统（自建 PostGre；v0.7.0 起**无审核流**，提交即显示）
 - [x] 评论表单（zod 校验 + useActionState + IP 防刷）
 - [x] ~~评论审核 UI~~（已移除——用户决策：评论不需要审核）
-- [x] 评论防刷（IP 滑动窗口限流）
+- [x] 评论防刷（IP 固定窗口限流）
+- [ ] 评论反垃圾（风险项：当前**无内容审核**，唯一防线是 IP 限流且为进程内存实现，多实例部署失效；建议调研 Akismet 类方案或数据库计数限流）
 
 ### 创作与管理
-- [x] NextAuth v5 登录（GitHub + Credentials，仅 Dashboard）
-- [x] Dashboard：文章 CRUD（草稿/发布）+ 评论审核
+- [x] NextAuth v5 登录（GitHub 白名单 + Credentials，仅 Dashboard）
+- [x] Dashboard：概览 + 文章 CRUD（草稿/发布）
 - [ ] 标签管理（Dashboard 内，TEXT[] 迁移关联表的触发条件）
 - [ ] 图片优化（next/image blur placeholder）
 
@@ -54,7 +55,7 @@ last-updated: 2025-07-11
 - [x] 全局导航（滚动毛玻璃 + 主题切换）
 - [x] 404（文章级 + 全局）
 - [x] 全局 error.tsx
-- [x] 测试基建（vitest 24 单测 + playwright 5 E2E）
+- [x] 测试基建（vitest 30 单测 + playwright 6 E2E）
 - [x] CI（GitHub Actions：lint + typecheck + test + build + E2E）
 - [ ] 部署（Vercel：生产数据库 + 环境变量 + SITE_URL）
 
@@ -66,7 +67,7 @@ last-updated: 2025-07-11
 
 ## 优先级排序依据
 
-1. **创作端**（Dashboard）是当前最大缺口——评论审核卡在 pending、文章只能靠 seed/psql 写入
-2. **测试基建**次之——纯函数（feed/format/toc）是零成本测试对象
-3. **部署**——代码已在功能完备状态，上线才有意义
-4. 搜索在文章量 <50 时价值有限，可后置
+1. **部署上线**——阅读/发现/互动/创作四象限均已闭环（含 Docker 自托管方案），上线才有真实价值；需要用户操作（生产数据库 + Vercel/自有服务器）
+2. **评论反垃圾**——当前无内容审核是真实攻击面（提交即显示 + 内存限流），上线前应至少完成数据库级限流或外部反垃圾
+3. **全文搜索**——文章量 <50 时价值有限，可后置；触发条件：文章超过 50 篇
+4. **标签管理 / og:image / blur placeholder**——体验增强项，随创作需要逐步补齐

@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: data-layer
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 related-adr: [0005]
 ---
 
@@ -26,13 +26,39 @@ export const getPublishedPosts = unstable_cache(
 
 ## Cache Tag 命名规范
 
+**全站只有一个 tag：`post-list`**（对齐 `src/lib/posts.ts` 全部 7 处 `unstable_cache` 与 `src/actions/admin.ts` 的失效调用）：
+
 | Tag | 用途 | 失效时机 |
 |-----|------|----------|
-| `post:{slug}` | 单篇文章 | 文章编辑/发布时 |
-| `post-list` | 文章列表（首页 + /blog） | 任何文章状态变化时 |
-| `user:{id}` | 用户数据 | 用户信息变更时 |
+| `post-list` | 所有文章相关缓存（首页/列表/详情/归档/相邻/相关） | 任何 posts 表状态变化（创建/更新/删除/发布）时 |
 
-**与 fetch 时代的差异**：tags 现在挂在 `unstable_cache` 的 options 上，不是 fetch 的 `next` 选项。
+> **粗粒度是有意取舍**：单篇查询（`getPostBySlug`）也挂在 `post-list` 上——博客量级下细粒度 tag（如 `post:{slug}`）收益低，一次 `revalidateTag("post-list", "max")` 把所有引用文章数据的缓存一次清干净。若未来文章量大且需要按 slug 精确失效，再拆分细粒度 tag（届时同步更新本文档与 `src/lib/posts.ts`）。
+>
+> **与 fetch 时代的差异**：tags 现在挂在 `unstable_cache` 的 options 上，不是 fetch 的 `next` 选项。
+
+### 带参查询的缓存写法（重要模式）
+
+`unstable_cache` 的 keyParts 在模块加载时构建，无法包含运行时参数。**带参查询必须在函数内部调用 `unstable_cache`，把参数纳入 keyParts**（`src/lib/posts.ts` 的 `getPostBySlug` 即此模式）：
+
+```ts
+// src/lib/posts.ts —— 带参查询（函数内嵌模式）
+export async function getPostBySlug(slug: string) {
+  return unstable_cache(
+    async () => {
+      // ... drizzle 查询（eq(posts.slug, slug)）
+    },
+    ["post", "by-slug", slug],        // keyParts：参数纳入缓存键
+    { tags: ["post-list"], revalidate: 300 },
+  )();
+}
+
+// 无参查询（模块级模式）—— getPublishedPosts 等
+export const getPublishedPosts = unstable_cache(
+  async () => { /* ... */ },
+  ["post-list"],
+  { tags: ["post-list"], revalidate: 300 },
+);
+```
 
 ## 写入后失效（revalidateTag）
 
@@ -41,26 +67,26 @@ export const getPublishedPosts = unstable_cache(
 ```ts
 "use server";
 
-export async function submitComment(formData: FormData) {
+export async function createPost(formData: FormData) {
   // ... 校验 + 写库
-  revalidateTag(`post:${slug}`, "max"); // Next.js 16：tag + profile 双参数
+  revalidateTag("post-list", "max"); // Next.js 16：tag + profile 双参数
 }
 ```
 
-**规则**：评论通过审核（Dashboard 操作）后，`revalidateTag("post-list", "max")` 不需要——评论不进入列表缓存。只有影响 `posts` 表内容的操作才失效 `post-list` / `post:{slug}`。
+**规则**：只有影响 `posts` 表内容的操作（创建/更新/删除/发布）才失效 `post-list`。评论不进入任何缓存（`getApprovedComments` 每次直查），提交/删除评论无需 revalidate。
 
 ## revalidatePath vs revalidateTag
 
 | API | 适用场景 | 优缺点 |
 |-----|----------|--------|
-| `revalidateTag(tag, "max")` | 数据级失效（推荐） | 精确，只清关联数据；Next.js 16 双参数 |
+| `revalidateTag("post-list", "max")` | 数据级失效（推荐） | 精确，只清关联数据；Next.js 16 双参数 |
 | `revalidatePath(path)` | 页面级失效 | 简单但粒度粗 |
 
 **选用规则**：数据库时代优先 `revalidateTag`——一个 tag 失效所有引用它的缓存（首页 + 列表页 + 详情页一次清干净）。
 
 ## 评论数据不缓存
 
-评论变化频率高（提交、审核、删除），且需要实时可见——**不缓存**，每次查询：
+评论变化频率高（提交、删除），且需要实时可见——**不缓存**，每次查询：
 
 ```ts
 export async function getApprovedComments(postId: number) {

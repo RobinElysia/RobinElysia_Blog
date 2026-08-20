@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: testing
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # E2E 测试约定
@@ -12,21 +12,23 @@ last-updated: 2025-07-11
 
 ## 核心流程清单
 
-以下 5 条流程必须覆盖（按优先级）：
+以下 6 条流程必须覆盖（按优先级，对齐 `e2e/blog.spec.ts` 实测）：
 
 | # | 流程 | 覆盖的价值 |
 |---|------|-----------|
-| 1 | 访问首页 → 看到文章列表 | 首页渲染不崩溃 |
-| 2 | 点击文章 → 看到文章正文 | 文章详情页 SSR 正常 |
-| 3 | 访问不存在的文章 → 看到 404 | not-found.tsx 正常工作 |
+| 1 | 访问首页 → 场景化首页（波浪 Hero + 逐卡翻页） | 首页渲染不崩溃 |
+| 2 | 点击文章 → 看到文章正文与 TOC | 文章详情页 SSR 正常 |
+| 3 | 访问不存在的文章 → 看到 404 | not-found.tsx 正常工作（真实 404 状态码） |
 | 4 | 提交评论 → 看到成功提示 | Server Action 端到端通畅 |
-| 5 | 访问 Dashboard（未登录）→ 重定向到登录页 | 鉴权中间件正常工作 |
+| 5 | LaTeX 公式与 Mermaid 图表渲染 | MDX 渲染管线端到端（KaTeX / mermaid SVG） |
+| 6 | 访问 Dashboard（未登录）→ 重定向到登录页 | Dashboard 鉴权（layout 层）正常工作 |
 
 ## 测试数据管理
 
-- E2E 测试使用**独立的测试数据**（seed 脚本在 `e2e/seed.ts`），不与开发/生产数据混合。
-- 每次 E2E 运行前重置数据（`beforeAll` 中调用 seed 脚本）。
-- 不在 E2E 测试中硬编码真实文章 slug（如 `hello-world`），使用 `.env.test` 中的环境变量。
+- E2E 测试使用**独立的测试数据**（seed 脚本在 `src/lib/seed.ts`，`pnpm seed`），不与开发/生产数据混合。
+- 每次 E2E 运行前重置数据（`pnpm db:migrate` + `pnpm seed`）。
+- 前置条件：本地 PostGre 运行（`docker compose up -d db` 或本机实例）。
+- 运行命令：`pnpm test:e2e`（webServer 自动执行 `next build && next start -p 3011`）。
 
 ## 选择器策略
 

@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: problem
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # 技术债务
@@ -40,11 +40,19 @@ last-updated: 2025-07-11
 
 ### [2025-07-11] 评论限流为进程内存实现
 - **影响范围**：`src/lib/rate-limit.ts`
-- **债务描述**：`Map` 滑动窗口仅进程内有效；Vercel serverless 多实例下不共享，限流可被绕过
+- **债务描述**：`Map` 固定窗口（按首次命中锚定）仅进程内有效；Vercel serverless 多实例下不共享，限流可被绕过
 - **理想状态**：迁移到 Redis（Upstash）或数据库计数；当前单实例部署无碍
 - **预计修复成本**：中（<1d）
 - **优先级**：低（部署到 serverless 前处理）
 
+### [2026-08-20] 设计定稿（暖纸五色 + EB Garamond）未落地代码
+- **影响范围**：`src/app/globals.css`（Design Token 仍是黑白灰 chroma=0）、`src/app/layout.tsx`（仍加载 Inter 而非 EB_Garamond，无 `--font-serif`）
+- **债务描述**：`DESIGN.md` 与 `visual-style-guide.md` 已于 2026-08-19 定稿暖纸五色 token（chroma ≤ 0.015）与 EB Garamond 字体体系，代码侧迁移未完成；期间文档描述（暖纸五色）与实际渲染（黑白灰）不一致，属用户待办迁移
+- **理想状态**：globals.css 换用五 token 亮/暗两套值；layout.tsx 加载 EB_Garamond 并注入 `--font-serif`（含中文衬线 fallback：`"Songti SC", "Noto Serif SC", SimSun`）
+- **预计修复成本**：小（<1h）
+- **优先级**：中（用户自行迁移；agent 不代改——设计相关禁改约束）
+- **关联**：根目录 `DESIGN.md` §2、`.claude/design/visual-style-guide.md`
+
 ### [2025-07-11] 无测试基建（已解决）
 - ~~**债务描述**：vitest/playwright 依赖已装但配置和测试为零~~
-- **状态**：✅ 已解决（v0.6.0：24 单测 + 5 E2E + CI）
+- **状态**：✅ 已解决（v0.6.0 起：24 单测 + 5 E2E；现为 30 单测 + 6 E2E + CI）

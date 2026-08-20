@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: testing
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # 测试策略
@@ -13,7 +13,7 @@ last-updated: 2025-07-11
 | **单元测试** | Vitest | 工具函数、类型守卫、数据转换逻辑 | < 5s | 与被测文件同目录 `*.test.ts` |
 | **组件测试** | Vitest + @testing-library/react | 交互逻辑、状态变化、可访问性 | < 30s | 与组件同目录 `*.test.tsx` |
 | **E2E 测试** | Playwright | 关键用户流程（访问首页 → 查看文章 → 提交评论） | < 5min | `e2e/` 目录 |
-| **类型测试** | `tsc --noEmit` + `expect-type` | 类型推断正确性 | < 10s | CI 中运行 |
+| **类型测试** | `pnpm typecheck`（`tsc --noEmit`）+ `expect-type` | 类型推断正确性 | < 10s | CI 中运行 |
 
 ## 覆盖率目标
 
@@ -21,7 +21,7 @@ last-updated: 2025-07-11
 |------|------|------|
 | 单元测试 | ≥ 80% 行覆盖 | 工具函数和业务逻辑 |
 | 组件测试 | 关键交互全覆盖 | 不追求覆盖率，追求关键路径 |
-| E2E | 3-5 条核心流程 | 不贪多，每条覆盖一个业务价值 |
+| E2E | 6 条核心流程 | 不贪多，每条覆盖一个业务价值（清单见 e2e-testing.md） |
 
 **不追求 100% 覆盖率**。"覆盖率 100% 但都是表面测试"比"覆盖率 50% 但只测关键路径"更差。
 
@@ -45,10 +45,10 @@ last-updated: 2025-07-11
 ```yaml
 # 伪代码 —— 实际在 .github/workflows/ 中配置
 test:
-  - npm run lint
-  - npx tsc --noEmit
-  - npx vitest run
-  - npx playwright test  # 仅 main 分支 PR 时运行（耗时）
+  - pnpm lint
+  - pnpm typecheck
+  - pnpm test
+  - pnpm test:e2e  # 仅 main 分支 PR 时运行（耗时）
 ```
 
 **约束**：lint 和 typecheck 失败时，测试不运行（快速失败）。

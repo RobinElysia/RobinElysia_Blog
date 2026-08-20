@@ -1,16 +1,16 @@
 ---
-status: final
+status: review-snapshot
 owner: review
 last-updated: 2025-07-11
-review-scope: .harness/ 全部 45 篇文档（含 loop-engine/）
+review-scope: .claude/ 全部 45 篇文档（含 loop-engine/）
 supersedes: 0001-initial-review-report.md
 ---
 
-# 最终审查报告 — .harness 文档架构 v0.1.0
+# 最终审查报告 — .claude 文档架构 v0.1.0
 
 ## 执行摘要
 
-`.harness/` 文档架构已从骨架状态推进到 **39 篇 stable、5 篇 draft、1 篇 not-applicable** 的完成态。新增 `loop-engine/` 模块填补了 Agent 工作流（循环、审查、清理）的空白。全部 4 篇 ADR 已有实际决策内容。任务卡模板包含 3 个完整可执行示例。
+`.claude/` 文档架构已从骨架状态推进到 **39 篇 stable、5 篇 draft、1 篇 not-applicable** 的完成态。新增 `loop-engine/` 模块填补了 Agent 工作流（循环、审查、清理）的空白。全部 4 篇 ADR 已有实际决策内容。任务卡模板包含 3 个完整可执行示例。
 
 ---
 
@@ -120,8 +120,8 @@ auto-cleanup.md               →  定义功能完成后的清理动作
 
 | 序号 | 文件 | 说明 |
 |------|------|------|
-| `0001` | `.harness/releases/0001-initial-review-report.md` | 第一轮审查报告（骨架阶段，仅 8 篇填充） |
-| `0002` | `.harness/releases/0002-final-review-report.md` | **本报告**（最终审查，46 篇文档完整状态） |
+| `0001` | `.claude/releases/0001-initial-review-report.md` | 第一轮审查报告（骨架阶段，仅 8 篇填充） |
+| `0002` | `.claude/releases/0002-final-review-report.md` | **本报告**（最终审查，46 篇文档完整状态） |
 
 ---
 
@@ -129,4 +129,4 @@ auto-cleanup.md               →  定义功能完成后的清理动作
 
 1. **你确认上述 6 个决策** → 我更新 `visual-style-guide.md` 和 `system-overview.md` 中的 data layer 部分
 2. **开始写代码**：按 `future/roadmap.md` 中的短期目标，第一个 task 是"博客首页：文章列表 + 分页"（`task/README.md` 中有完整任务卡）
-3. **保持文档同步**：每完成一个功能，更新对应的 `.harness/` 文档和 `releases/CHANGELOG.md`
+3. **保持文档同步**：每完成一个功能，更新对应的 `.claude/` 文档和 `releases/CHANGELOG.md`

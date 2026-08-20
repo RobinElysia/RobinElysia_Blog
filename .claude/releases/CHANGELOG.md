@@ -1,10 +1,30 @@
 ---
 status: stable
 owner: releases
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # 版本变更日志
+
+## [0.20.0] — 2026-08-20
+
+### Changed
+- **Harness 文档体系与代码同步**（审查报告 0009，review-snapshot）：
+  - 全库路径 `.harness` → `.claude`（32 文件 101 处，含 AGENTS/CLAUDE/REASONIX/README/.env.example/源码注释）
+  - 评论流文档回填：无审核流（v0.7.0 起提交即 approved）+ IP 限流 + 无内容审核风险标注
+  - 缓存 tag 统一 `post-list`（全站粒度，粗粒度有意取舍）；带参查询函数内嵌模式入文档
+  - 路由树按实测重画（无 middleware/settings/loading.tsx；鉴权在 (dashboard)/layout.tsx）
+  - 环境变量表 10 行对齐 .env.example（含 `AUTH_GITHUB_ALLOWED_USERS` 空=拒绝全部）
+  - 全库命令 pnpm 化（loop-engine/测试文档/PR 模板/README/playwright webServer）
+  - eslint.config.mjs 落地 5 条规则（no-console error、no-unused-vars error、no-explicit-any error、explicit-function-return-type warn、jsx-no-leaked-render warn），`pnpm lint` 0 error
+  - package.json 增 `test:e2e` script；测试数字统一 30 单测 / 6 E2E
+  - REASONIX 状态枚举补 `review-snapshot`；8 篇审查报告 frontmatter 统一
+  - tech-radar 去矛盾补 7 项；roadmap 收敛（评论反垃圾风险项 + 优先级重排）
+  - onboarding 结构图 / README 按实测重画（无 src/content、无 REVIEW-REPORT.md）
+  - design 最小事实修正（用户授权）：Giscus→自研评论、token 示例对齐、场景化结论按代码事实记录
+  - 技术债务登记：设计定稿（暖纸五色+EB Garamond）未落地代码
+- 验证：build ✅ / typecheck ✅ / lint 0 error ✅ / test 30/30 ✅；`.harness` 残留 0；无孤儿文档
+- 圆桌修订（用户批准）：`scripts/harness-check.mjs` 防漂移门禁 + CI job + `pnpm harness:check`；REASONIX 文档分层（契约层/叙事层）；`.github/PULL_REQUEST_TEMPLATE.md`；`pnpm format` 全库收敛 + CI format:check；DESIGN.md / visual-style-guide.md 加 `implementation-status: pending` 标记 + globals.css/layout.tsx 迁移注释；评论治理 MVP 经用户否决维持 roadmap 风险项
 
 ## [0.19.14] — 2025-07-11
 
@@ -485,7 +505,7 @@ last-updated: 2025-07-11
 
 ### Added
 - 项目初始化：Next.js 16 + TypeScript strict + Tailwind CSS 4 + App Router
-- `.harness/` 文档架构搭建
+- `.claude/` 文档架构搭建
   - `architecture/`：系统架构、路由地图、渲染策略、Server/Client 边界、数据流、运行时
   - `conventions/`：组件、路由、数据获取、样式、代码质量、Commit/PR、ESLint、TypeScript
   - `data-layer/`：Server Actions 契约、缓存策略、客户端状态、Streaming/Suspense

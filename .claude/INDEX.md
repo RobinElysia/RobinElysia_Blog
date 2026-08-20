@@ -1,14 +1,14 @@
 ---
 status: stable
 owner: architecture
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
-# .harness 文档总索引
+# .claude 文档总索引
 
-> **规则：本索引随文档增减必须同步更新。任何 `.harness/` 下新增的 `.md` / `.yaml` 文件必须在此登记，否则视为孤儿文档。**
+> **规则：本索引随文档增减必须同步更新。任何 `.claude/` 下新增的 `.md` / `.yaml` 文件必须在此登记，否则视为孤儿文档。**
 >
-> **审查报告登记规则：每次审查产生的报告归档到 `.harness/releases/`（命名 `NNNN-{type}.md`）后，必须在本索引的 releases 节登记，类型标注 `review-snapshot`。未登记的审查报告 = 孤儿文档。**
+> **审查报告登记规则：每次审查产生的报告归档到 `.claude/releases/`（命名 `NNNN-{type}.md`）后，必须在本索引的 releases 节登记，类型标注 `review-snapshot`。未登记的审查报告 = 孤儿文档。**
 
 ---
 
@@ -87,13 +87,15 @@ last-updated: 2025-07-11
 
 ### design/ — 设计风格说明
 
+> **上位文件：根目录 `DESIGN.md`** — 简约复古艺术风视觉总纲（风格定位、色彩/字体决策理由、档案图取用流程、动效与无障碍的上位约束）。本目录承载落地细则，不重复其论证；两者冲突时以 `DESIGN.md` 为准。
+
 | 文件 | 用途 | 状态 |
 |------|------|------|
-| `design/visual-style-guide.md` | Design Token（黑白灰四色、Italianno 花体 + Inter + SF 系统栈） | **stable**（品牌 ReZenKi 已定稿） |
+| `design/visual-style-guide.md` | Design Token（暖纸五色、Italianno 花体 + EB Garamond 衬线 + 系统栈）、图像规范 | **stable**（品牌 ReZenKi 已定稿） |
 | `design/layout-patterns.md` | 全局布局、页面布局模式（首页/详情/Dashboard）、约束 | stable |
-| `design/motion-and-interaction.md` | 动效总则、动画分类落地表、禁用清单、Server/Client 边界约束 | stable |
+| `design/motion-and-interaction.md` | 动效总则、动画分类落地表、禁用清单（含做旧特效）、Server/Client 边界约束 | stable |
 | `design/loading-and-error-states.md` | Loading/Error 策略矩阵、Skeleton 设计原则、error.tsx 规范 | stable |
-| `design/responsive-and-a11y.md` | 断点、WCAG 2.1 AA、键盘导航、语义化 HTML、Reduced Motion | stable |
+| `design/responsive-and-a11y.md` | 断点、WCAG 2.1 AA、复古风额外风险点、键盘导航、语义化 HTML、Reduced Motion | stable |
 
 ### api/ — 对外接口文档
 
@@ -110,7 +112,7 @@ last-updated: 2025-07-11
 |------|------|------|
 | `testing/test-strategy.md` | 四层测试策略（单元/组件/E2E/类型）、覆盖目标、必须测/可不测 | stable |
 | `testing/component-testing.md` | RTL 约定、查询优先级、Server Component 测试限制、Mock 策略 | stable |
-| `testing/e2e-testing.md` | Playwright 核心流程 5 条、测试数据管理、选择器策略 | stable |
+| `testing/e2e-testing.md` | Playwright 核心流程 6 条、测试数据管理、选择器策略 | stable |
 | `testing/eval-scenarios.md` | 当前无自动 eval、未来引入场景 | stable |
 
 ### releases/ — 发布管理
@@ -126,6 +128,7 @@ last-updated: 2025-07-11
 | `releases/0006-full-blog-features-report.md` | 完整博客功能批次报告（v0.5.0） | review-snapshot |
 | `releases/0007-creation-and-quality-report.md` | 创作端与质量基建报告（v0.6.0） | review-snapshot |
 | `releases/0008-editor-and-rendering-report.md` | 编辑器与渲染增强报告（v0.7.0） | review-snapshot |
+| `releases/0009-harness-sync-report.md` | Harness 文档-代码同步报告（v0.20.0，五阶段 S1-S5） | review-snapshot |
 | `releases/migrations/` | 数据库 / 数据迁移脚本 | 暂无 |
 
 ### future/ — 未来规划
@@ -165,14 +168,14 @@ last-updated: 2025-07-11
 | design | 5 | 5 | 0 | 0 | 0 |
 | api | 4 | 1 | 3 | 0 | 0 |
 | testing | 4 | 4 | 0 | 0 | 0 |
-| releases | 9 | 1 | 0 | 0 | 8 |
+| releases | 10 | 1 | 0 | 0 | 9 |
 | future | 2 | 2 | 0 | 0 | 0 |
 | task | 1 | 1 | 0 | 0 | 0 |
 | problem | 2 | 2 | 0 | 0 | 0 |
-| **合计** | **55** | **42** | **4** | **1** | **8** |
+| **合计** | **56** | **42** | **4** | **1** | **9** |
 
 ---
 
 ## 孤儿文档
 
-当前无孤儿文档。如发现 `.harness/` 下有文件未在上表登记，请补充或标记为孤儿。
+当前无孤儿文档。如发现 `.claude/` 下有文件未在上表登记，请补充或标记为孤儿。

@@ -1,17 +1,17 @@
 ---
-status: final
+status: review-snapshot
 owner: review
 last-updated: 2025-07-11
-review-scope: .harness/ 全部文档
+review-scope: .claude/ 全部文档
 ---
 
-# REVIEW-REPORT — .harness 文档架构审查
+# REVIEW-REPORT — .claude 文档架构审查
 
 ## 第一步：结构完整性
 
 ### 1.1 孤儿文档检查
 
-对比 `.harness/` 下实际文件与 `INDEX.md` 登记表：
+对比 `.claude/` 下实际文件与 `INDEX.md` 登记表：
 
 | 检查项 | 结果 |
 |--------|------|
@@ -74,7 +74,7 @@ review-scope: .harness/ 全部文档
 
 ## 第三步：可执行性抽测
 
-模拟"第一次接触本项目的 agent"，仅依赖 `.harness/` 文档回答以下场景（不看实际代码）：
+模拟"第一次接触本项目的 agent"，仅依赖 `.claude/` 文档回答以下场景（不看实际代码）：
 
 ### 场景 1：新增一个需要鉴权的动态路由页面
 

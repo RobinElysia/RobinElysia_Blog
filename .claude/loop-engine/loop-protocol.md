@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: loop-engine
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # Agent Loop 协议
@@ -27,7 +27,7 @@ last-updated: 2025-07-11
 **输入**：用户任务描述 + 变更范围
 
 **必须执行**：
-- 读取 `.harness/INDEX.md` 确定涉及的文档模块
+- 读取 `.claude/INDEX.md` 确定涉及的文档模块
 - 读取相关 `architecture/` 文档理解系统设计
 - 读取相关 `conventions/` 文档确认编码约束
 - 使用 `search_content` 确认符号位置，不靠记忆推断
@@ -65,11 +65,11 @@ last-updated: 2025-07-11
 **禁止**：
 - 在改代码的同时"顺手"重构不相关的函数
 - 在改 bug 的同时"顺便"调整代码风格（风格问题交给 auto-cleanup 阶段）
-- 修改 `.harness/` 下的文档而不在 commit message 中说明
+- 修改 `.claude/` 下的文档而不在 commit message 中说明
 
 **失败条件**：编辑失败（SEARCH 不匹配）、引入编译错误。
 
-**产出**：变更后的代码文件 + `.harness/` 文档更新（如涉及）。
+**产出**：变更后的代码文件 + `.claude/` 文档更新（如涉及）。
 
 ### ④ VERIFY（验证）
 
@@ -79,19 +79,19 @@ last-updated: 2025-07-11
 
 ```bash
 # 第一优先：编译检查（阻止性）
-npm run build 2>&1 | tail -20
+pnpm build 2>&1 | tail -20
 
 # 第二优先：类型检查（阻止性）
-npx tsc --noEmit 2>&1
+pnpm typecheck 2>&1
 
 # 第三优先：Lint 检查（阻止性）
-npm run lint 2>&1
+pnpm lint 2>&1
 
 # 第四优先：格式化检查（非阻止性，但应修复）
-npm run format:check 2>&1
+pnpm format:check 2>&1
 
 # 第五优先（如存在测试）：运行测试
-npm test 2>&1
+pnpm test 2>&1
 ```
 
 **判定规则**：
@@ -99,9 +99,9 @@ npm test 2>&1
 | 检查项 | 失败时行为 |
 |--------|-----------|
 | `build` 失败 | 立即终止循环，回退到 ③ ACT 修复 |
-| `tsc --noEmit` 失败 | 立即终止循环，回退到 ③ ACT 修复 |
+| `typecheck` 失败 | 立即终止循环，回退到 ③ ACT 修复 |
 | `lint` 失败 | 立即终止循环，回退到 ③ ACT 修复 |
-| `format:check` 失败 | 运行 `npm run format` 自动修复，直接进入 ⑤ |
+| `format:check` 失败 | 运行 `pnpm format` 自动修复，直接进入 ⑤ |
 | 测试失败 | 如果改动了源码 → 回退 ③；如果只是测试本身的编写 → 修正测试后重新 VERIFY |
 
 **失败条件**：任一阻止性检查失败且无法修复。
@@ -114,9 +114,9 @@ npm test 2>&1
 
 **必须执行**：
 - 如有新 ADR → 写入 `architecture/adr/`，命名格式 `NNNN-{slug}.md`
-- 如有新增依赖 → 更新 `REVIEW-REPORT.md` 或创建新的审查报告
-- 审查报告归档到 `.harness/releases/`，命名格式 `NNNN-{type}.md`
-- 更新 `.harness/releases/CHANGELOG.md`
+- 如有新增依赖 → 更新 `future/tech-radar.md`（登记到"当前采用"）
+- 审查报告归档到 `.claude/releases/`，命名格式 `NNNN-{type}.md`
+- 更新 `.claude/releases/CHANGELOG.md`
 - 如有业务逻辑变更 → 更新对应的 `conventions/` 或 `data-layer/` 文档
 
 **产出**：归档完成的文档更新。
@@ -147,8 +147,8 @@ npm test 2>&1
 1. 读错误信息，定位问题
 2. 回到 ③ ACT 只修复问题，不扩大范围
 3. 重新进入 ④ VERIFY
-4. 如果同一错误连续修复 3 次仍失败 → 终止循环，写入 `.harness/problem/blockers/` 并报告用户
+4. 如果同一错误连续修复 3 次仍失败 → 终止循环，写入 `.claude/problem/blockers/` 并报告用户
 
 ## 并行限制
 
-同一时刻只允许一个 Agent Loop 在运行。如果检测到 `.harness/task/active/` 中有进行中的任务，新的 agent 必须先检查该任务的状态，避免两个 agent 同时修改同一文件。
+同一时刻只允许一个 Agent Loop 在运行。如果检测到 `.claude/task/active/` 中有进行中的任务，新的 agent 必须先检查该任务的状态，避免两个 agent 同时修改同一文件。

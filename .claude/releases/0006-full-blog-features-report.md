@@ -1,5 +1,5 @@
 ---
-status: final
+status: review-snapshot
 owner: review
 last-updated: 2025-07-11
 review-scope: v0.5.0 完整博客功能批次（阅读体验 + 发现性 + 全局页）

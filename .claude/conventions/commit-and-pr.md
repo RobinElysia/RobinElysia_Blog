@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: conventions
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # Commit 与 PR 规范
@@ -63,15 +63,15 @@ last-updated: 2025-07-11
 <!-- 一句话总结 -->
 
 ## 关联文档
-- [ ] 涉及 `.harness/` 变更？如是，列出修改的文件：
+- [ ] 涉及 `.claude/` 变更？如是，列出修改的文件：
 - [ ] 需要新 ADR？如是，附上 ADR 编号：
-- [ ] 需要更新 CHANGELOG？如是，已更新 `.harness/releases/CHANGELOG.md`
+- [ ] 需要更新 CHANGELOG？如是，已更新 `.claude/releases/CHANGELOG.md`
 
 ## 检查清单
-- [ ] 代码通过 `npm run build`
-- [ ] 代码通过 `npm run lint`
-- [ ] 代码通过 `npm run format:check`
-- [ ] 类型检查通过 `npx tsc --noEmit`
+- [ ] 代码通过 `pnpm build`
+- [ ] 代码通过 `pnpm lint`
+- [ ] 代码通过 `pnpm format:check`
+- [ ] 类型检查通过 `pnpm typecheck`
 - [ ] Auto Review 清单已逐条检查（见 `loop-engine/auto-review.md`）
 - [ ] 新增代码有对应的测试（如涉及业务逻辑）
 - [ ] 无 `console.log` / `@ts-ignore` / 注释掉的大段代码

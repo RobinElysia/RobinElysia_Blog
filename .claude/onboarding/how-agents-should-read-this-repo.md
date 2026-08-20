@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: onboarding
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # Agent 阅读指南
@@ -10,33 +10,38 @@ last-updated: 2025-07-11
 
 ```
 blog/
-├── .harness/            # 项目文档与规范（Agent 的核心参考源）
-│   ├── INDEX.md          # ★ 文档总索引——从这里开始
-│   ├── onboarding/       # 本文件所在目录
-│   ├── architecture/     # 系统设计和技术决策
-│   ├── conventions/      # 编码规范和约束
-│   ├── data-layer/       # 数据流动机制
-│   ├── loop-engine/      # Agent 工作流（循环、审查、清理）
-│   ├── design/           # 视觉风格和布局规范
-│   ├── api/              # 对外接口
-│   ├── testing/          # 测试策略
-│   ├── releases/         # 版本管理和变更日志
-│   ├── future/           # 路线图和技术雷达
-│   ├── task/             # 任务卡片
-│   └── problem/          # 已知问题和技术债务
+├── .claude/              # ★ 项目文档与规范（Agent 的核心参考源）
+│   ├── INDEX.md           # 文档总索引——从这里开始
+│   ├── onboarding/        # 本文件所在目录
+│   ├── architecture/      # 系统设计和技术决策（含 adr/）
+│   ├── conventions/       # 编码规范和约束（含 code-style/）
+│   ├── data-layer/        # 数据流动机制（缓存/契约/状态）
+│   ├── loop-engine/       # Agent 工作流（循环、审查、清理）
+│   ├── design/            # 视觉风格与布局规范（上位约束：根 DESIGN.md）
+│   ├── api/               # 对外接口
+│   ├── testing/           # 测试策略
+│   ├── releases/          # 版本日志 + 审查报告归档
+│   ├── future/            # 路线图和技术雷达
+│   ├── task/              # 任务卡片
+│   └── problem/           # 已知问题和技术债务
 ├── src/
-│   ├── app/              # App Router（路由、页面、布局）
-│   ├── components/       # 共享组件
-│   ├── lib/              # 工具函数和业务逻辑
-│   ├── actions/          # Server Actions
-│   └── styles/           # 全局样式
-├── public/               # 静态资源
-├── e2e/                  # E2E 测试
-├── AGENTS.md             # Next.js Agent 规则引用
-├── CLAUDE.md             # → AGENTS.md
-├── REASONIX.md           # .harness/ 架构的设计依据（本指南的来源）
-└── REVIEW-REPORT.md      # 本次审查报告
+│   ├── app/               # App Router（路由、页面、布局）
+│   ├── components/        # 共享组件（admin/、home/、motion/ 等）
+│   ├── lib/               # 数据访问层与工具（schema/db/posts/comments/mdx 管线）
+│   └── actions/           # Server Actions（comment/admin）
+├── e2e/                   # Playwright E2E（blog.spec.ts）
+├── drizzle/               # 数据库迁移
+├── scripts/               # migrate.mjs（容器启动迁移）
+├── .github/workflows/     # CI
+├── AGENTS.md              # Agent 入口（必读三步 + 螺旋更新规则）
+├── CLAUDE.md              # → AGENTS.md
+├── REASONIX.md            # 项目宪法（文档架构的设计依据，本指南的来源）
+├── DESIGN.md              # 设计总纲（设计相关禁改区）
+├── README.md              # 人类开发者快速上手
+└── DEPLOY.md              # Docker 生产部署指南
 ```
+
+> **内容存储说明**：文章正文存 PostgreSQL `posts` 表（Markdown 原文），**没有 `src/content/` MDX 文件目录**。渲染由 `src/lib/mdx-options.ts` 统一管线完成。
 
 ## 必读顺序
 
@@ -47,7 +52,7 @@ blog/
 1. **本文件**（`onboarding/how-agents-should-read-this-repo.md`）
    → 读完后：你知道文档在哪、按什么顺序读
 
-2. **`.harness/INDEX.md`**
+2. **`.claude/INDEX.md`**
    → 读完后：你知道每篇文档的用途和位置
 
 ### 第二步：架构（10 分钟）
@@ -124,4 +129,4 @@ blog/
 
 ## 当你不知道做某事该读什么文档时
 
-回到 `.harness/INDEX.md`，按"必读顺序"逐级查找。如果找不到，说明文档体系有缺口——在 `.harness/problem/known-issues.md` 记录。不要自己编规则。
+回到 `.claude/INDEX.md`，按"必读顺序"逐级查找。如果找不到，说明文档体系有缺口——在 `.claude/problem/known-issues.md` 记录。不要自己编规则。

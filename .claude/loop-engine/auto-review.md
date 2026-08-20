@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: loop-engine
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # 自动代码审查规则
@@ -133,10 +133,10 @@ Auto Review 在 ④ VERIFY 阶段中，在自动检查（build/lint/tsc）之后
 
 ```
 ④ VERIFY:
-  1. npm run build        ← 阻止性
-  2. npx tsc --noEmit     ← 阻止性
-  3. npm run lint         ← 阻止性
+  1. pnpm build          ← 阻止性
+  2. pnpm typecheck      ← 阻止性
+  3. pnpm lint           ← 阻止性
   4. Auto Review (本文件) ← 阻止性（❌ 项必须修复）
-  5. npm run format:check ← 非阻止性（自动修复）
-  6. npm test             ← 阻止性（如存在）
+  5. pnpm format:check   ← 非阻止性（自动修复）
+  6. pnpm test           ← 阻止性（如存在）
 ```

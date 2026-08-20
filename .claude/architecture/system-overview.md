@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: architecture
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 related-adr: [0001, 0002]
 ---
 
@@ -33,8 +33,8 @@ related-adr: [0001, 0002]
 │  │  - 表单提交 / 数据变更                │  │
 │  │  - 渐进增强（无 JS 也能工作）         │  │
 │  ├───────────────────────────────────────┤  │
-│  │  Route Handlers (仅外部消费)          │  │
-│  │  - Webhook 接收 / 移动端 API          │  │
+│  │  Route Handlers (对外端点)             │  │
+│  │  - RSS / Sitemap / 图片上传 / 图片服务  │  │
 │  └───────────────────────────────────────┘  │
 ├─────────────────────────────────────────────┤
 │                ▲ 数据层                      │
@@ -42,7 +42,8 @@ related-adr: [0001, 0002]
 │  ┌───────────────────────────────────────┐  │
 │  │  PostgreSQL（单一数据源）             │  │
 │  │  - posts：文章（Markdown 原文存储）    │  │
-│  │  - comments：评论（审核流）            │  │
+│  │  - comments：评论（提交即 approved）   │  │
+│  │  - images：文章图片（BYTEA，v0.18.0）  │  │
 │  │  访问：Drizzle ORM（src/lib/）         │  │
 │  └───────────────────────────────────────┘  │
 └─────────────────────────────────────────────┘
@@ -54,19 +55,19 @@ related-adr: [0001, 0002]
 |------|------|--------|
 | Server Components | 数据获取（drizzle 查 PostGre）、渲染 HTML/RSC Payload | Node.js |
 | Client Components | 交互、浏览器 API、状态管理 | 浏览器 |
-| Server Actions | 数据变更（评论提交）、revalidation | Node.js |
-| Route Handlers | 对外 API（RSS/Sitemap） | Node.js |
-| Middleware | 重定向（Dashboard 鉴权前移至 layout） | Edge（默认） |
+| Server Actions | 数据变更（评论提交、文章 CRUD）、revalidation | Node.js |
+| Route Handlers | 对外端点（RSS/Sitemap/图片上传/图片服务 + NextAuth `/api/auth/*`） | Node.js |
+| Middleware | **无**——Dashboard 鉴权集中在 `(dashboard)/layout.tsx`（`auth()` + `redirect`），不引入中间件 | — |
 
 ## 数据访问
 
-- **唯一数据源**：PostgreSQL（`src/lib/schema.ts` 定义 `posts`/`comments` 两表）
-- **访问方式**：Drizzle ORM，`src/lib/db.ts` 单例连接池
-- **缓存**：数据库查询不走 fetch Data Cache，用 `unstable_cache`（函数级缓存 + tags），见 `data-layer/caching-and-revalidation.md`
-- **评论**：自建，存 PostGre（取代 Giscus），提交走 Server Action + `zod` 校验 + pending 审核流
+- **唯一数据源**：PostgreSQL（`src/lib/schema.ts` 定义 `posts`/`comments`/`images` 三表）
+- **访问方式**：Drizzle ORM，`src/lib/db.ts` 单例连接池（惰性连接，build 时不连库）
+- **缓存**：数据库查询不走 fetch Data Cache，用 `unstable_cache`（函数级缓存 + tags，统一 `post-list`），见 `data-layer/caching-and-revalidation.md`
+- **评论**：自建，存 PostGre（取代 Giscus），提交走 Server Action + zod 校验 + IP 限流（60s/3 次）；**v0.7.0 起无审核流，提交即 approved 直接显示**。⚠️ 当前无内容审核，仅靠 IP 限流（进程内存实现，多实例部署失效），垃圾评论治理见 `future/roadmap.md`
 
 ## 关键边界
 
 - **Server ↔ Client 边界**：通过 `'use client'` 指令标记。Server Component 可以渲染 Client Component，反之不行。Server Component 不能 import 浏览器专用模块。
-- **Server Actions ↔ Route Handlers 边界**：内部数据变更走 Server Actions；对外接口（移动端、第三方 webhook）走 Route Handlers。详见 ADR-0002。
-- **Static ↔ Dynamic 边界**：默认静态渲染，任何 `cookies()`/`headers()`/`searchParams` 访问或 `fetch` 未缓存时退化为动态。详见 `rendering-strategy.md`。
+- **Server Actions ↔ Route Handlers 边界**：内部数据变更走 Server Actions；对外端点（RSS/Sitemap/图片服务/图片上传）走 Route Handlers。本项目无 webhook 端点（`/api/revalidate` 仅为预留概念）。详见 ADR-0002。
+- **Static ↔ Dynamic 边界**：Next.js 框架默认静态渲染；**本项目策略为页面级显式 `force-dynamic` 动态渲染**（见 `rendering-strategy.md`）。任何 `cookies()`/`headers()`/`searchParams` 访问或未缓存 `fetch` 也会使页面退化为动态。

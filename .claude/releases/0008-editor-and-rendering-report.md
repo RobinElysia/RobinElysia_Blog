@@ -1,5 +1,5 @@
 ---
-status: final
+status: review-snapshot
 owner: review
 last-updated: 2025-07-11
 review-scope: v0.7.0 编辑器增强、LaTeX/Mermaid 渲染、排版优化、评论去审核

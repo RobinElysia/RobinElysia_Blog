@@ -1,5 +1,5 @@
 ---
-status: final
+status: review-snapshot
 owner: review
 last-updated: 2025-07-11
 review-scope: v0.6.0 测试基建、评论防刷、NextAuth + Dashboard、SEO 细节

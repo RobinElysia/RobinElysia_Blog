@@ -1,5 +1,5 @@
 ---
-status: final
+status: review-snapshot
 owner: review
 last-updated: 2025-07-11
 review-scope: v0.3.0 动效系统、标签筛选、RSS/Sitemap

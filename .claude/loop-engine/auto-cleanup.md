@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: loop-engine
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # 自动代码清理规则
@@ -22,7 +22,7 @@ Agent 在完成一个完整功能或修复后，必须执行代码清理。清�
 
 ```bash
 # 检测未被引用的导出（ts-prune 或 eslint-plugin-import）
-npx ts-prune 2>&1
+pnpm exec ts-prune 2>&1
 ```
 
 **规则**：
@@ -39,7 +39,7 @@ npx ts-prune 2>&1
 
 ```bash
 # 检查 package.json 中未使用的依赖
-npx depcheck 2>&1
+pnpm exec depcheck 2>&1
 ```
 
 **规则**：
@@ -65,7 +65,7 @@ import styles from "./post.module.css";   // 样式
 ### 4. 格式统一
 
 ```bash
-npm run format 2>&1
+pnpm format 2>&1
 ```
 
 **规则**：直接运行格式化命令，不手动调整格式。Prettier 的配置（`.prettierrc`）是唯一标准。
@@ -83,7 +83,7 @@ npm run format 2>&1
 清理完成后必须重新跑：
 
 ```bash
-npm run build && npm run lint && npm run format:check
+pnpm build && pnpm lint && pnpm format:check
 ```
 
 清理引入新错误的概率虽然低（删代码不会引入新 bug，但删 import 可能删掉副作用导入），但仍需验证。
@@ -95,4 +95,4 @@ npm run build && npm run lint && npm run format:check
 - ❌ 重命名变量/函数（属于重构，应走单独的 PLAN → ACT → VERIFY 循环）
 - ❌ 改变函数签名（属于 API 变更，需要 ADR 或至少变更记录）
 - ❌ 升级依赖版本（属于依赖管理，应单独 PR）
-- ❌ 改动 `.harness/` 文档（除非清理的是文档本身的死链接）
+- ❌ 改动 `.claude/` 文档（除非清理的是文档本身的死链接）

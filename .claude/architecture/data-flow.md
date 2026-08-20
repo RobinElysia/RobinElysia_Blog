@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: architecture
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 related-adr: [0002, 0005]
 ---
 
@@ -70,9 +70,12 @@ Next.js Server
   │    submitComment(prev, formData):
   │      ├─ ① zod 校验（postId/authorName/content）
   │      │    └─ 失败 → return { ok: false, error: "..." }
-  │      ├─ ② db.insert(comments).values({ ... })  ← 写 PostGre
-  │      │    默认 status = "pending"
-  │      └─ ③ revalidateTag(`post:${postId}`, "max")
+  │      ├─ ①b 防刷：IP 固定窗口限流（60s/3 次，进程内存 Map，按首次命中锚定）
+  │      │    └─ 超限 → return { ok: false, error: "提交过于频繁" }
+  │      ├─ ② 确认文章存在（postId 来自表单，防伪造）
+  │      ├─ ③ db.insert(comments).values({ ..., status: "approved" })
+  │      │    ← 写 PostGre；v0.7.0 起无审核流，提交即 approved 直接显示
+  │      └─ ④ 评论查询不缓存 → 无需 revalidateTag
   │
   │ 2. 响应返回客户端
   │    useActionState 自动更新表单状态
@@ -80,26 +83,13 @@ Next.js Server
   ▼
 用户浏览器
   │
-  │ 3. UI 更新：显示"评论已提交，审核后可见"
+  │ 3. UI 更新：显示"评论已提交。"
   │
   ▼
 完成
 ```
 
-## 审核链路（Dashboard，管理员）
-
-```
-管理员登录 Dashboard（NextAuth）
-  │
-  │ 1. 查询 pending 评论列表
-  │    db.select().from(comments).where(status = "pending")
-  │
-  │ 2. Server Action: approveComment(id) / markSpam(id)
-  │    ├─ status: pending → approved / spam
-  │    └─ 评论表不缓存 → 无需 revalidate
-  ▼
-C 端文章页下一次渲染即显示已通过评论
-```
+> ⚠️ **当前无内容审核**：评论提交即显示，唯一的防线是 IP 限流（进程内存实现，多实例部署下失效）。垃圾评论治理见 `future/roadmap.md`「评论反垃圾」。
 
 ## 每一步使用的机制汇总
 
@@ -110,5 +100,6 @@ C 端文章页下一次渲染即显示已通过评论
 | 缓存失效 | Tag-based revalidation | `revalidateTag("post-list", "max")` |
 | 写数据 | Server Actions + drizzle | `"use server"` + `db.insert()` |
 | 校验 | zod schema | `z.object({...}).safeParse()` |
+| 防刷 | 内存固定窗口（IP 维度，按首次命中锚定） | `src/lib/rate-limit.ts`（60s/3 次） |
 | 流式传输 | React Suspense + Streaming | `<Suspense fallback={...}>` |
 | UI 更新 | RSC Payload diff | 自动，Next.js Router 处理 |

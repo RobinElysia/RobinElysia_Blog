@@ -1,5 +1,5 @@
 ---
-status: final
+status: review-snapshot
 owner: review
 last-updated: 2025-07-11
 review-scope: v0.4.0 黑白双模式 + 大气布局

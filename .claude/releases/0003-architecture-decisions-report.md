@@ -1,5 +1,5 @@
 ---
-status: final
+status: review-snapshot
 owner: review
 last-updated: 2025-07-11
 review-scope: 架构决策落地（PostGre 迁移、品牌定稿、依赖补齐、工程修正）

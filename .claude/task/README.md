@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: task
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # 任务管理
@@ -24,7 +24,7 @@ priority: high | medium | low
 owner: @username
 created: YYYY-MM-DD
 target: YYYY-MM-DD  # 预计完成日期
-related-docs:       # 改动前必读的 .harness/ 文档路径
+related-docs:       # 改动前必读的 .claude/ 文档路径
   - architecture/xxx.md
   - conventions/xxx.md
 ---
@@ -39,11 +39,11 @@ related-docs:       # 改动前必读的 .harness/ 文档路径
 
 {为什么需要这个任务？相关的用户反馈、技术债务、产品需求}
 
-## 涉及的 .harness 文档（改动前必读）
+## 涉及的 .claude 文档（改动前必读）
 
-- `.harness/architecture/app-router-map.md` — 确认路由放置位置
-- `.harness/architecture/rendering-strategy.md` — 确认渲染模式
-- `.harness/conventions/data-fetching-conventions.md` — 确认 fetch 约定
+- `.claude/architecture/app-router-map.md` — 确认路由放置位置
+- `.claude/architecture/rendering-strategy.md` — 确认渲染模式
+- `.claude/conventions/data-fetching-conventions.md` — 确认 fetch 约定
 
 ## 涉及的文件（预计）
 
@@ -117,14 +117,14 @@ related-docs:
 
 博客需要展示所有已发布文章。这是 MVP 的核心页面。数据源为 PostgreSQL（`posts` 表，Markdown 原文存 `content` 字段）。
 
-## 涉及的 .harness 文档（改动前必读）
+## 涉及的 .claude 文档（改动前必读）
 
-- `.harness/architecture/app-router-map.md` — 确认放在 `(marketing)/blog/`
-- `.harness/architecture/rendering-strategy.md` — blog 列表 SSR + unstable_cache
-- `.harness/conventions/data-fetching-conventions.md` — 数据读取走 src/lib/，错误处理规范
-- `.harness/conventions/component-conventions.md` — PostCard 组件的命名和结构
-- `.harness/design/layout-patterns.md` — 列表布局 max-w-2xl
-- `.harness/architecture/adr/0005-database-and-orm.md` — 数据库架构背景
+- `.claude/architecture/app-router-map.md` — 确认放在 `(marketing)/blog/`
+- `.claude/architecture/rendering-strategy.md` — blog 列表 SSR + unstable_cache
+- `.claude/conventions/data-fetching-conventions.md` — 数据读取走 src/lib/，错误处理规范
+- `.claude/conventions/component-conventions.md` — PostCard 组件的命名和结构
+- `.claude/design/layout-patterns.md` — 列表布局 max-w-2xl
+- `.claude/architecture/adr/0005-database-and-orm.md` — 数据库架构背景
 
 ## 涉及的文件（预计）
 
@@ -145,7 +145,7 @@ related-docs:
 - [ ] 无文章时（posts 表为空）显示 EmptyState
 - [ ] 文章标题超过 80 字符时，用 CSS line-clamp 截断为两行
 - [ ] 页面通过 Lighthouse 性能审计（Performance ≥ 90）
-- [ ] `npm run build` 通过，`npm run lint` 通过
+- [ ] `pnpm build` 通过，`pnpm lint` 通过
 
 ## 技术要点
 
@@ -189,11 +189,11 @@ related-docs:
 
 暗色模式是现代网站的标配。视觉风格指南已定义了两套 Design Token 值。
 
-## 涉及的 .harness 文档（改动前必读）
+## 涉及的 .claude 文档（改动前必读）
 
-- `.harness/design/visual-style-guide.md` — 已定义好的暗色 Design Token
-- `.harness/design/responsive-and-a11y.md` — 对比度要求
-- `.harness/conventions/styling-conventions.md` — Dark mode 实现策略
+- `.claude/design/visual-style-guide.md` — 已定义好的暗色 Design Token
+- `.claude/design/responsive-and-a11y.md` — 对比度要求
+- `.claude/conventions/styling-conventions.md` — Dark mode 实现策略
 
 ## 涉及的文件（预计）
 
@@ -250,10 +250,10 @@ related-docs:
 
 RSS 是博客分发的核心渠道。需要从 MDX frontmatter 读取文章元数据，拼接成 RSS XML。
 
-## 涉及的 .harness 文档（改动前必读）
+## 涉及的 .claude 文档（改动前必读）
 
-- `.harness/api/route-handlers.md` — RSS 走 Route Handler（因为需要返回 XML）
-- `.harness/architecture/rendering-strategy.md` — RSS 不缓存（每次请求读最新文章列表）
+- `.claude/api/route-handlers.md` — RSS 走 Route Handler（因为需要返回 XML）
+- `.claude/architecture/rendering-strategy.md` — RSS 不缓存（每次请求读最新文章列表）
 
 ## 涉及的文件（预计）
 
@@ -269,7 +269,7 @@ RSS 是博客分发的核心渠道。需要从 MDX frontmatter 读取文章元�
 - [ ] 文章少于 20 篇时，返回全部文章
 - [ ] XML 中没有非法字符（MDX frontmatter 中的 `&`、`<`、`>` 被转义）
 - [ ] 单元测试覆盖：正常生成、空文章列表、特殊字符转义
-- [ ] `npm run lint` 通过
+- [ ] `pnpm lint` 通过
 
 ## 技术要点
 

@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: architecture
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 related-adr: []
 ---
 
@@ -83,12 +83,16 @@ export default nextConfig;
 |------|------|------|--------|
 | `DATABASE_URL` | PostgreSQL 连接字符串（drizzle 连接池） | **是** | `postgresql://localhost:5432/blog` |
 | `SITE_URL` | 站点绝对 URL（RSS/Sitemap 的 link 前缀） | 生产是 | `http://localhost:3000` |
-| `AUTH_SECRET` | NextAuth 密钥（Dashboard） | 否（暂无鉴权） | — |
-| `AUTH_GITHUB_ID` | NextAuth GitHub Provider | 否 | — |
-| `AUTH_GITHUB_SECRET` | NextAuth GitHub Provider | 否 | — |
-| `REVALIDATION_SECRET` | Webhook revalidation 共享密钥 | 否 | — |
+| `AUTH_SECRET` | NextAuth JWT 签名密钥（Dashboard 鉴权） | **生产是**（`openssl rand -base64 32` 生成） | — |
+| `AUTH_GITHUB_ID` | GitHub OAuth App 的 Client ID | 否（未配置时不注册 GitHub provider、登录页不显示按钮，v0.19.5/0.19.8） | — |
+| `AUTH_GITHUB_SECRET` | GitHub OAuth App 的 Client Secret | 否（同上，与 ID 成对） | — |
+| `AUTH_GITHUB_ALLOWED_USERS` | GitHub 登录白名单（逗号分隔用户名/邮箱，大小写不敏感） | 否（**空 = 拒绝所有 GitHub 登录**，安全默认；实现见 `src/lib/auth-allowlist.ts`） | — |
+| `ADMIN_USERNAME` | Credentials provider 本地登录用户名（仅 Dashboard） | 否（本地开发用） | `admin` |
+| `ADMIN_PASSWORD` | Credentials provider 本地登录密码 | 否（本地开发用） | `change-me` |
+| `AUTH_TRUST_HOST` | 本地非默认端口/反向代理的 Host 信任（E2E 3011 等；生产 Vercel 自动信任） | 否 | `true` |
+| `REVALIDATION_SECRET` | Webhook revalidation 共享密钥（**预留**，`/api/revalidate` 未实现） | 否 | — |
 
-环境变量在 `.env.local`（开发，模板见 `.env.example`）和 Vercel Dashboard（生产）中设置。`.env.local` 不提交到 Git。
+环境变量在 `.env.local`（开发，模板见 `.env.example`）和 Vercel Dashboard（生产）中设置。`.env.local` 不提交到 Git。Docker 部署用 `PROD_*` 前缀插值（见根目录 `DEPLOY.md` 与 `docker-compose.yml`，v0.19.9 起为避免 shell 环境残留覆盖 .env 值）。
 
 ## 本地数据库
 
