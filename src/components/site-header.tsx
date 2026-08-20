@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
+import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-source";
 
 /**
  * 全局导航 —— 滚动后毛玻璃（黑白灰半透明 + backdrop-blur）
@@ -33,16 +34,22 @@ export function SiteHeader() {
   const dark = useSyncExternalStore(subscribeTheme, readTheme, () => false);
 
   useEffect(() => {
-    // capture 监听：首页使用局部滚动容器（data-scroll-container），
-    // 需捕获其滚动事件以切换毛玻璃
-    const onScroll = () => {
-      const scroller = document.querySelector("[data-scroll-container]");
-      setScrolled(scroller ? scroller.scrollTop > 8 : window.scrollY > 8);
-    };
+    // v0.21.0（修 D8）：不再全局 capture 监听兜底——
+    // 首页滚动由共享滚动源（scroll-source.ts）上报，其他页面仍监听 window
+    const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
-    document.addEventListener("scroll", onScroll, { passive: true, capture: true });
-    return () =>
-      document.removeEventListener("scroll", onScroll, { capture: true } as EventListenerOptions);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // 首页局部滚动容器（data-scroll-container）的滚动：订阅共享源（无 capture hack）
+  useEffect(() => {
+    const unsub = subscribeHomeScroll(() => {
+      if (document.querySelector("[data-scroll-container]")) {
+        setScrolled(getHomeScroll().scrollTop > 8);
+      }
+    });
+    return unsub;
   }, []);
 
   // 水合后同步实际主题（SSR 阶段无 document）——useSyncExternalStore 已接管，删除原 effect
@@ -70,7 +77,7 @@ export function SiteHeader() {
         >
           ReZenKi
         </Link>
-        <nav className="flex items-center gap-6 text-xs tracking-[0.2em] text-muted uppercase">
+        <nav className="flex items-center gap-6 font-sans text-xs tracking-[0.2em] text-muted uppercase">
           <Link href="/" className="transition-colors hover:text-ink">
             首页
           </Link>

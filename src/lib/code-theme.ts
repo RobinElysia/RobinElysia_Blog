@@ -30,15 +30,15 @@ export const rezenkiCodeTheme: ThemeInput = {
       scope: ["entity.name.function", "support.function", "meta.function-call"],
       settings: { foreground: "var(--color-ink)" },
     },
-    // 字符串：中灰
+    // 字符串：中灰（暖灰，chroma ≤0.015）
     {
       scope: ["string", "string.quoted", "punctuation.definition.string"],
-      settings: { foreground: "oklch(0.38 0 0)" },
+      settings: { foreground: "oklch(0.42 0.014 60)" },
     },
     // 数字/常量：中灰
     {
       scope: ["constant.numeric", "constant.language", "constant"],
-      settings: { foreground: "oklch(0.42 0 0)" },
+      settings: { foreground: "oklch(0.46 0.014 60)" },
     },
     // 类型名
     { scope: ["entity.name.type", "support.type"], settings: { foreground: "var(--color-ink)" } },

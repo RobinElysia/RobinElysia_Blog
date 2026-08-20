@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
-import { Inter, Italianno } from "next/font/google";
+import { EB_Garamond, Inter, Italianno } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 
 /**
  * ReZenKi (RefrainZen And KiKi) — 个人博客
- * 字体体系（见 .claude/design/visual-style-guide.md）：
- * - Italianno：意大利花体，用于主页标题/Logo
- * - Inter：SF Pro Display 的开放近似，用于文章标题
- * - 正文走系统栈（-apple-system → 苹果设备上即 SF Pro Text）
- * ⚠️ 注意：visual-style-guide.md 已定稿 EB Garamond（--font-serif），
- *    本文件仍加载 Inter——迁移待用户完成（tech-debt.md 登记）
+ * 字体体系（见 .claude/design/visual-style-guide.md，2026-08-20 定稿落地）：
+ * - Italianno：意大利花体，用于 Logo/首页 Hero 大字（--font-script）
+ * - EB Garamond：衬线正文/标题（--font-serif，字重 400/500/600，禁 700+）
+ * - Inter：UI 控件/表单/导航系统栈链的前置回退（--font-sans）
  */
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+});
+
+const ebGaramond = EB_Garamond({
+  variable: "--font-eb-garamond",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 const italianno = Italianno({
@@ -52,7 +56,7 @@ export default async function RootLayout({
     <html
       lang="zh-CN"
       suppressHydrationWarning
-      className={`${inter.variable} ${italianno.variable} ${themeClass}`.trim()}
+      className={`${inter.variable} ${ebGaramond.variable} ${italianno.variable} ${themeClass}`.trim()}
     >
       <head>{/* 主题已由 SSR 输出——无任何脚本注入 */}</head>
       <body className="flex min-h-full flex-col antialiased">

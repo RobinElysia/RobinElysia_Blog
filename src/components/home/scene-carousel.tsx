@@ -1,16 +1,23 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { useSyncExternalStore } from "react";
+import { motion, useReducedMotion, useSpring, useTransform } from "motion/react";
 import { PostCard, CardInfo } from "@/components/home/post-card";
+import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-source";
 
 /**
- * Scene 2：滚动逐卡翻页（v0.15.0）
+ * Ch.01 最近：滚动逐卡翻页
  * - 每张卡片占一屏（snap-start）——吸附无中间态
  * - 进出场 45°：滚出斜向左上 45°，进入从右下 45°（x/y 等量）
  * - 卡片 16:9 纯图；文章信息在屏幕左下角，滑动渐进渐出
- * - 滚动进度：手动监听局部滚动容器（motion useScroll 在局部容器不可靠，v0.15.0 踩坑）
+ * - v0.21.0 重构（修 D3/D4）：滚动进度由共享滚动源纯数学推导
+ *   （page = hero 1 页 + 卡片序号），零 per-card listener、零强制重排；
+ *   reduced-motion 下关闭位移/旋转转场，仅保留淡入（JS matchMedia，CSS 降级无效）
  */
+
+/** Ch.00 Hero 恒占一页，卡片页从全局第 1 页起算 */
+const HERO_PAGES = 1;
+
 export function SceneCarousel({
   posts,
 }: {
@@ -48,62 +55,46 @@ function CardSlide({
   index: number;
   total: number;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
 
-  // 滚动进度（手动驱动）：0 = 卡片页完全在容器视口内，±1 = 滚入/滚出
-  const enter = useMotionValue(0); // 进入进度：页顶从视口底 → 视口顶
-  const exit = useMotionValue(0); // 滚出进度：页顶从视口顶 → 上方一屏
+  // 订阅共享滚动源（HomeScenes 的唯一 rAF listener 写入；此处零重排读取）
+  useSyncExternalStore(subscribeHomeScroll, () => {
+    const { scrollTop, viewportH } = getHomeScroll();
+    return `${scrollTop}:${viewportH}`;
+  });
 
-  useEffect(() => {
-    const scroller = document.querySelector("[data-scroll-container]");
-    const el = ref.current;
-    if (!scroller || !el) return;
+  // 纯数学推导（snap 布局每页等高）：
+  // 卡片 i 的全局页 = HERO_PAGES + i；elTop = (HERO_PAGES+i)*vh - scrollTop
+  // enter: 页顶从视口底进入 → 停到视口顶；exit: 页顶从视口顶滚出上方一屏
+  const { scrollTop, viewportH } = getHomeScroll();
+  const vh = viewportH || 1;
+  const globalPage = HERO_PAGES + index;
+  const enter = Math.min(1, Math.max(0, scrollTop / vh - index));
+  const exit = Math.min(1, Math.max(0, scrollTop / vh - globalPage));
 
-    const update = () => {
-      const containerRect = scroller.getBoundingClientRect();
-      const rect = el.getBoundingClientRect();
-      const vh = containerRect.height || 1;
-      // 元素顶相对容器视口顶（0 = 视口顶，vh = 视口底）
-      const elTop = rect.top - containerRect.top;
-      // 进入：elTop 从 vh → 0（视口底进入 → 停到视口顶）
-      enter.set(Math.min(1, Math.max(0, 1 - elTop / vh)));
-      // 滚出：elTop 从 0 → -vh（滚出上方一屏）
-      exit.set(Math.min(1, Math.max(0, -elTop / vh)));
-    };
-
-    update();
-    scroller.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      scroller.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, [enter, exit]);
-
-  // 45° 进出场：x/y 等量；滚出绝对像素（幅度加大 v0.17.0：滚出 -920 / 进入 75）
-  // spring 平滑：snap 吸附快，但转场动画慢速播放（进度追赶 ~600ms）
+  // 45° 进出场（x/y 等量）：滚出绝对像素 -920，进入 75（v0.17.0 参数保留）
+  // reduce 模式：无位移/旋转，仅 opacity（修 D4）
   const enterSpring = useSpring(enter, { stiffness: 55, damping: 19 });
   const exitSpring = useSpring(exit, { stiffness: 55, damping: 19 });
 
-  const enterX = useTransform(enterSpring, [0, 1], [75, 0]);
-  const enterY = useTransform(enterSpring, [0, 1], [75, 0]);
+  const enterX = useTransform(enterSpring, [0, 1], reduceMotion ? [0, 0] : [75, 0]);
+  const enterY = useTransform(enterSpring, [0, 1], reduceMotion ? [0, 0] : [75, 0]);
   const enterOpacity = useTransform(enterSpring, [0, 0.6], [0, 1]);
-  const exitX = useTransform(exitSpring, [0.25, 1], [0, -920]);
-  const exitY = useTransform(exitSpring, [0.25, 1], [0, -920]);
-  const exitRotate = useTransform(exitSpring, [0.25, 1], [0, -10]);
+  const exitX = useTransform(exitSpring, [0.25, 1], reduceMotion ? [0, 0] : [0, -920]);
+  const exitY = useTransform(exitSpring, [0.25, 1], reduceMotion ? [0, 0] : [0, -920]);
+  const exitRotate = useTransform(exitSpring, [0.25, 1], reduceMotion ? [0, 0] : [0, -10]);
   const exitOpacity = useTransform(exitSpring, [0.25, 1], [1, 0]);
 
   const x = useTransform(() => enterX.get() + exitX.get());
   const y = useTransform(() => enterY.get() + exitY.get());
   const opacity = useTransform((): number => Math.min(enterOpacity.get(), exitOpacity.get()));
   // 信息渐进渐出进度
-  const infoProgress = useTransform((): number => Math.min(enterOpacity.get(), exitOpacity.get()));
+  const infoProgress = useTransform((): number =>
+    Math.min(enterOpacity.get(), exitOpacity.get()),
+  );
 
   return (
-    <div
-      ref={ref}
-      className="relative flex h-[calc(100dvh-57px)] w-full snap-start items-center justify-center overflow-hidden px-6 md:px-8"
-    >
+    <div className="relative flex h-[calc(100dvh-var(--header-h))] w-full snap-start items-center justify-center overflow-hidden px-6 md:px-8">
       {/* 16:9 图片卡 */}
       <motion.div
         style={{ x, y, rotate: exitRotate, opacity }}
@@ -119,6 +110,7 @@ function CardSlide({
         publishedAt={post.publishedAt}
         tags={post.tags}
         progress={infoProgress}
+        slug={post.slug}
       />
 
       {/* 页签 */}

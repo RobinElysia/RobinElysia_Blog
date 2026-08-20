@@ -26,7 +26,7 @@ export default async function DashboardHome() {
     <div>
       <h1 className="text-2xl font-semibold">概览</h1>
 
-      <div className="mt-6 grid grid-cols-3 gap-4">
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {stats.map((s) => (
           <div key={s.label} className="border border-line p-5">
             <div className="text-3xl font-semibold">{s.value}</div>

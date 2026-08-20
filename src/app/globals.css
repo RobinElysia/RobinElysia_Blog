@@ -2,59 +2,70 @@
 @plugin "@tailwindcss/typography";
 
 /* ============================================
-   ReZenKi 黑白简约杂志风 Design Token
-   规范见 .claude/design/visual-style-guide.md
+   ReZenKi 简约复古艺术风 Design Token（暖纸五色）
+   规范见 .claude/design/visual-style-guide.md（定稿已落地 2026-08-20）
    黑白双模式：白模式（默认）↔ 黑模式（.dark class）
    所有组件必须使用 token 色（ink/paper/muted/line/code），禁止硬编码色值
-   ⚠️ 注意：DESIGN.md 与 visual-style-guide.md 已定稿「暖纸五色 + EB Garamond」，
-      本文件仍是旧黑白灰 token（chroma 0）+ Inter——迁移待用户完成（tech-debt.md 登记）
+   彩度上限 chroma ≤ 0.015——超过即违反"纸感而非彩色"的定位
    ============================================ */
 
 /* dark: 变体基于 .dark class（手动切换的黑白模式，而非仅系统偏好） */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* 白模式：白底黑字（默认） */
-  --color-ink: oklch(0.13 0 0); /* 近黑 — 正文/标题 */
-  --color-paper: oklch(0.995 0 0); /* 近白 — 页面背景 */
-  --color-muted: oklch(0.45 0 0); /* 中灰 — 辅助文字 */
-  --color-line: oklch(0.9 0 0); /* 浅灰 — 分割线/边框 */
-  --color-code: oklch(0.97 0 0); /* 代码块背景 */
+  /* 全局 header 高度（py-4=32px + border-b 1px + 内容行高 24px ≈ 57px）——消除 57px 魔法数（D5） */
+  --header-h: 57px;
 
-  /* 字体：花体标题 + Inter 标题 + SF 系统栈正文 */
+  /* 白模式：纸底墨字（默认）——做旧纸而非纯白，暖墨黑而非纯黑 */
+  --color-ink: oklch(0.22 0.015 60); /* 暖墨黑 — 正文/标题 */
+  --color-paper: oklch(0.97 0.012 85); /* 做旧纸 — 页面背景 */
+  --color-muted: oklch(0.5 0.015 70); /* 暖灰 — 辅助文字 */
+  --color-line: oklch(0.87 0.015 80); /* 分割线/边框 */
+  --color-code: oklch(0.94 0.014 85); /* 代码块/卡片底 */
+
+  /* 字体：花体 Logo + 衬线正文/标题（EB Garamond，中文衬线回退）+ 系统栈 UI 控件 */
   --font-script: var(--font-italianno), "Brush Script MT", cursive;
+  --font-serif: var(--font-eb-garamond), "Songti SC", "Noto Serif SC", SimSun, serif;
   --font-sans:
     var(--font-inter), -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
     "Helvetica Neue", Arial, sans-serif;
 }
 
-/* 黑模式：黑底白字（.dark class，由 header 切换按钮 + localStorage 控制） */
+/* 黑模式：深褐墨底暖白字（.dark class，由 header 切换按钮 + localStorage 控制） */
 .dark {
-  --color-ink: oklch(0.92 0 0);
-  --color-paper: oklch(0.13 0 0);
-  --color-muted: oklch(0.62 0 0);
-  --color-line: oklch(0.28 0 0);
-  --color-code: oklch(0.18 0 0);
+  --color-ink: oklch(0.91 0.012 85);
+  --color-paper: oklch(0.18 0.012 60);
+  --color-muted: oklch(0.68 0.012 75);
+  --color-line: oklch(0.32 0.014 65);
+  --color-code: oklch(0.23 0.012 60);
 }
 
 /* 跟随系统（无手动选择时；.light class 显式锁定白模式） */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --color-ink: oklch(0.92 0 0);
-    --color-paper: oklch(0.13 0 0);
-    --color-muted: oklch(0.62 0 0);
-    --color-line: oklch(0.28 0 0);
-    --color-code: oklch(0.18 0 0);
+    --color-ink: oklch(0.91 0.012 85);
+    --color-paper: oklch(0.18 0.012 60);
+    --color-muted: oklch(0.68 0.012 75);
+    --color-line: oklch(0.32 0.014 65);
+    --color-code: oklch(0.23 0.012 60);
   }
 }
 
 body {
   background: var(--color-paper);
   color: var(--color-ink);
-  font-family: var(--font-sans);
+  font-family: var(--font-serif); /* 正文/标题衬线（EB Garamond + 中文衬线回退） */
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
+}
+
+/* UI 控件（按钮/表单）始终系统栈——后台与表单不需要复古感 */
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-sans);
 }
 
 /* ============================================
@@ -142,26 +153,26 @@ body {
    ============================================ */
 
 :root {
-  --shiki-color-text: oklch(0.25 0 0);
+  --shiki-color-text: oklch(0.28 0.015 60);
   --shiki-bg: var(--color-code);
   --shiki-color-comments: var(--color-muted);
-  --shiki-color-keyword: oklch(0.12 0 0);
-  --shiki-color-strings: oklch(0.38 0 0);
-  --shiki-color-function: oklch(0.2 0 0);
-  --shiki-color-number: oklch(0.42 0 0);
-  --shiki-color-constant: oklch(0.18 0 0);
+  --shiki-color-keyword: oklch(0.16 0.015 60);
+  --shiki-color-strings: oklch(0.42 0.014 60);
+  --shiki-color-function: oklch(0.24 0.015 60);
+  --shiki-color-number: oklch(0.46 0.014 60);
+  --shiki-color-constant: oklch(0.22 0.015 60);
   --shiki-color-variable: var(--shiki-color-text);
 }
 
 .dark {
-  --shiki-color-text: oklch(0.85 0 0);
+  --shiki-color-text: oklch(0.88 0.012 85);
   --shiki-bg: var(--color-code);
   --shiki-color-comments: var(--color-muted);
-  --shiki-color-keyword: oklch(0.95 0 0);
-  --shiki-color-strings: oklch(0.68 0 0);
-  --shiki-color-function: oklch(0.9 0 0);
-  --shiki-color-number: oklch(0.6 0 0);
-  --shiki-color-constant: oklch(0.92 0 0);
+  --shiki-color-keyword: oklch(0.95 0.012 85);
+  --shiki-color-strings: oklch(0.7 0.012 85);
+  --shiki-color-function: oklch(0.9 0.012 85);
+  --shiki-color-number: oklch(0.64 0.012 85);
+  --shiki-color-constant: oklch(0.93 0.012 85);
   --shiki-color-variable: var(--shiki-color-text);
 }
 
