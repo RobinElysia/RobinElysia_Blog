@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: conventions
-last-updated: 2025-07-11
+last-updated: 2026-08-19
 ---
 
 # 样式编写约定
@@ -29,36 +29,38 @@ last-updated: 2025-07-11
 Design Token（颜色、字体、间距）由 `design/visual-style-guide.md` 定义，通过以下方式引用：
 
 ### 颜色
-在 `src/app/globals.css` 中用 CSS 变量 + Tailwind theme 扩展：
+在 `src/app/globals.css` 中用 CSS 变量 + Tailwind theme 扩展。**只有五个 token，彩度上限 chroma ≤ 0.015**（暖纸色调，完整值见 `design/visual-style-guide.md`）：
 ```css
 @import "tailwindcss";
 
 @theme {
-  --color-primary: oklch(0.6 0.2 250);
-  --color-secondary: oklch(0.7 0.15 180);
-  --color-bg: oklch(0.98 0 0);
-  --color-text: oklch(0.2 0 0);
+  --color-ink: oklch(0.22 0.015 60);    /* 暖墨黑 — 正文/标题 */
+  --color-paper: oklch(0.97 0.012 85);  /* 做旧纸 — 页面背景 */
+  --color-muted: oklch(0.5 0.015 70);   /* 暖灰 — 辅助文字 */
+  --color-line: oklch(0.87 0.015 80);   /* 分割线/边框 */
+  --color-code: oklch(0.94 0.014 85);   /* 代码块/卡片底 */
 }
 ```
-然后在组件中用 `bg-primary`、`text-text` 引用。
+然后在组件中用 `bg-paper`、`text-ink`、`text-muted`、`border-line` 引用。
 
 ### 字体
 字体通过 `next/font/google` 加载，在根 layout 中配置 CSS 变量，再注入 Tailwind theme。
 
 ```ts
 // app/layout.tsx
-import { Inter, Merriweather } from "next/font/google";
-const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const serif = Merriweather({ weight: "700", subsets: ["latin"], variable: "--font-serif" });
+import { EB_Garamond, Italianno } from "next/font/google";
+const serif = EB_Garamond({ subsets: ["latin"], variable: "--font-serif" });
+const script = Italianno({ weight: "400", subsets: ["latin"], variable: "--font-script" });
 ```
 ```css
 /* globals.css */
 @theme {
-  --font-sans: var(--font-sans);
-  --font-serif: var(--font-serif);
+  /* EB Garamond 无中文字形，fallback 链必须显式带中文衬线 */
+  --font-serif: var(--font-eb-garamond), "Songti SC", "Noto Serif SC", SimSun, serif;
+  --font-script: var(--font-italianno), cursive;
 }
 ```
-然后用 `font-sans`、`font-serif` 引用。
+然后用 `font-serif`、`font-script` 引用。字体角色分工见 `design/visual-style-guide.md`「字体体系」。
 
 ## 黑白双模式（组件适配硬性要求）
 

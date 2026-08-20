@@ -1,44 +1,64 @@
 ---
 status: stable
 owner: design
-last-updated: 2025-07-11
+implementation-status: pending  # 定稿已批准但 token/字体未落地代码（globals.css/layout.tsx 仍为旧值，见 tech-debt.md）
+last-updated: 2026-08-20
 ---
 
 # 视觉风格指南
 
-**品牌定稿：ReZenKi（RefrainZen And KiKi）· 黑白简约杂志风格。**
+**品牌定稿：ReZenKi（RefrainZen And KiKi）· 简约复古艺术风（档案馆气质）。**
+
+> 风格定位、色彩与字体的**决策理由**见根目录 `DESIGN.md`。本文件只承载**落地 Token 与写法细则**，不重复论证。
 
 ## Design Token
 
-### 色彩：黑白灰四色体系（无彩色强调）
+### 色彩：暖纸五色体系（无彩色强调）
 
-| Token | 用途 | 亮色值 | 暗色值 |
-|-------|------|--------|--------|
-| `--color-ink` | 正文/标题 | `oklch(0.13 0 0)` — 近黑 | `oklch(0.92 0 0)` — 近白 |
-| `--color-paper` | 页面背景 | `oklch(0.995 0 0)` — 近白 | `oklch(0.13 0 0)` — 近黑 |
-| `--color-muted` | 辅助文字 | `oklch(0.45 0 0)` — 中灰 | `oklch(0.62 0 0)` — 浅灰 |
-| `--color-line` | 分割线/边框 | `oklch(0.9 0 0)` — 浅灰 | `oklch(0.28 0 0)` — 深灰 |
-| `--color-code` | 代码块背景 | `oklch(0.97 0 0)` | `oklch(0.18 0 0)` |
+底色是做旧纸张而非纯白，墨色是暖黑而非纯黑。**彩度上限 chroma ≤ 0.015**——超过即违反"纸感而非彩色"的定位。
 
-**规则**：全站禁止使用黑白灰以外的颜色。链接不加蓝色（用下划线 + ink 色）、按钮不加彩色背景（用边框 + ink 色）、错误提示只允许文字（红色保留给极少数危险操作，且需在 ADR 中说明）。这是杂志风格的硬约束——彩色出现在任何 UI 元素上即违反规范。
+| Token | 用途 | 白模式 | ≈hex | 黑模式 | ≈hex |
+|-------|------|--------|------|--------|------|
+| `--color-ink` | 正文/标题 | `oklch(0.22 0.015 60)` | `#201914` | `oklch(0.91 0.012 85)` | `#e5e1d9` |
+| `--color-paper` | 页面背景 | `oklch(0.97 0.012 85)` | `#f9f5ec` | `oklch(0.18 0.012 60)` | `#16100c` |
+| `--color-muted` | 辅助文字 | `oklch(0.50 0.015 70)` | `#69625a` | `oklch(0.68 0.012 75)` | `#9d9790` |
+| `--color-line` | 分割线/边框 | `oklch(0.87 0.015 80)` | `#d9d3c9` | `oklch(0.32 0.014 65)` | `#38312b` |
+| `--color-code` | 代码块/卡片底 | `oklch(0.94 0.014 85)` | `#efebe1` | `oklch(0.23 0.012 60)` | `#211c17` |
+
+**实测对比度（WCAG 2.1 AA 全部通过）**
+
+| 组合 | 白模式 | 黑模式 |
+|------|--------|--------|
+| ink / paper | 15.91 | 14.41 |
+| muted / paper | 5.51 | 6.53 |
+| ink / code | 14.55 | 12.95 |
+| muted / code | 5.04 | 5.87 |
+
+`line` 为纯装饰边框（1.36 / 1.48），不承载文字，WCAG 无对比度要求。
+
+**规则**：全站 UI 禁止使用上述五个 token 以外的颜色。链接不加蓝色（下划线 + ink）、按钮不加彩色背景（边框 + ink）、标签用边框 + muted。**页面的色彩浓度全部来自藏品图本身，UI 一滴不出**（Getty Tracing Art 的取舍逻辑，见 `DESIGN.md` §1）。红色仅保留给极少数破坏性操作，且需先写 ADR 并同时提供亮/暗两套值。
 
 ### 黑白双模式
 
-- **白模式**（默认）：白底黑字（上表"亮色值"列）
-- **黑模式**（`.dark` class）：黑底白字（上表"暗色值"列），由 header 切换按钮控制 + localStorage 持久化 + 跟随系统兜底
+- **白模式**（默认）：纸底墨字（上表"白模式"列）
+- **黑模式**（`.dark` class）：深褐墨底暖白字（上表"黑模式"列），由 header 切换按钮控制 + localStorage 持久化 + 跟随系统兜底
 - **组件适配要求**：所有组件必须使用 token 色（`ink/paper/muted/line/code`），禁止硬编码色值——新组件自动获得双模式。规范与反例见 `conventions/styling-conventions.md`「黑白双模式」节
 
 ### 字体体系
 
 | Token | 用途 | 字体 | 说明 |
 |-------|------|------|------|
-| `--font-script` | 主页标题/Logo | **Italianno**（Google Fonts） | 意大利花体，呼应品牌名 "And" 的花体手写感 |
-| `--font-sans` | 文章内容标题 | **Inter**（`--font-inter`） | SF Pro Display 的开放近似——苹果字体（SF Pro）无 web 分发版，Inter 是其最接近的开源替代 |
-| `--font-sans`（正文） | 文章正文 | **系统栈**：`-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI"` | 苹果自家文章（Newsroom）正文即 SF Pro Text——苹果设备上原生加载，其余平台回退 Inter/Segoe |
+| `--font-script` | Logo / 首页 Hero 大字 | **Italianno**（Google Fonts） | 意大利花体，呼应品牌名 "And" 的花体手写感 |
+| `--font-serif` | 文章标题 + 正文 | **EB Garamond**（Google Fonts, OFL） | 16 世纪 Garamond 开源复刻，博物馆图录标准选择；旧样式字形与 15–19 世纪藏品图同时代 |
+| `--font-sans` | UI 控件 / Dashboard / 表单 | **系统栈**：`-apple-system, BlinkMacSystemFont, "Segoe UI"` | 后台不需要复古感，保持中性高效 |
 
-字体通过 `next/font/google` 在 `layout.tsx` 加载（`Inter` + `Italianno`），CSS 变量注入 Tailwind `@theme`（见 `src/app/globals.css`）。
+字体通过 `next/font/google` 在 `layout.tsx` 加载（`EB_Garamond` + `Italianno`），CSS 变量注入 Tailwind `@theme`（见 `src/app/globals.css`）。
 
-> **为什么不用 New York？** 苹果文章的衬线字体 New York 无 web 分发版且无开源近似。杂志风的黑白排版用 SF 系无衬线（Inter）已足够干净；如未来想要衬线正文，候选为 Georgia（Windows 内置）或 Iowan Old Style，需另起设计评审。
+> **中文回退（必须显式声明）**：EB Garamond 无中文字形。`--font-serif` 的 fallback 链必须包含中文衬线（`"Songti SC", "Noto Serif SC", SimSun, serif`），否则中文会掉到无衬线，与英文正文割裂。
+
+**字重约束**：正文 400，标题 500–600。**禁止 700+**——图录不吼。
+
+> **为什么从 Inter 换成 EB Garamond？** 博物馆图录与艺术出版物的正文几乎无一例外是衬线体；无衬线正文与档案馆气质存在气质断层。这是本文件此前标注为"待设计评审"的悬置项，已在 `DESIGN.md` §3 结案。备选 Cormorant Garamond（标题好看但正文偏轻）、Libre Baskerville（屏幕可读性好但年代感偏晚）。
 
 ### 字号阶梯
 
@@ -54,12 +74,25 @@ last-updated: 2025-07-11
 ### 间距与布局气质
 
 - 间距使用 Tailwind 默认 4px 网格。
-- **杂志气质**：大量留白（hero `py-20`+）、细分割线（`border-line` 1px）、大写 + 宽字距的小标签（`text-xs tracking-[0.35em] uppercase`）。
-- 文章正文最大宽度 `max-w-2xl`（42rem），行高 1.75 保证长文可读性。
+- **图录气质**：大量留白（hero `py-20`+）、细分割线（`border-line` 1px）、大写 + 宽字距的小标签（`text-xs tracking-[0.35em] uppercase`）。
+- 文章正文最大宽度 `max-w-3xl`，行高 1.75 保证长文可读性。
+
+> **元数据即排版元素**：藏品的年代、馆藏方、编号，以及文章日期、标签，统一用 `text-xs tracking-[0.35em] uppercase text-muted`。这不是附注，是构成版面节奏的一等元素（Getty Tracing Art 的核心手法）。
+
+### 图像
+
+图像是内容而非配图。**必须使用 `archival-imagery-mcp` 取得的公共领域藏品图**，禁止随机图 API、AI 生图、通用库存摄影。
+
+- 落盘路径 `public/archive/<slug>-<source>-<id>.jpg`，走 `next/image`（AVIF/WebP 已在 `next.config.ts` 配置）
+- 必带 `width`/`height`（防 CLS）、有信息量的 `alt`（写藏品标题）、license 署名
+- 允许的处理：`object-cover` 裁切、`bg-code` 底衬、1px `border-line` 描边、`from-paper/80` 底部渐变（保证叠字可读）
+- 禁止：做旧滤镜、彩色叠层、饱和度拉满、圆角 ≥ 8px（图录是方的）
+
+完整取图流程、来源版权表、选图准则见 `DESIGN.md` §4。
 
 ## 代码块样式
 
-使用 `rehype-pretty-code` 做语法高亮（shiki 自定义主题，黑白灰层次，见 `src/lib/code-theme.ts`）。主题跟随系统亮/暗模式。
+使用 `rehype-pretty-code` 做语法高亮（shiki 自定义主题，暖纸色调下的墨色层次，见 `src/lib/code-theme.ts`）。主题跟随系统亮/暗模式。
 
 ## 公式与图表写法约定（v0.7.0）
 
@@ -77,7 +110,7 @@ Favicon：待提供——占位用黑色方块 + 白色 "R"（衬线）。
 
 ## 动效准则
 
-动效体系独立成文：**`design/motion-and-interaction.md`**。一句话总则：**动效是杂志的呼吸，不是装饰**——所有动画遵循黑白灰 token、克制位移（≤16px）、慢速缓动、尊重 reduced-motion。粒子/着色器/故障/彩色辉光在本项目禁用。
+动效体系独立成文：**`design/motion-and-interaction.md`**。一句话总则：**动效是纸页翻动的呼吸，不是装饰**——所有动画遵循暖纸 token、克制位移（≤16px）、慢速缓动、尊重 reduced-motion。粒子/着色器/故障/彩色辉光在本项目禁用；做旧特效（胶片颗粒、划痕、泛黄叠层）同样禁用——复古感来自纸色、衬线、真实藏品，不来自滤镜。
 
 ## 创意编写要求
 

@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: design
-last-updated: 2025-07-11
+last-updated: 2026-08-20
 ---
 
 # Loading 与 Error 状态
@@ -60,25 +60,24 @@ function BadSkeleton() {
 "use client"; // error.tsx 必须是 Client Component
 
 export default function BlogError({
-  error,
   reset,
 }: {
-  error: Error & { digest?: string };
   reset: () => void;
 }) {
   return (
-    <div className="max-w-2xl mx-auto py-16 text-center">
-      <h2 className="text-xl font-serif mb-2">出了点问题</h2>
-      <p className="text-text-muted mb-4">
-        {error.message || "页面加载失败，请稍后重试"}
+    <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-24 text-center">
+      <h1 className="text-3xl font-semibold">出了点问题</h1>
+      <p className="mt-4 text-sm leading-6 text-muted">
+        页面加载失败，请稍后重试。
       </p>
       <button
+        type="button"
         onClick={reset}
-        className="px-4 py-2 bg-primary text-white rounded"
+        className="mt-8 inline-block border border-ink px-6 py-2 text-xs tracking-[0.2em] uppercase transition-colors hover:bg-ink hover:text-paper"
       >
         重新加载
       </button>
-    </div>
+    </main>
   );
 }
 ```
@@ -91,13 +90,20 @@ export default function BlogError({
 ## not-found.tsx 编写规范
 
 ```tsx
+import Link from "next/link";
+
 export default function NotFound() {
   return (
-    <div className="max-w-2xl mx-auto py-16 text-center">
-      <h1 className="text-4xl font-serif mb-2">404</h1>
-      <p className="text-text-muted mb-4">页面不存在</p>
-      <a href="/" className="text-primary underline">返回首页</a>
-    </div>
+    <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-24 text-center md:py-32">
+      <h1 className="font-script text-6xl md:text-7xl">404</h1>
+      <p className="mt-4 text-sm text-muted">页面不存在。</p>
+      <Link
+        href="/"
+        className="mt-8 inline-block border border-ink px-6 py-2 text-xs tracking-[0.2em] uppercase transition-colors hover:bg-ink hover:text-paper"
+      >
+        返回首页
+      </Link>
+    </main>
   );
 }
 ```
