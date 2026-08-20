@@ -9,6 +9,7 @@ import {
   useTransform,
 } from "motion/react";
 import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-source";
+import { HeroScatter } from "@/components/hero-scatter";
 
 /**
  * Hero 视差舞台（v0.21.3，替换 3D 水波纹——用户否决 Three.js 方案）
@@ -48,23 +49,23 @@ export function HeroContent() {
     let ty = 0;
     let raf = 0;
     let running = false;
-    const start = () => {
+    const start = (): void => {
       if (!running) {
         running = true;
         raf = requestAnimationFrame(loop);
       }
     };
-    const onMove = (e: PointerEvent) => {
+    const onMove = (e: PointerEvent): void => {
       tx = (e.clientX / window.innerWidth) * 2 - 1;
       ty = (e.clientY / window.innerHeight) * 2 - 1;
       start();
     };
-    const onLeave = () => {
+    const onLeave = (): void => {
       tx = 0;
       ty = 0;
       start();
     };
-    const loop = () => {
+    const loop = (): void => {
       const cx = px.get();
       const cy = py.get();
       const nx = cx + (tx - cx) * 0.06;
@@ -80,7 +81,7 @@ export function HeroContent() {
     };
     window.addEventListener("pointermove", onMove, { passive: true });
     document.documentElement.addEventListener("mouseleave", onLeave);
-    return () => {
+    return (): void => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
       document.documentElement.removeEventListener("mouseleave", onLeave);
@@ -128,6 +129,9 @@ export function HeroContent() {
           }}
         />
       </motion.div>
+
+      {/* 散落图集（z-5）：6 张藏品散落各处，滚动浮现 2 张（v0.21.3） */}
+      <HeroScatter px={px} py={py} exit={exitMV} reduceMotion={reduceMotion} />
 
       {/* 主图（z-10）：伊甸园蚀刻，multiply 融入纸面，视差 ±18/12 + 微旋转 */}
       <motion.div

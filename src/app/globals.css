@@ -232,6 +232,12 @@ textarea {
   animation: intro-fill 0.9s ease 0.65s forwards;
 }
 
+/* Hero 散落图入场淡入（0.45s 后，逐张错峰由行内 delay 控制） */
+.hero-scatter-in {
+  opacity: 0;
+  animation: intro-fill 0.8s ease 0.45s forwards;
+}
+
 /* ============================================
    代码高亮（shiki css-variables 主题，黑白灰层次）
    全站禁彩色 → 语法区分靠灰阶；跟随 .dark class

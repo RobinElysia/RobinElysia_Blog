@@ -11,10 +11,11 @@ test.describe("博客核心流程", () => {
     // 跳过 RobinElysia 手写 intro（非本测试目标；overlay 会挡点击 + 拖慢预算）
     await page.addInitScript(() => sessionStorage.setItem("intro-played", "1"));
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    // Ch.00 序：衬线大标题 + 主图舞台（v0.21.3 删 3D 水波纹，无 canvas）
+    // Ch.00 序：衬线大标题 + 主图舞台（v0.21.3 删 3D 水波纹，无 canvas）+ 散落图集
     await expect(page.getByRole("heading", { name: "RobinElysia", exact: true })).toBeVisible();
     await expect(page.getByText("Scroll To Explore")).toBeVisible();
     await expect(page.locator("img[src*='hero-paradise']")).toBeVisible();
+    await expect(page.locator("[data-hero-scatter]")).toHaveCount(6);
     // 滚动容器（scroll-snap）+ 章节导航（4 个章节按钮）
     const scroller = page.locator("[data-scroll-container]");
     await expect(scroller).toBeVisible();
