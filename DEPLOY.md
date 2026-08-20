@@ -1,6 +1,21 @@
 # 部署指南（Docker 生产部署）
 
 > 适用：自有服务器（VPS/云主机）部署 RobinElysia 博客。镜像已包含 Next.js 应用与自动数据库迁移；**Caddy 反向代理内置在 compose 中，自动 HTTPS（Let's Encrypt）**。
+>
+> **本站生产域名：`elysia.wiki`**（2026-08-20 定）——Caddy 将自动为该域名申请 Let's Encrypt 证书；`.env` 已配置 `PROD_SITE_URL=https://elysia.wiki` 与 `PROD_DOMAIN=elysia.wiki`，部署前只需确认 DNS 已解析（见下）。
+
+## 〇、elysia.wiki 上线检查清单（部署前逐项确认）
+
+| # | 检查项 | 命令 / 说明 |
+|---|--------|-------------|
+| 1 | **DNS 解析** | `nslookup elysia.wiki` 必须返回服务器 IP（`A` 记录；如用 Cloudflare 等托管，注意**先关代理灰云**再签发证书，签完可开） |
+| 2 | **80/443 可达** | 云安全组 + 系统防火墙放行 TCP 80、443（80 用于 ACME 验证与 HTTP→HTTPS 重定向） |
+| 3 | **`.env` 三件套** | `PROD_SITE_URL=https://elysia.wiki`、`PROD_DOMAIN=elysia.wiki`、`PROD_AUTH_SECRET`（44 字符，已生成） |
+| 4 | **compose 校验** | `docker compose config --quiet` 无报错（本地已通过） |
+| 5 | **签发成功** | 启动后 `docker compose logs caddy` 出现 `certificate obtained successfully`；浏览器访问 `https://elysia.wiki` 无证书警告 |
+| 6 | **自动续期** | Caddy 到期前自动续期（默认剩余 30 天即续），无需任何手动操作；`caddy_data` 卷持久化证书，重建容器不重复签发 |
+
+> ⚠️ **证书签发失败最常见原因**：DNS 未生效、或 80 端口被占用/未放行。签发成功后若迁移 DNS 到代理模式（Cloudflare 灰云→橙云），证书续期会受影响——保持 80 直连或用 DNS-01 验证（需改造 Caddyfile，默认 HTTP-01）。
 
 ## 一、本地构建镜像并推送到镜像仓库
 
@@ -175,6 +190,25 @@ docker compose logs -f app   # 应看到 "✓ 数据库迁移完成" + "Ready"
 - **重定向**：HTTP（80）自动 308 跳转 HTTPS（443）
 - **HSTS**：响应头自动附加 `Strict-Transport-Security`
 - **排障**：`docker compose logs caddy`；证书签发失败多为 DNS 未生效或 80 端口被占用
+
+### elysia.wiki 部署后验证
+
+```bash
+# 1. 证书已签发（日志关键词 certificate obtained successfully）
+docker compose logs caddy | grep -i "certificate obtained"
+
+# 2. HTTPS 全链路（应看到 200 与 308 重定向）
+curl -s -o /dev/null -w "%{http_code}\n" https://elysia.wiki/
+curl -s -o /dev/null -w "%{http_code} → %{redirect_url}\n" http://elysia.wiki/
+
+# 3. 关键页面
+curl -s -o /dev/null -w "%{http_code}\n" https://elysia.wiki/blog
+curl -s -o /dev/null -w "%{http_code}\n" https://elysia.wiki/login
+curl -s -o /dev/null -w "%{http_code}\n" https://elysia.wiki/feed.xml
+
+# 4. 证书详情（到期时间 / 颁发机构）
+echo | openssl s_client -servername elysia.wiki -connect elysia.wiki:443 2>/dev/null | openssl x509 -noout -issuer -enddate
+```
 
 ### 本地测试（无域名）
 

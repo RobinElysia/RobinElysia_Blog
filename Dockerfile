@@ -1,8 +1,12 @@
 # ============================================
 # RobinElysia Blog — 多阶段 Docker 构建
 # 阶段 1：依赖（pnpm 全量，含构建脚本批准）
-# 阶段 2：构建（next build，standalone 输出）
-# 阶段 3：运行（仅 standalone 运行时依赖 + 产物，体积减半）
+# 阶段 2：构建（next build）
+# 阶段 3：运行（仅生产依赖 + 产物）
+#
+# 构建参数：
+#   NPM_REGISTRY —— npm 源（国内构建环境 registry.npmjs.org 易超时，
+#                   可用 npmmirror 镜像：docker build --build-arg NPM_REGISTRY=https://registry.npmmirror.com .）
 # ============================================
 
 # ---------- 阶段 1：依赖 ----------
@@ -12,9 +16,14 @@ WORKDIR /app
 # pnpm 11（corepack 在 node 22 可用）
 RUN corepack enable && corepack prepare pnpm@11.18.0 --activate
 
+# npm 源可配（默认官方；国内网络传 npmmirror）
+ARG NPM_REGISTRY=https://registry.npmjs.org
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # --frozen-lockfile 保证可复现；onlyBuiltDependencies（esbuild/sharp）由 pnpm-workspace.yaml 生效
-RUN pnpm install --frozen-lockfile
+# --no-verify-store-integrity：跳过 supply-chain 逐条元数据校验（lockfile 受 git 信任；
+# 校验会逐个请求 registry 元数据，国内网络下单次构建可达分钟级）
+RUN pnpm install --frozen-lockfile --no-verify-store-integrity --registry=$NPM_REGISTRY
 
 # ---------- 阶段 2：构建 ----------
 FROM node:22-alpine AS builder
@@ -45,12 +54,14 @@ ENV PORT=3000
 # 完整 prod 依赖保证 migrate 与 SSR 的 drizzle-orm/next-mdx-remote 链齐全
 RUN corepack enable && corepack prepare pnpm@11.18.0 --activate
 
+ARG NPM_REGISTRY=https://registry.npmjs.org
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod --frozen-lockfile --no-verify-store-integrity --registry=$NPM_REGISTRY
 
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 
-# 构建产物（完整 .next；runner 自装 prod 依赖，见下）
+# 构建产物（完整 .next；runner 自装 prod 依赖，见上）
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/next.config.ts ./next.config.ts

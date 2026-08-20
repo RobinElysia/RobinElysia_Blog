@@ -32,6 +32,7 @@ export function SceneCarousel({
     excerpt: string;
     publishedAt: Date | string | null;
     tags?: string[];
+    coverImage?: string | null;
   }[];
 }) {
   const items = posts.slice(0, 4);
@@ -56,6 +57,7 @@ function CardSlide({
     excerpt: string;
     publishedAt: Date | string | null;
     tags?: string[];
+    coverImage?: string | null;
   };
   index: number;
   total: number;
@@ -135,6 +137,7 @@ function CardSlide({
         tags={post.tags}
         progress={infoProgress}
         slug={post.slug}
+        coverImage={post.coverImage}
       />
 
       {/* 页签 */}

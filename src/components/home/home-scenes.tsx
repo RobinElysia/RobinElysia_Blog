@@ -36,6 +36,7 @@ export function HomeScenes({
     excerpt: string;
     publishedAt: Date | string | null;
     tags?: string[];
+    coverImage?: string | null;
   }[];
 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);

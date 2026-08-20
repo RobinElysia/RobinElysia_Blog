@@ -33,6 +33,7 @@ function fillerPost(i: number) {
 const samplePosts = [
   {
     slug: "hello-robinelysia",
+    coverImage: "/archive/hello-robinelysia-wellcome-V0049797.jpg",
     title: "你好，RobinElysia",
     excerpt: "第一篇博客——关于这个网站的名字、风格，以及为什么开始写。",
     content: `# 你好，RobinElysia
@@ -70,6 +71,7 @@ function greet(name: string): string {
   },
   {
     slug: "why-postgres-for-blog",
+    coverImage: "/archive/why-postgres-for-blog-wellcome-V0024913.jpg",
     title: "为什么博客要上 PostgreSQL？",
     excerpt: "从 MDX 文件到数据库：内容管理的架构决策记录（ADR-0005）。",
     content: `# 为什么博客要上 PostgreSQL？
@@ -95,6 +97,7 @@ function greet(name: string): string {
   },
   {
     slug: "design-tokens-in-black-and-white",
+    coverImage: "/archive/design-tokens-in-black-and-white-wellcome-V0024667.jpg",
     title: "黑白 Design Token：约束即风格",
     excerpt: "为什么黑白灰四色就够了？聊聊 token 设计与杂志风。",
     content: `# 黑白 Design Token：约束即风格
@@ -130,6 +133,7 @@ function greet(name: string): string {
   },
   {
     slug: "latex-and-mermaid",
+    coverImage: "/archive/latex-and-mermaid-wellcome-V0046512.jpg",
     title: "公式与图表：LaTeX 和 Mermaid 渲染示例",
     excerpt: "验证 KaTeX 公式与 Mermaid 图表在文章中的渲染。",
     content: `# 公式与图表

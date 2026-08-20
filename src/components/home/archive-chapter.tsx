@@ -13,7 +13,7 @@ import {
 import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-source";
 
 /**
- * Ch.02 档案 —— 按年份分组的时间轴
+ * Ch.02 档案 —— 按年份分组的时间轴（最多展示 6 篇，v0.21.4）
  * 档案元数据即排版元素：年代大字 + 小字宽字距（Getty 取舍逻辑）
  * 数据：全部已发布文章（由 page.tsx 经 getPublishedPosts 传入，自带缓存）
  *
@@ -26,6 +26,9 @@ import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-sou
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const smoothstep = (t: number) => t * t * (3 - 2 * t);
 
+/** 档案章展示上限（用户要求最多 6 篇） */
+const ARCHIVE_LIMIT = 6;
+
 export function ArchiveChapter({
   posts,
 }: {
@@ -35,6 +38,7 @@ export function ArchiveChapter({
     excerpt: string;
     publishedAt: Date | string | null;
     tags?: string[];
+    coverImage?: string | null;
   }[];
 }) {
   const reduceMotion = useReducedMotion() ?? false;
@@ -61,8 +65,10 @@ export function ArchiveChapter({
   });
 
   // 按年分组（publishedAt 可能来自 unstable_cache 序列化 → string，统一 new Date()）
+  // 上限 6 篇（用户要求，按发布时间倒序取前 6）
+  const limited = posts.slice(0, ARCHIVE_LIMIT);
   const byYear = new Map<number, typeof posts>();
-  for (const post of posts) {
+  for (const post of limited) {
     if (!post.publishedAt) continue;
     const year = new Date(post.publishedAt).getFullYear();
     const list = byYear.get(year) ?? [];

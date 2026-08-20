@@ -6,6 +6,7 @@ import { createPost, updatePost } from "@/actions/admin";
 import { slugify } from "@/lib/format";
 import { previewRemarkPlugins, previewRehypePlugins } from "@/lib/mdx-options";
 import { MermaidRenderer } from "@/components/mermaid";
+import { PRESET_GALLERY } from "@/lib/archive-images";
 import type { Post } from "@/lib/schema";
 
 /**
@@ -200,6 +201,44 @@ export function PostForm({ mode, post }: PostFormProps) {
           defaultValue={post?.excerpt ?? ""}
           className="mt-1 w-full resize-y border-b border-line bg-transparent py-2 text-sm leading-6 outline-none focus:border-ink"
         />
+      </div>
+
+      {/* 封面图片（v0.21.4）：首页「最近」卡片配图；空 = 按 slug 回退档案图映射 */}
+      <div>
+        <label htmlFor="coverImage" className="block text-xs text-muted">
+          封面图片（首页「最近」卡片；可选——留空自动回退档案图）
+        </label>
+        <input
+          id="coverImage"
+          name="coverImage"
+          maxLength={500}
+          defaultValue={post?.coverImage ?? ""}
+          placeholder="/archive/xxx.jpg 或 https://…"
+          className="mt-1 w-full border-b border-line bg-transparent py-2 text-sm outline-none focus:border-ink"
+        />
+        {/* 预设档案图快捷选择（点击填入上方输入框） */}
+        <div className="mt-3 flex flex-wrap gap-2">
+          {PRESET_GALLERY.map((img) => (
+            <button
+              key={img.src}
+              type="button"
+              title={img.label}
+              onClick={() => {
+                const el = document.getElementById("coverImage") as HTMLInputElement | null;
+                if (el) el.value = img.src;
+              }}
+              className="group border border-line p-1 transition-colors hover:border-ink"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- 预设图缩略图（next/image 需尺寸配置，静态小图用 img 更简） */}
+              <img
+                src={img.src}
+                alt={img.label}
+                loading="lazy"
+                className="h-12 w-16 object-cover opacity-80 transition-opacity group-hover:opacity-100"
+              />
+            </button>
+          ))}
+        </div>
       </div>
 
       <div>

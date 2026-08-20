@@ -67,6 +67,32 @@ export function getArchiveImage(slug: string): ArchiveImage | null {
   return ARCHIVE[slug] ?? null;
 }
 
+/**
+ * 编辑器预设图集（封面选择，2026-08-20）：
+ * 站内全部档案图（含 Hero/散落/背景图），按 slug 映射优先、其余按主题排列
+ */
+export const PRESET_GALLERY: { src: string; label: string }[] = [
+  { src: "/archive/理性与感性-wellcome-M0007634.jpg", label: "哲学家与天球仪" },
+  { src: "/archive/hello-robinelysia-wellcome-V0049797.jpg", label: "书写的医学作者" },
+  { src: "/archive/why-postgres-for-blog-wellcome-V0024913.jpg", label: "黄道十二宫天文图" },
+  { src: "/archive/design-tokens-in-black-and-white-wellcome-V0024667.jpg", label: "印刷机" },
+  { src: "/archive/latex-and-mermaid-wellcome-V0046512.jpg", label: "波斯科学图解" },
+  { src: "/archive/hero-paradise.jpg", label: "伊甸园" },
+  { src: "/archive/scatter-1.jpg", label: "明代本草" },
+  { src: "/archive/scatter-2.jpg", label: "哥白尼与天文仪器" },
+  { src: "/archive/scatter-3.jpg", label: "解剖图" },
+  { src: "/archive/scatter-4.jpg", label: "几何与透视" },
+  { src: "/archive/scatter-5.jpg", label: "望远镜观星" },
+  { src: "/archive/scatter-6.jpg", label: "医神与象征物" },
+  { src: "/archive/bg-archive.jpg", label: "书房书架" },
+  { src: "/archive/bg-colophon.jpg", label: "磨鹅毛笔的书写者" },
+];
+
+/** 按 src 反查档案图元数据（编辑器预设图命中映射时可得署名） */
+export function getArchiveImageBySrc(src: string): ArchiveImage | null {
+  return Object.values(ARCHIVE).find((img) => img.src === src) ?? null;
+}
+
 /** 署名格式：Creator, *Title*, date — Source (License) */
 export function formatCredit(img: ArchiveImage): string {
   const parts = [img.creator, img.title ? `*${img.title}*` : "", img.date].filter(Boolean);

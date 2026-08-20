@@ -32,6 +32,12 @@ const postSchema = z.object({
     .regex(/^[a-z0-9\u4e00-\u9fa5-]+$/, "slug 只允许小写字母、数字、中文和连字符"),
   excerpt: z.string().trim().min(1, "摘要不能为空").max(500),
   content: z.string().trim().min(1, "正文不能为空"),
+  // 封面图片（可选）：空字符串 → null；路径（/archive/...）或 URL
+  coverImage: z
+    .string()
+    .trim()
+    .max(500)
+    .transform((v) => (v === "" ? null : v)),
   tags: z.string().transform((s) =>
     s
       .split(/[,，]/)
@@ -52,6 +58,7 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
     slug: formData.get("slug"),
     excerpt: formData.get("excerpt"),
     content: formData.get("content"),
+    coverImage: formData.get("coverImage"),
     tags: formData.get("tags"),
     status: formData.get("status"),
   });
@@ -78,6 +85,7 @@ export async function updatePost(postId: number, formData: FormData): Promise<Ac
     slug: formData.get("slug"),
     excerpt: formData.get("excerpt"),
     content: formData.get("content"),
+    coverImage: formData.get("coverImage"),
     tags: formData.get("tags"),
     status: formData.get("status"),
   });

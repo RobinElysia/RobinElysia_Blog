@@ -4,34 +4,42 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useTransform, type MotionValue } from "motion/react";
 import { formatDate } from "@/lib/format";
-import { getArchiveImage, formatCredit } from "@/lib/archive-images";
+import {
+  getArchiveImage,
+  getArchiveImageBySrc,
+  formatCredit,
+} from "@/lib/archive-images";
 
 /**
- * 16:9 文章图片卡（v0.21.0：档案图落地，DESIGN.md §4）
- * - 档案图（Wellcome PDM，与 slug 稳定绑定），next/image 优化（AVIF/WebP）
- * - 元数据署名随图展示（底部渐变遮罩 + 小字宽字距）——版面的一部分
- * - 无图 fallback：花体 RobinElysia 占位
+ * 16:9 文章图片卡（v0.21.4：文章绑定封面图）
+ * - 图源优先级：文章 coverImage（编辑器绑定）→ 档案图 slug 映射（老文章兼容）→ 花体占位
+ * - 档案图（Wellcome PDM）带署名元数据（底部渐变遮罩 + 小字宽字距）——版面的一部分
  */
 export function PostCard({
   slug,
   title,
+  coverImage,
   index = 0,
 }: {
   slug: string;
   title: string;
+  coverImage?: string | null;
   index?: number;
 }) {
-  const image = getArchiveImage(slug);
+  // 封面优先；命中档案图映射时可取署名元数据
+  const archive = getArchiveImage(slug);
+  const src = coverImage || archive?.src || null;
+  const meta = coverImage ? getArchiveImageBySrc(coverImage) ?? archive : archive;
 
   return (
     <Link
       href={`/blog/${slug}`}
       className="group relative block h-full w-full overflow-hidden border border-line bg-code shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
     >
-      {image ? (
+      {src ? (
         <Image
-          src={image.src}
-          alt={image.title || title}
+          src={src}
+          alt={meta?.title || title}
           fill
           sizes="(min-width: 768px) 90vw, 90vw"
           priority={index === 0}
@@ -45,11 +53,11 @@ export function PostCard({
       {/* 底部渐变遮罩（署名可读性） */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-paper/90 to-transparent" />
       {/* 档案署名（元数据即排版元素） */}
-      {image && (
+      {meta && (
         <div className="absolute inset-x-0 bottom-0 px-4 pb-3">
           <p className="truncate text-[10px] leading-4 tracking-[0.15em] text-muted">
-            {image.creator || image.source}
-            {image.date ? `, ${image.date}` : ""} · {image.license}
+            {meta.creator || meta.source}
+            {meta.date ? `, ${meta.date}` : ""} · {meta.license}
           </p>
         </div>
       )}
@@ -69,6 +77,7 @@ export function CardInfo({
   tags = [],
   progress,
   slug,
+  coverImage,
 }: {
   title: string;
   excerpt: string;
@@ -77,9 +86,10 @@ export function CardInfo({
   /** 0-1 MotionValue：进入 0→1，滚出 1→0 */
   progress: MotionValue<number>;
   slug: string;
+  coverImage?: string | null;
 }) {
   const y = useTransform(progress, (p) => (1 - p) * 24);
-  const image = getArchiveImage(slug);
+  const image = getArchiveImageBySrc(coverImage ?? "") ?? getArchiveImage(slug);
 
   return (
     <motion.div
