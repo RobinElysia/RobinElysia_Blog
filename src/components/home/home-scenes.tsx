@@ -106,12 +106,12 @@ export function HomeScenes({
       {/* 章节导航（竖向进度指示 + 章节菜单） */}
       <ChapterNav current={currentChapter} />
 
-      {/* Ch.03 落款 */}
+      {/* Ch.03 落款（整屏停靠点：snap-mandatory 下非整屏页无法停靠，按钮跳转会被吸回） */}
       <Chapter
         id="chapter-03"
         index={3}
         label="落款"
-        className="flex h-40 items-center justify-center"
+        className="flex h-[calc(100dvh-var(--header-h))] items-center justify-center"
       >
         <footer className="text-center">
           <p className="text-[11px] tracking-[0.3em] text-muted uppercase">

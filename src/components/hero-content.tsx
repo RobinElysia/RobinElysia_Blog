@@ -1,7 +1,7 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { motion, useReducedMotion, useTransform } from "motion/react";
+import { useEffect, useSyncExternalStore } from "react";
+import { motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-source";
 
 /**
@@ -24,10 +24,16 @@ export function HeroContent() {
 
   const { scrollTop, viewportH } = getHomeScroll();
   // 第 0 页滚出进度：0 = Hero 在视口内，1 = 完全滚出上方
-  const exit = Math.min(1, Math.max(0, scrollTop / (viewportH || 1) - 1));
-  const exitProgress = useTransform(() => exit);
-  const opacity = useTransform(exitProgress, [0, 0.6], [1, 0]);
-  const y = useTransform(exitProgress, [0, 1], reduceMotion ? [0, 0] : [0, -60]);
+  // （Hero 是第 0 页，exit = scrollTop/vh，无 page 偏移——卡片页才 - globalPage）
+  const exit = Math.min(1, Math.max(0, scrollTop / (viewportH || 1)));
+  // 修 R4（v0.21.0）：无源 useTransform(() => exit) 不响应后续数字变化
+  // → useMotionValue + effect 同步源
+  const exitMV = useMotionValue(exit);
+  useEffect(() => {
+    exitMV.set(exit);
+  });
+  const opacity = useTransform(exitMV, [0, 0.6], [1, 0]);
+  const y = useTransform(exitMV, [0, 1], reduceMotion ? [0, 0] : [0, -60]);
 
   const letters = "ReZenKi".split("");
 

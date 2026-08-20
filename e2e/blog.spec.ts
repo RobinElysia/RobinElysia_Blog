@@ -7,7 +7,11 @@ import { test, expect } from "@playwright/test";
 
 test.describe("博客核心流程", () => {
   test("首页章节叙事（波浪 Hero + 逐卡翻页 + 档案 + 章节导航）", async ({ page }) => {
-    await page.goto("/");
+    test.setTimeout(60_000);
+    // 跳过 Elysia 手写 intro（非本测试目标；overlay 会挡点击 + 拖慢预算）；
+    // domcontentloaded 即可——后续断言自会等待 canvas/图片
+    await page.addInitScript(() => sessionStorage.setItem("intro-played", "1"));
+    await page.goto("/", { waitUntil: "domcontentloaded" });
     // Ch.00 序：花体 Hero + 3D 波浪（canvas 为 three 动态挂载，放宽等待）
     await expect(page.getByRole("heading", { name: "ReZenKi", exact: true })).toBeVisible();
     await expect(page.locator("header canvas").first()).toBeVisible({ timeout: 15_000 });
@@ -16,11 +20,20 @@ test.describe("博客核心流程", () => {
     await expect(scroller).toBeVisible();
     await expect(page.getByRole("navigation", { name: "章节导航" })).toBeVisible();
     await expect(page.locator("[data-chapter]")).toHaveCount(4);
-    // 滚到底：Ch.03 落款可见（章节按钮可达：点击第 4 章跳转）
+    // 滚到底：Ch.03 落款可见（章节按钮可达：点击第 4 章跳转；
+    // 限定章节区域——全局 contentinfo footer 也有同名文案，避免 strict 歧义）
     await page.getByRole("button", { name: "第 4 章：落款" }).click();
-    await expect(page.getByText("© 2025 ReZenKi · RefrainZen And KiKi")).toBeVisible({
-      timeout: 10_000,
-    });
+    await expect(
+      page
+        .getByRole("region", { name: "落款" })
+        .getByText("© 2025 ReZenKi · RefrainZen And KiKi"),
+    ).toBeVisible({ timeout: 10_000 });
+    // R4 回归：滚回第一张卡片页——卡片容器 opacity 必须被滚动驱动为 1
+    // （toBeVisible 不检查 opacity；motion useSpring(number) 不追踪变化曾致恒 0）
+    await scroller.evaluate((el) => el.scrollTo({ top: el.clientHeight, behavior: "instant" }));
+    const card = page.locator("[data-card-slide]").first();
+    await expect(card).toHaveCSS("opacity", "1");
+    await expect(card.locator("img")).toBeVisible();
   });
 
   test("点击文章进入详情，正文与 TOC 渲染", async ({ page }) => {

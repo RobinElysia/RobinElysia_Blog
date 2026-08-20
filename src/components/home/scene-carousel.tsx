@@ -1,7 +1,13 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { motion, useReducedMotion, useSpring, useTransform } from "motion/react";
+import { useEffect, useSyncExternalStore } from "react";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+} from "motion/react";
 import { PostCard, CardInfo } from "@/components/home/post-card";
 import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-source";
 
@@ -78,8 +84,16 @@ function CardSlide({
 
   // 45° 进出场（x/y 等量）：滚出绝对像素 -920，进入 75（v0.17.0 参数保留）
   // reduce 模式：无位移/旋转，仅 opacity（修 D4）
-  const enterSpring = useSpring(enter, { stiffness: 55, damping: 19 });
-  const exitSpring = useSpring(exit, { stiffness: 55, damping: 19 });
+  // 修 R4（v0.21.0）：useSpring(number) 只取挂载时初值、不追踪后续数字变化
+  // → useMotionValue + effect 同步源，spring 订阅 MotionValue（motion 官方模式）
+  const enterMV = useMotionValue(enter);
+  const exitMV = useMotionValue(exit);
+  useEffect(() => {
+    enterMV.set(enter);
+    exitMV.set(exit);
+  });
+  const enterSpring = useSpring(enterMV, { stiffness: 55, damping: 19 });
+  const exitSpring = useSpring(exitMV, { stiffness: 55, damping: 19 });
 
   const enterX = useTransform(enterSpring, [0, 1], reduceMotion ? [0, 0] : [75, 0]);
   const enterY = useTransform(enterSpring, [0, 1], reduceMotion ? [0, 0] : [75, 0]);
@@ -89,19 +103,21 @@ function CardSlide({
   const exitRotate = useTransform(exitSpring, [0.25, 1], reduceMotion ? [0, 0] : [0, -10]);
   const exitOpacity = useTransform(exitSpring, [0.25, 1], [1, 0]);
 
-  const x = useTransform(() => enterX.get() + exitX.get());
-  const y = useTransform(() => enterY.get() + exitY.get());
-  const opacity = useTransform((): number => Math.min(enterOpacity.get(), exitOpacity.get()));
-  // 信息渐进渐出进度
-  const infoProgress = useTransform((): number =>
-    Math.min(enterOpacity.get(), exitOpacity.get()),
+  // 有源组合（修 R4：无源 () => a.get()+b.get() 不响应源变化）
+  const x = useTransform([enterX, exitX], ([a, b]: number[]) => a + b);
+  const y = useTransform([enterY, exitY], ([a, b]: number[]) => a + b);
+  const opacity = useTransform([enterOpacity, exitOpacity], ([a, b]: number[]) =>
+    Math.min(a, b),
   );
+  // 信息渐进渐出进度
+  const infoProgress = opacity;
 
   return (
     <div className="relative flex h-[calc(100dvh-var(--header-h))] w-full snap-start items-center justify-center overflow-hidden px-6 md:px-8">
       {/* 16:9 图片卡 */}
       <motion.div
         style={{ x, y, rotate: exitRotate, opacity }}
+        data-card-slide
         className="relative aspect-video w-[min(90vw,1080px)]"
       >
         <PostCard {...post} index={index} />

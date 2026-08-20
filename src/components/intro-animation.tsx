@@ -20,8 +20,8 @@ export function IntroAnimation() {
       return () => clearTimeout(t);
     }
     sessionStorage.setItem("intro-played", "1");
-    const t1 = setTimeout(() => setPhase("fade"), 2400); // 描画 1.6s + 停留
-    const t2 = setTimeout(() => setPhase("done"), 3200); // 淡出 0.8s 后卸载
+    const t1 = setTimeout(() => setPhase("fade"), 3600); // 描画 2.8s + 停留
+    const t2 = setTimeout(() => setPhase("done"), 4400); // 淡出 0.8s 后卸载
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);

@@ -22,6 +22,7 @@ last-updated: 2026-08-20
 
 ### Fixed
 - D1 token 基线断裂、D2 随机风景图、D3 每卡 scroll listener 重排、D4 reduced-motion 对 JS 动效失效、D5 魔法数、D6 无滚动位置指示、D8 滚动 hack、D9 移动端无导航、D10 统计卡无响应式、D11 动效规范失效（详见 0010 报告）
+- **R4 motion 数字源陷阱（dev 验收反馈补丁）**：`useSpring(number)`/无源 `useTransform(() => n)` 不追踪后续变化，首页卡片 opacity 恒 0（图片"网络正常但看不见"）——改 `useMotionValue` + effect `mv.set()` 源同步（scene-carousel/hero-content）；手写进入动画放慢（描画 1.6s → 2.8s）
 
 ## [0.20.0] — 2026-08-20
 

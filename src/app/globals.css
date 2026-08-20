@@ -161,7 +161,8 @@ textarea {
 .intro-draw {
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
-  animation: draw-stroke 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  /* 手写节奏：2.8s 慢写（一笔一划的从容感） */
+  animation: draw-stroke 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes intro-fill {
@@ -172,7 +173,8 @@ textarea {
 
 .intro-fill {
   opacity: 0;
-  animation: intro-fill 0.5s ease 1.55s forwards;
+  /* 描画完成后 0.3s 墨色渐入 */
+  animation: intro-fill 0.6s ease 2.7s forwards;
 }
 
 /* ============================================

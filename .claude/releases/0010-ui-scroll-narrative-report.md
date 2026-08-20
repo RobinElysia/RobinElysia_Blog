@@ -43,3 +43,12 @@ review-scope: v0.21.0 UI 优化 + 章节式长滚动叙事 + 档案图落地 + t
 ## 四、结论
 
 六组变更全部落地且验证通过；防回滚纪律（四步增量、严格线性、不推翻已认可成果）已固化进设计文档。建议用户在 dev 环境目测：首页四章滚动 + 章节导航、暖纸五色/衬线观感、黑白双模式、Dashboard 移动端。
+
+## 五、补丁记录（用户 dev 验收反馈，2026-08-20）
+
+| # | 反馈 | 根因 | 修复 |
+|---|---|---|---|
+| P1 | 首页文章卡片图片"网络正常但看不见"（疑被遮挡） | **R4 motion 数字源陷阱**：`useSpring(number)`/无源 `useTransform(() => n)` 不追踪后续变化，卡片 opacity 恒 0、transform 恒 75px——卡片整体透明，非 z-index/图层遮挡（Playwright 探针实测：img opacity 1、elementFromPoint 命中 img 自身） | `scene-carousel.tsx`/`hero-content.tsx` 改 `useMotionValue` + effect `mv.set()` 源同步；多源组合改有源 `useTransform([a,b], fn)` |
+| P2 | 手写进入动画太快 | 描画 1.6s 偏快，缺书写从容感 | 描画 2.8s（cubic-bezier(0.22,1,0.36,1)）+ 墨色渐入 2.7s 起 0.6s；淡出 3.6s / 卸载 4.4s |
+
+P1 验证（Playwright 探针，dev:3001）：逐屏滚动 4 张卡片页——每屏当前卡片 motion 容器 opacity 1、transform 归零、未被遮挡；其余卡片视口外 opacity 0；build/typecheck/lint/harness 全绿。
