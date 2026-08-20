@@ -28,6 +28,9 @@ test.describe("博客核心流程", () => {
         .getByRole("region", { name: "落款" })
         .getByText("© 2025 ReZenKi · RefrainZen And KiKi"),
     ).toBeVisible({ timeout: 10_000 });
+    // 档案退场收缩 + 落款签名入场（滚动驱动动效不回归，同 R4 类风险）
+    await expect(page.locator("[data-archive-stage]")).toHaveCSS("opacity", "0");
+    await expect(page.locator("[data-colophon] > div").first()).toHaveCSS("opacity", "1");
     // R4 回归：滚回第一张卡片页——卡片容器 opacity 必须被滚动驱动为 1
     // （toBeVisible 不检查 opacity；motion useSpring(number) 不追踪变化曾致恒 0）
     await scroller.evaluate((el) => el.scrollTo({ top: el.clientHeight, behavior: "instant" }));

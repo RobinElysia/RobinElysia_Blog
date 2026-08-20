@@ -50,5 +50,6 @@ review-scope: v0.21.0 UI 优化 + 章节式长滚动叙事 + 档案图落地 + t
 |---|---|---|---|
 | P1 | 首页文章卡片图片"网络正常但看不见"（疑被遮挡） | **R4 motion 数字源陷阱**：`useSpring(number)`/无源 `useTransform(() => n)` 不追踪后续变化，卡片 opacity 恒 0、transform 恒 75px——卡片整体透明，非 z-index/图层遮挡（Playwright 探针实测：img opacity 1、elementFromPoint 命中 img 自身） | `scene-carousel.tsx`/`hero-content.tsx` 改 `useMotionValue` + effect `mv.set()` 源同步；多源组合改有源 `useTransform([a,b], fn)` |
 | P2 | 手写进入动画太快 | 描画 1.6s 偏快，缺书写从容感 | 描画 2.8s（cubic-bezier(0.22,1,0.36,1)）+ 墨色渐入 2.7s 起 0.6s；淡出 3.6s / 卸载 4.4s |
+| P3 | 档案→落款缺转场动效（用户要求补） | 档案章为静态排版、落款无入场 | 档案章题/年份头/文章依次从左滑入（stagger 0.08）；滚向落款时整章向视口中心收缩（scale 1→0.85 + 淡出）；落款签名式入场（签名落笔回正 → 墨线展开 → © 行 → 链接行错峰浮现）；双向可逆 + reduced-motion 纯淡入 |
 
 P1 验证（Playwright 探针，dev:3001）：逐屏滚动 4 张卡片页——每屏当前卡片 motion 容器 opacity 1、transform 归零、未被遮挡；其余卡片视口外 opacity 0；build/typecheck/lint/harness 全绿。

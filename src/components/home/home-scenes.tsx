@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { Hero } from "@/components/hero";
 import { SceneCarousel } from "@/components/home/scene-carousel";
 import { Chapter } from "@/components/home/chapter";
 import { ChapterNav } from "@/components/home/chapter-nav";
 import { setHomeScroll } from "@/components/home/scroll-source";
 import { ArchiveChapter } from "@/components/home/archive-chapter";
+import { Colophon } from "@/components/home/colophon";
 
 /**
  * 首页场景组合（v0.21.0：章节式长滚动叙事）
@@ -93,44 +93,28 @@ export function HomeScenes({
         <SceneCarousel posts={posts} />
       </Chapter>
 
-      {/* Ch.02 档案：年份分组时间轴 */}
+      {/* Ch.02 档案：年份分组时间轴（滚动驱动逐项入场 + 收缩退场） */}
       <Chapter
         id="chapter-02"
         index={2}
         label="档案"
         className="min-h-[calc(100dvh-var(--header-h))]"
       >
-        <ArchiveChapter posts={posts} current={currentChapter === "chapter-02"} />
+        <ArchiveChapter posts={posts} />
       </Chapter>
 
       {/* 章节导航（竖向进度指示 + 章节菜单） */}
       <ChapterNav current={currentChapter} />
 
-      {/* Ch.03 落款（整屏停靠点：snap-mandatory 下非整屏页无法停靠，按钮跳转会被吸回） */}
+      {/* Ch.03 落款（整屏停靠点：snap-mandatory 下非整屏页无法停靠，按钮跳转会被吸回；
+          签名式滚动入场见 colophon.tsx） */}
       <Chapter
         id="chapter-03"
         index={3}
         label="落款"
         className="flex h-[calc(100dvh-var(--header-h))] items-center justify-center"
       >
-        <footer className="text-center">
-          <p className="text-[11px] tracking-[0.3em] text-muted uppercase">
-            © 2025 ReZenKi · RefrainZen And KiKi
-          </p>
-          <p className="mt-2 text-[11px] tracking-[0.2em] text-muted uppercase">
-            <Link href="/blog" className="transition-colors hover:text-ink">
-              全部文章
-            </Link>
-            <span className="mx-2">·</span>
-            <Link href="/about" className="transition-colors hover:text-ink">
-              关于
-            </Link>
-            <span className="mx-2">·</span>
-            <Link href="/feed.xml" className="transition-colors hover:text-ink">
-              RSS
-            </Link>
-          </p>
-        </footer>
+        <Colophon />
       </Chapter>
     </div>
   );

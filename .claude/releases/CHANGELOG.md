@@ -17,6 +17,7 @@ last-updated: 2026-08-20
 - **DESIGN.md 决策反转**：§1「不借鉴滚动叙事」→ 有条件采纳（章节幕叙事 + 竖向进度条；禁环形 3D 轮播与叠层，引 v0.8.1/v0.11.1 回滚根因）；§5 首页结构重写；§8 待办补 4 项
 - **首页滚动架构**：单一滚动源（rAF 节流 + IntersectionObserver，替代每卡 listener + getBoundingClientRect）；`--header-h` 变量消除 57px 魔法数；hero-content 滚出动画改用共享源（原 window 监听在局部容器下从未生效）
 - **motion-and-interaction.md**：新增叙事转场例外区（白名单 src/components/home/**）；回滚根因 R1/R2/R3 固化落档
+- **滚动驱动动效（档案/落款章）**：档案章题→年份头→文章依次从左滑入（stagger）+ 滚向落款时整章向视口中心收缩淡出；落款签名式入场（花体签名落笔回正 → 墨线展开 → 文字行浮现），双向可逆 + reduced-motion 降级
 - **Dashboard**：移动端顶部导航（修复 md 以下无导航）；统计卡响应式 grid
 - site-header 滚动解耦（去全局 capture hack，订阅共享源）
 
