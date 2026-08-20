@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: design
-implementation-status: pending  # 总纲已定稿；token/字体落地待迁移（globals.css/layout.tsx 仍为旧黑白灰 + Inter）
+implementation-status: in-progress  # token/字体已落地代码（2026-08-20）；图像规范（档案图）落地中
 last-updated: 2026-08-20
 ---
 
@@ -42,7 +42,7 @@ last-updated: 2026-08-20
 - ✅ **UI 近乎双色**——该站被 Awwwards 提取出的调色板只有 `#FFFFFF` + `#DAE2E8` 两色，但整站观感"colorful"。**颜色全部来自藏品图本身，UI 一滴不出。** 这是本项目色彩规范的直接来源（见 §2）。
 - ✅ **大幅档案图 + 强留白**——图像是内容不是配图。
 - ✅ **元数据即排版元素**——年代、馆藏、编号以小字宽字距呈现，本身构成版面节奏。
-- ❌ **不借鉴其滚动叙事结构**——该站是三章节滚动长叙事（vertical progress bar + chapter menu）。本项目首页形态经过反复：v0.8.1、v0.11.1 两次场景化被回滚，v0.12.0 起用户再次要求重建并保留至今（当前形态：3D 波浪 Hero + 逐卡翻页，见 `.claude/design/motion-and-interaction.md` 末节）。**不借鉴的是其"章节幕叙事 + 进度条"结构**——本项目不采用三章节叙事框架。
+- ✅ **章节幕叙事 + 竖向进度条**（2026-08-20 决策反转，此前标注"不借鉴"）：采纳其滚动叙事骨架——首页为多章节长页（Ch.00 序 → Ch.01 最近 → Ch.02 档案 → Ch.03 落款），滚动驱动转场，右侧竖向进度指示 + 章节菜单强化位置感。**但有两道明确边界**：① **禁止环形 3D 轮播与叠层转场**——两者正是 v0.8.1、v0.11.1 两次被整体回滚的核心（无方向答案、破坏线性位置感），回滚根因已固化为规范（见 `.claude/design/motion-and-interaction.md` 末节 R1/R2/R3）；② **不接受其可用性折价**（见下条）——章节导航必须键盘可达、焦点可见、reduced-motion 下降级。
 - ⚠️ **该站的可用性是其最弱项**（Usability 7.25，Accessibility 7.40，为全站最低分）。这是重动效叙事站点的典型代价——**本项目不接受这个代价**，无障碍要求见 §6。
 
 ---
@@ -246,7 +246,7 @@ Willem Kalf, *Still Life*, c. 1662 — Rijksmuseum via Europeana (CC0)
 - **总则不变**：动效是纸页翻动的呼吸，不是霓虹灯。位移 ≤ 16px，缓动慢出，尊重 `prefers-reduced-motion`。
 - **新增禁令**：不得为"复古"引入做旧特效——胶片颗粒、划痕、闪烁、泛黄叠层、老电影抖动**全部禁用**。复古感来自纸色、衬线、真实藏品，不来自滤镜。
 - **纸质纹理**：允许极轻的静态纸纹（noise ≤ 3% 透明度，纯灰度，CSS 生成或内联 SVG，不加载位图）。**动态纹理禁止**。
-- **首页结构（事实记录，2026-08-20 同步）**：v0.8.1、v0.11.1 两次场景化回滚后，v0.12.0 起用户再次要求重建并保留至今——当前形态为局部 snap 容器 + 3D 波浪 Hero + 逐卡翻页（见 `.claude/design/motion-and-interaction.md` 末节，改动首页结构需经用户确认）。**不借鉴的是章节幕叙事 + 进度条结构**（见 §1）。
+- **首页结构（章节式长滚动叙事，2026-08-20 用户要求）**：线性纵向四章——**Ch.00 序**（全屏 3D 波浪 Hero，原样保留）→ **Ch.01 最近**（逐卡翻页，原样保留）→ **Ch.02 档案**（按年份分组的藏品图时间轴，档案元数据即排版元素）→ **Ch.03 落款**（署名 + 导航）。右侧竖向进度指示 + 章节菜单（`nav`/`button`/`aria-current`）。**演进纪律（防回滚，来自 v0.8.1/v0.11.1 两次整体回滚的根因）**：每一步增量独立可回滚、严格线性纵向、不推翻已认可成果；转场动效永远最后做，且必须随 `prefers-reduced-motion` 降级。实现细节见 `.claude/design/motion-and-interaction.md` 末节。
 - **既有 3D 波浪 Hero（`wave-ocean.tsx`）**：v0.10.x 保留且用户认可。**但它与档案馆定位存在张力**——Three.js 水面是数字生成物，不是档案物。是否替换为静态藏品图 Hero 属独立决策，需单独确认，本文件不擅自推翻。
 
 ---
@@ -275,7 +275,7 @@ Willem Kalf, *Still Life*, c. 1662 — Rijksmuseum via Europeana (CC0)
 - [ ] 图像有 `width`/`height`、有信息量的 `alt`、正确的 license 署名
 - [ ] 元数据以 `text-xs tracking-[0.35em] uppercase text-muted` 呈现
 - [ ] 无做旧滤镜、无动态纹理、无彩色叠层
-- [ ] 动效位移 ≤ 16px，`prefers-reduced-motion` 下降级
+- [ ] 动效位移 ≤ 16px（叙事转场例外仅限 `src/components/home/**`，见 motion-and-interaction.md），`prefers-reduced-motion` 下降级
 - [ ] 键盘可达 + 焦点可见
 
 ---
@@ -291,10 +291,14 @@ Willem Kalf, *Still Life*, c. 1662 — Rijksmuseum via Europeana (CC0)
 | 3 | 正文/标题从 `font-sans` 切到 `font-serif`，Dashboard 保持 sans | 各页面 + `mdx-components.tsx` |
 | 4 | 配置 `archival-imagery` MCP，选定首批藏品图落盘 `public/archive/` | `~/.claude.json`、`public/archive/` |
 | 5 | `PostCard` 移除 `picapi.pai.al`，改 `next/image` + 本地档案图 + 元数据署名 | `src/components/home/post-card.tsx` |
-| 6 | 藏品元数据的存储方案（MDX frontmatter 或 DB 字段）——需先定 | `src/lib/posts.ts` / `schema.ts` |
+| 6 | 藏品元数据的存储方案——**已决（2026-08-20）**：静态映射文件 `src/lib/archive-images.ts`（slug → title/creator/date/source/sourceUrl/license/路径），不动 DB（posts.cover_image 保留为可选覆盖字段） | `src/lib/archive-images.ts` |
 | 7 | 同步 `.claude/design/` 四份文档 + `INDEX.md` 登记本文件 | `.claude/**` |
+| 8 | 首页章节容器（Chapter 语义组件 + `--header-h` 变量，消除 57px 魔法数；单一滚动源） | `src/components/home/**` |
+| 9 | 竖向进度指示 + 章节菜单（nav/button/aria-current，键盘可达） | `src/components/home/**` |
+| 10 | Ch.02 档案章：年份分组时间轴（档案元数据小字宽字距） | `src/components/home/**` |
+| 11 | 章节转场动效 + reduced-motion 降级（最后实现，防回滚纪律） | `src/components/home/**` |
 
-> 第 6 项存在未决问题：藏品元数据放 MDX frontmatter（静态、随文章走）还是数据库（可查询、可复用）尚未决定，实现前需单独讨论。
+> 第 1-7 项为 2026-08-19 设计定稿遗留；第 8-11 项为 2026-08-20 章节叙事新增。**滚动叙事四步必须按顺序逐个落地、逐个验收，禁止一次性打包提交**（v0.8.1/v0.11.1 两次整体回滚的教训）。
 
 ---
 

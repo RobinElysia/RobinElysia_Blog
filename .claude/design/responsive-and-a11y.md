@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: design
-last-updated: 2026-08-19
+last-updated: 2026-08-20
 ---
 
 # 响应式与无障碍
@@ -49,6 +49,7 @@ last-updated: 2026-08-19
 - 焦点状态必须有视觉指示（`focus:ring-2` 或 `focus:outline-2`）
 - 不使用 `outline-none` 而不提供替代焦点样式
 - 模态框打开时，焦点锁定在模态框内；关闭时，焦点回到触发元素
+- **首页章节导航（2026-08-20 起）**：章节菜单必须是 `button` 元素（可 Tab 到达 + Enter/Space 触发），容器 `nav aria-label="章节导航"`，当前章节 `aria-current="step"`；进度指示器不得是唯一到达章节的途径（键盘用户无需滚动也可跳转）
 
 ### 屏幕阅读器
 
@@ -77,6 +78,8 @@ last-updated: 2026-08-19
 ```
 
 在 `globals.css` 中加入此规则。所有动画（包括 `animate-pulse` 的骨架屏）会在此查询下停用。
+
+> **⚠️ CSS 全局降级对 JS 驱动动效无效**（2026-08-20 教训 D4）：首页逐卡翻页/章节转场用 `useMotionValue`/`useSpring` 驱动 transform，不经 CSS animation/transition——必须由组件侧 `matchMedia('(prefers-reduced-motion: reduce)')` 显式判断：关闭位移/旋转转场（保留淡入与 snap），指示器保持可用。验收项：系统开 reduce 后，首页无位移动效、章节跳转可用。
 
 ## 检测工具
 

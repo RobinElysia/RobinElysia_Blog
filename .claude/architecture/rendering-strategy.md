@@ -15,7 +15,7 @@ related-adr: [0005]
 
 | 路由 | 渲染模式 | 选择理由 | 缓存策略 |
 |------|----------|----------|----------|
-| `/` (首页) | SSR（force-dynamic） | 场景化首页（3D 波浪 Hero + 逐卡翻页，数据 `getRecentPosts(8)`），发布后需立即可见 | `unstable_cache` + `post-list` tag |
+| `/` (首页) | SSR（force-dynamic） | 章节式长滚动叙事（波浪 Hero/逐卡翻页/年份档案/落款，数据 `getPublishedPosts`），发布后需立即可见 | `unstable_cache` + `post-list` tag |
 | `/blog` | SSR → 可升 ISR | 文章列表更新频率中等（每天 1-3 篇） | `unstable_cache` revalidate=300s |
 | `/blog/[slug]` | SSR → 可升 ISR | 文章发布后很少修改 | `unstable_cache` revalidate=300s |
 | `/archive` | SSR（force-dynamic） | 归档页，数据来自同一列表查询 | `unstable_cache` + `post-list` tag |

@@ -12,7 +12,7 @@ related-adr: [0001]
 ```
 src/app/
 ├── layout.tsx               # 根布局：<html>/<body>、字体变量（Inter+Italianno）、SSR 主题 class（cookie 读取）、metadata、SiteHeader + footer
-├── page.tsx                 # 首页 "/"（force-dynamic）：场景化首页——3D 波浪 Hero + 逐卡翻页（getRecentPosts(8) → HomeScenes）
+├── page.tsx                 # 首页 "/"（force-dynamic）：章节式长滚动叙事——Ch.00 波浪 Hero → Ch.01 逐卡翻页 → Ch.02 年份档案 → Ch.03 落款（getPublishedPosts → HomeScenes）
 ├── error.tsx                # 全局错误边界
 ├── not-found.tsx            # 全局 404
 ├── favicon.ico / globals.css（Design Token + 黑白双模式）

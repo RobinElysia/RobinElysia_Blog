@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: design
-implementation-status: pending  # 定稿已批准但 token/字体未落地代码（globals.css/layout.tsx 仍为旧值，见 tech-debt.md）
+implementation-status: in-progress  # token/字体已落地代码（2026-08-20）；图像规范（档案图）落地中
 last-updated: 2026-08-20
 ---
 

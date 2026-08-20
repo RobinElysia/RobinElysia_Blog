@@ -6,6 +6,23 @@ last-updated: 2026-08-20
 
 # 版本变更日志
 
+## [0.21.0] — 2026-08-20
+
+### Added
+- **章节式长滚动叙事首页**（用户要求）：线性纵向四章——Ch.00 序（3D 波浪 Hero，原样保留）→ Ch.01 最近（逐卡翻页，原样保留）→ Ch.02 档案（年份分组时间轴）→ Ch.03 落款；右侧竖向章节导航（`nav`/`button`/`aria-current`，键盘可达，点击平滑跳转）
+- **档案图落地**（用户指定 archival-imagery-mcp）：4 张 Wellcome 公共领域藏品图（蚀刻/星图/印刷机/天文图）落盘 `public/archive/`，`src/lib/archive-images.ts` slug→元数据映射，PostCard 改 next/image + 署名元数据（元数据即排版元素）
+
+### Changed
+- **暖纸五色 token + EB Garamond 落地**：globals.css 五色（chroma ≤ 0.015，双模式）、layout.tsx EB_Garamond（--font-serif + 中文衬线回退）、UI 控件/表单/Dashboard 保持系统栈；shiki/code-theme 暖纸化
+- **DESIGN.md 决策反转**：§1「不借鉴滚动叙事」→ 有条件采纳（章节幕叙事 + 竖向进度条；禁环形 3D 轮播与叠层，引 v0.8.1/v0.11.1 回滚根因）；§5 首页结构重写；§8 待办补 4 项
+- **首页滚动架构**：单一滚动源（rAF 节流 + IntersectionObserver，替代每卡 listener + getBoundingClientRect）；`--header-h` 变量消除 57px 魔法数；hero-content 滚出动画改用共享源（原 window 监听在局部容器下从未生效）
+- **motion-and-interaction.md**：新增叙事转场例外区（白名单 src/components/home/**）；回滚根因 R1/R2/R3 固化落档
+- **Dashboard**：移动端顶部导航（修复 md 以下无导航）；统计卡响应式 grid
+- site-header 滚动解耦（去全局 capture hack，订阅共享源）
+
+### Fixed
+- D1 token 基线断裂、D2 随机风景图、D3 每卡 scroll listener 重排、D4 reduced-motion 对 JS 动效失效、D5 魔法数、D6 无滚动位置指示、D8 滚动 hack、D9 移动端无导航、D10 统计卡无响应式、D11 动效规范失效（详见 0010 报告）
+
 ## [0.20.0] — 2026-08-20
 
 ### Changed

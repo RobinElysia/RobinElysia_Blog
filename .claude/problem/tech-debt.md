@@ -53,13 +53,9 @@ last-updated: 2026-08-20
 - **优先级**：低（渐进收敛，不设阻断）
 - **关联**：`.claude/conventions/code-style/eslint-notes.md`、codex-review-rt1.md 第 2 轮
 
-### [2026-08-20] 设计定稿（暖纸五色 + EB Garamond）未落地代码
-- **影响范围**：`src/app/globals.css`（Design Token 仍是黑白灰 chroma=0）、`src/app/layout.tsx`（仍加载 Inter 而非 EB_Garamond，无 `--font-serif`）
-- **债务描述**：`DESIGN.md` 与 `visual-style-guide.md` 已于 2026-08-19 定稿暖纸五色 token（chroma ≤ 0.015）与 EB Garamond 字体体系，代码侧迁移未完成；期间文档描述（暖纸五色）与实际渲染（黑白灰）不一致，属用户待办迁移
-- **理想状态**：globals.css 换用五 token 亮/暗两套值；layout.tsx 加载 EB_Garamond 并注入 `--font-serif`（含中文衬线 fallback：`"Songti SC", "Noto Serif SC", SimSun`）
-- **预计修复成本**：小（<1h）
-- **优先级**：中（用户自行迁移；agent 不代改——设计相关禁改约束）
-- **关联**：根目录 `DESIGN.md` §2、`.claude/design/visual-style-guide.md`
+### [2026-08-20] 设计定稿（暖纸五色 + EB Garamond）未落地代码（✅ 已解决）
+
+- **状态**：✅ 已解决（v0.21.0，2026-08-20）——globals.css 已换暖纸五色 token（chroma ≤ 0.015）、layout.tsx 已加载 EB Garamond（`--font-serif` + 中文衬线回退）、UI 控件保持系统栈；shiki/code-theme 同步暖纸化。档案图落地另行推进（DESIGN.md §8 第 4/5 项）。
 
 ### [2025-07-11] 无测试基建（已解决）
 - ~~**债务描述**：vitest/playwright 依赖已装但配置和测试为零~~
