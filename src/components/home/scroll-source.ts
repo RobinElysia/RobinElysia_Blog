@@ -8,6 +8,9 @@
  */
 let scrollTop = 0;
 let viewportH = 0; // 滚动容器可视高度（= 一页高）
+// 逐卡翻页的卡片页数（SceneCarousel 挂载时上报；档案章位置公式依赖它——
+// 2026-08-21 修 bug：原硬编码 4 张卡，生产只有 1 篇时档案章 enter 恒 0 不可见）
+let carouselPages = 4;
 const listeners = new Set<() => void>();
 
 export function setHomeScroll(top: number, viewport: number) {
@@ -20,6 +23,18 @@ export function setHomeScroll(top: number, viewport: number) {
 
 export function getHomeScroll() {
   return { scrollTop, viewportH };
+}
+
+/** 逐卡翻页卡片数上报（SceneCarousel 挂载/卡片数变化时调用） */
+export function setCarouselPages(n: number) {
+  if (n !== carouselPages) {
+    carouselPages = n;
+    listeners.forEach((l) => l());
+  }
+}
+
+export function getCarouselPages(): number {
+  return carouselPages;
 }
 
 export function subscribeHomeScroll(cb: () => void): () => void {

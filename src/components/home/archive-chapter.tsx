@@ -10,7 +10,7 @@ import {
   useTransform,
   type MotionValue,
 } from "motion/react";
-import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-source";
+import { subscribeHomeScroll, getHomeScroll, getCarouselPages } from "@/components/home/scroll-source";
 
 /**
  * Ch.02 档案 —— 按年份分组的时间轴（最多展示 6 篇，v0.21.4）
@@ -43,7 +43,9 @@ export function ArchiveChapter({
 }) {
   const reduceMotion = useReducedMotion() ?? false;
 
-  // 档案页全局页号 = 5（Hero 1 + 4 卡）；enter 3372→4215，exit 4215→5058
+  // 档案页全局页号 = 1（Hero） + 卡片页数（动态，见 scroll-source.setCarouselPages）；
+  // enter 页顶入容器底→停靠，exit 页顶滚出→落款停靠
+  // （2026-08-21 修 bug：原硬编码 4 卡——生产 1 篇时公式错位，档案章恒不可见）
   useSyncExternalStore(
     subscribeHomeScroll,
     () => {
@@ -54,8 +56,9 @@ export function ArchiveChapter({
   );
   const { scrollTop, viewportH } = getHomeScroll();
   const vh = viewportH || 1;
-  const enter = clamp01(scrollTop / vh - 4);
-  const exit = clamp01(scrollTop / vh - 5);
+  const pages = getCarouselPages();
+  const enter = clamp01(scrollTop / vh - pages);
+  const exit = clamp01(scrollTop / vh - (pages + 1));
 
   const enterMV = useMotionValue(enter);
   const exitMV = useMotionValue(exit);

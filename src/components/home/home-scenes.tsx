@@ -84,7 +84,9 @@ export function HomeScenes({
 
     const anchors = () => {
       const base = scroller.getBoundingClientRect().top;
-      const list = [0, 1, 2, 3, 4].map((i) => i * pageH());
+      // Hero + 逐卡翻页（最多 4 卡）——按实际文章数动态（2026-08-21 修档案空白同源问题）
+      const cardPages = Math.min(posts.length, 4);
+      const list = Array.from({ length: cardPages + 1 }, (_, i) => i * pageH());
       for (const id of ["chapter-02", "chapter-03"]) {
         const el = scroller.querySelector(`#${id}`);
         if (el) list.push(el.getBoundingClientRect().top - base + scroller.scrollTop);

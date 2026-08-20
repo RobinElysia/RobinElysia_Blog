@@ -8,7 +8,7 @@ import {
   useTransform,
 } from "motion/react";
 import { PostCard, CardInfo } from "@/components/home/post-card";
-import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-source";
+import { subscribeHomeScroll, getHomeScroll, setCarouselPages } from "@/components/home/scroll-source";
 
 /**
  * Ch.01 最近：滚动逐卡翻页
@@ -36,6 +36,11 @@ export function SceneCarousel({
   }[];
 }) {
   const items = posts.slice(0, 4);
+
+  // 上报卡片页数（档案章位置公式依赖；卡片数变化时更新——修 2026-08-21 生产档案空白）
+  useEffect(() => {
+    setCarouselPages(items.length);
+  }, [items.length]);
 
   return (
     <div className="relative w-full">
