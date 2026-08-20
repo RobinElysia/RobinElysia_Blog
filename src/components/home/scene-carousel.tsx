@@ -81,7 +81,9 @@ function CardSlide({
   const enter = Math.min(1, Math.max(0, scrollTop / vh - index));
   const exit = Math.min(1, Math.max(0, scrollTop / vh - globalPage));
 
-  // 45° 进出场（x/y 等量）：滚出绝对像素 -920，进入 75（v0.17.0 参数保留）
+  // 45° 进出场（x/y 等量，对称）：滚出向左上 45° -920px/-10°；
+  // 进入从右下 45° +920px/+10° 滑入（2026-08-20 用户要求：入场幅度与出场相当，
+  // 原 75px 太小 → 对称 920px）
   // reduce 模式：无位移/旋转，仅 opacity（修 D4）
   // 修 R4（v0.21.0）：滚动驱动值一律 useMotionValue + effect 同步源
   // 去 spring（v0.21.0 补丁）：55/19 弹簧在 snap 过渡中滞后于滚动 → 顿挫；
@@ -95,8 +97,9 @@ function CardSlide({
   const enterEased = useTransform(enterMV, (t) => 1 - Math.pow(1 - t, 3));
   const exitEased = useTransform(exitMV, (t) => t * t * (3 - 2 * t));
 
-  const enterX = useTransform(enterEased, [0, 1], reduceMotion ? [0, 0] : [75, 0]);
-  const enterY = useTransform(enterEased, [0, 1], reduceMotion ? [0, 0] : [75, 0]);
+  const enterX = useTransform(enterEased, [0, 1], reduceMotion ? [0, 0] : [920, 0]);
+  const enterY = useTransform(enterEased, [0, 1], reduceMotion ? [0, 0] : [920, 0]);
+  const enterRotate = useTransform(enterEased, [0, 1], reduceMotion ? [0, 0] : [10, 0]);
   const enterOpacity = useTransform(enterEased, [0, 0.6], [0, 1]);
   const exitX = useTransform(exitEased, [0.25, 1], reduceMotion ? [0, 0] : [0, -920]);
   const exitY = useTransform(exitEased, [0.25, 1], reduceMotion ? [0, 0] : [0, -920]);
@@ -106,6 +109,7 @@ function CardSlide({
   // 有源组合（修 R4：无源 () => a.get()+b.get() 不响应源变化）
   const x = useTransform([enterX, exitX], ([a, b]: number[]) => a + b);
   const y = useTransform([enterY, exitY], ([a, b]: number[]) => a + b);
+  const rotate = useTransform([enterRotate, exitRotate], ([a, b]: number[]) => a + b);
   const opacity = useTransform([enterOpacity, exitOpacity], ([a, b]: number[]) =>
     Math.min(a, b),
   );
@@ -116,7 +120,7 @@ function CardSlide({
     <div className="relative flex h-[calc(100dvh-var(--header-h))] w-full snap-start items-center justify-center overflow-hidden px-6 md:px-8">
       {/* 16:9 图片卡 */}
       <motion.div
-        style={{ x, y, rotate: exitRotate, opacity }}
+        style={{ x, y, rotate, opacity }}
         data-card-slide
         className="relative aspect-video w-[min(90vw,1080px)]"
       >
