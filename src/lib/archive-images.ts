@@ -25,8 +25,8 @@ const ARCHIVE: Record<string, ArchiveImage> = {
     sourceUrl: "https://wellcomecollection.org/works/fvn5yv6v",
     license: "Public Domain Mark",
   },
-  "hello-rezenki": {
-    src: "/archive/hello-rezenki-wellcome-V0049797.jpg",
+  "hello-robinelysia": {
+    src: "/archive/hello-robinelysia-wellcome-V0049797.jpg",
     title: "A medical author seated at his desk, writing, a herbal on his lap",
     creator: "P. Aubry",
     date: "ca. 1657",

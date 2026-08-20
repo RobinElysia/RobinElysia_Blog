@@ -1,6 +1,6 @@
 # 部署指南（Docker 生产部署）
 
-> 适用：自有服务器（VPS/云主机）部署 ReZenKi 博客。镜像已包含 Next.js 应用与自动数据库迁移；**Caddy 反向代理内置在 compose 中，自动 HTTPS（Let's Encrypt）**。
+> 适用：自有服务器（VPS/云主机）部署 RobinElysia 博客。镜像已包含 Next.js 应用与自动数据库迁移；**Caddy 反向代理内置在 compose 中，自动 HTTPS（Let's Encrypt）**。
 
 ## 一、本地构建镜像并推送到镜像仓库
 
@@ -8,15 +8,15 @@
 
 ```bash
 # 1. 构建镜像（多阶段：依赖 → 构建 → 运行）
-docker build -t <your-registry>/rezenki-blog:latest .
+docker build -t <your-registry>/robinelysia-blog:latest .
 
 # 2. 推送到镜像仓库（任选其一）
 # Docker Hub：
-docker push <your-registry>/rezenki-blog:latest
+docker push <your-registry>/robinelysia-blog:latest
 
 # GitHub Container Registry：
-docker tag <your-registry>/rezenki-blog:latest ghcr.io/<你的用户名>/rezenki-blog:latest
-docker push ghcr.io/<你的用户名>/rezenki-blog:latest
+docker tag <your-registry>/robinelysia-blog:latest ghcr.io/<你的用户名>/robinelysia-blog:latest
+docker push ghcr.io/<你的用户名>/robinelysia-blog:latest
 
 # 阿里云 ACR / 腾讯云 TCR 同理：先登录再 push
 ```
@@ -35,7 +35,7 @@ sudo systemctl enable --now docker
 docker --version && docker compose version
 
 # 3. 创建部署目录
-mkdir -p /opt/rezenki && cd /opt/rezenki
+mkdir -p /opt/robinelysia && cd /opt/robinelysia
 
 # 4. 防火墙开放 80/443（HTTPS 必需；80 用于签发证书与 HTTP→HTTPS 重定向）
 # ufw 示例：sudo ufw allow 80/tcp && sudo ufw allow 443/tcp
@@ -44,14 +44,14 @@ mkdir -p /opt/rezenki && cd /opt/rezenki
 
 ## 三、部署文件
 
-在 `/opt/rezenki/` 下放置三个文件（与仓库根目录一致：`docker-compose.yml`、`Caddyfile`、`.env`）：
+在 `/opt/robinelysia/` 下放置三个文件（与仓库根目录一致：`docker-compose.yml`、`Caddyfile`、`.env`）：
 
 ### 1. `docker-compose.yml`（与仓库一致，app 改用镜像地址）
 
 ```yaml
 services:
   app:
-    image: <your-registry>/rezenki-blog:latest   # ← 换成你的镜像地址
+    image: <your-registry>/robinelysia-blog:latest   # ← 换成你的镜像地址
     restart: unless-stopped
     environment:
       SITE_URL: ${PROD_SITE_URL:?请在 .env 设置 PROD_SITE_URL}
@@ -158,7 +158,7 @@ PROD_AUTH_GITHUB_ALLOWED_USERS=
 ## 四、启动
 
 ```bash
-cd /opt/rezenki
+cd /opt/robinelysia
 docker compose up -d
 docker compose ps            # 三个容器应为 Up (healthy)
 docker compose logs -f app   # 应看到 "✓ 数据库迁移完成" + "Ready"

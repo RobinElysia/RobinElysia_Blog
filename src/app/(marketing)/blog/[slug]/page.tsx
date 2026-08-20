@@ -83,7 +83,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 datePublished: post.publishedAt,
                 keywords: post.tags.join(", "),
                 url: `${process.env.SITE_URL ?? "http://localhost:3000"}/blog/${post.slug}`,
-                author: { "@type": "Person", name: "ReZenKi" },
+                author: { "@type": "Person", name: "RobinElysia" },
               }),
             }}
           />

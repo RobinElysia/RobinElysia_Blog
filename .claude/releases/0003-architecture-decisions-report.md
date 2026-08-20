@@ -10,7 +10,7 @@ related-adr: [0005]
 
 ## 执行摘要
 
-用户 6 项决策全部落地：品牌 ReZenKi 定稿、数据库迁移 PostGre + Drizzle、评论自建、鉴权边界确认、依赖一次补齐（pnpm）、审查报告登记规则写入宪法。代码与文档的矛盾全部消除，`pnpm build` 通过。
+用户 6 项决策全部落地：品牌 RobinElysia 定稿、数据库迁移 PostGre + Drizzle、评论自建、鉴权边界确认、依赖一次补齐（pnpm）、审查报告登记规则写入宪法。代码与文档的矛盾全部消除，`pnpm build` 通过。
 
 ## 一、决策 → 落地对照
 
@@ -21,7 +21,7 @@ related-adr: [0005]
 | ③ 内容存 PostGre | `src/lib/posts.ts`（unstable_cache 数据访问层）、next-mdx-remote 已装 | `data-fetching-conventions.md` 重写、`caching-and-revalidation.md` 重写 |
 | ④ 评论改 PostGre | comments 表 + `server-actions-contract.md` 完整示例（zod+写库） | ADR-0005、`api/route-handlers.md` 去 Giscus |
 | ⑤ C 端无鉴权/Dashboard 有 | 路由结构文档明确 | `app-router-map.md` 鉴权边界节 |
-| ⑥ ReZenKi 品牌 | 首页 Hero 花体 + metadata | `visual-style-guide.md` 定稿 |
+| ⑥ RobinElysia 品牌 | 首页 Hero 花体 + metadata | `visual-style-guide.md` 定稿 |
 | ⑦ 黑白杂志风 + 字体 | globals.css token + layout.tsx 字体 | `visual-style-guide.md` 完整字体体系 |
 | ⑧ review-snapshot 登记 | — | REASONIX.md 登记规则 + INDEX.md 规则区 + releases 登记 |
 | ⑨ pnpm + 依赖补齐 | 依赖全部安装，build 通过 | `tech-radar.md` 采用清单更新 |

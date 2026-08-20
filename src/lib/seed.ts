@@ -32,17 +32,17 @@ function fillerPost(i: number) {
 
 const samplePosts = [
   {
-    slug: "hello-rezenki",
-    title: "你好，ReZenKi",
+    slug: "hello-robinelysia",
+    title: "你好，RobinElysia",
     excerpt: "第一篇博客——关于这个网站的名字、风格，以及为什么开始写。",
-    content: `# 你好，ReZenKi
+    content: `# 你好，RobinElysia
 
-**ReZenKi** 是 *RefrainZen And KiKi* 的缩写。
+**RobinElysia** 由姓氏 *Robin* 与名字 *Elysia* 组成。
 
 ## 名字的含义
 
-- **RefrainZen**：克制的禅意——黑白、留白、杂志式的排版
-- **KiKi**：陪伴的伙伴——写下每一篇的冲动
+- **Elysia**：美好、梦幻的天堂——名字的意象
+- **Robin**：象征美好寓意的名字前缀
 
 ## 风格
 
@@ -183,11 +183,11 @@ async function main() {
     // eslint-disable-next-line no-console -- 同上：CLI 进度输出
     console.log(`  ✓ ${post.slug} (id=${inserted.id})`);
 
-    if (post.slug === "hello-rezenki") {
+    if (post.slug === "hello-robinelysia") {
       await db.insert(comments).values({
         postId: inserted.id,
-        authorName: "KiKi",
-        content: "第一篇评论！欢迎来到 ReZenKi。",
+        authorName: "Elysia",
+        content: "第一篇评论！欢迎来到 RobinElysia。",
         status: "approved",
       });
     }

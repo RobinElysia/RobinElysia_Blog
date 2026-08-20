@@ -15,8 +15,8 @@ export async function GET() {
   const xml = generateRssFeed(
     posts,
     siteUrl,
-    "ReZenKi",
-    "RefrainZen And KiKi 的个人博客 — 黑白简约杂志风",
+    "RobinElysia",
+    "Robin And Elysia 的个人博客 — 黑白简约杂志风",
   );
 
   return new Response(xml, {

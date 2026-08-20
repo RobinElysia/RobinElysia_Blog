@@ -7,7 +7,7 @@ last-updated: 2026-08-20
 
 # 视觉风格指南
 
-**品牌定稿：ReZenKi（RefrainZen And KiKi）· 简约复古艺术风（档案馆气质）。**
+**品牌定稿：RobinElysia（Robin And Elysia）· 简约复古艺术风（档案馆气质）。**
 
 > 风格定位、色彩与字体的**决策理由**见根目录 `DESIGN.md`。本文件只承载**落地 Token 与写法细则**，不重复论证。
 
@@ -105,7 +105,7 @@ last-updated: 2026-08-20
 
 ## Logo / Favicon
 
-文字 Logo：Italianno 花体 "ReZenKi" + 下方小字 "REFRAINZEN AND KIKI"（大写、宽字距）。
+文字 Logo：Italianno 花体 "RobinElysia" + 下方小字 "ROBIN AND ELYSIA"（大写、宽字距）。
 Favicon：待提供——占位用黑色方块 + 白色 "R"（衬线）。
 
 ## 动效准则

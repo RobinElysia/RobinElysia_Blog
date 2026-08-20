@@ -28,7 +28,7 @@ export function LoginForm({ githubEnabled }: { githubEnabled: boolean }) {
 
   return (
     <main className="mx-auto w-full max-w-sm flex-1 px-6 py-24 md:py-32">
-      <h1 className="text-center font-script text-5xl">ReZenKi</h1>
+      <h1 className="text-center font-script text-4xl md:text-5xl">RobinElysia</h1>
       <p className="mt-2 text-center text-xs tracking-[0.35em] text-muted uppercase">后台登录</p>
 
       <div className="mt-10 space-y-4">

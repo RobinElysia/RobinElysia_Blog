@@ -1,5 +1,5 @@
 # ============================================
-# ReZenKi Blog — 多阶段 Docker 构建
+# RobinElysia Blog — 多阶段 Docker 构建
 # 阶段 1：依赖（pnpm 全量，含构建脚本批准）
 # 阶段 2：构建（next build，standalone 输出）
 # 阶段 3：运行（仅 standalone 运行时依赖 + 产物，体积减半）

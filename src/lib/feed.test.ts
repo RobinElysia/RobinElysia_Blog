@@ -9,7 +9,7 @@ describe("escapeXml", () => {
   });
 
   it("普通文本保持不变", () => {
-    expect(escapeXml("你好，ReZenKi")).toBe("你好，ReZenKi");
+    expect(escapeXml("你好，RobinElysia")).toBe("你好，RobinElysia");
   });
 });
 
@@ -38,28 +38,28 @@ describe("generateRssFeed", () => {
   ];
 
   it("生成合法 RSS 2.0 结构", () => {
-    const xml = generateRssFeed(items, "https://example.com", "ReZenKi", "desc");
+    const xml = generateRssFeed(items, "https://example.com", "RobinElysia", "desc");
     expect(xml).toContain('<?xml version="1.0" encoding="UTF-8" ?>');
     expect(xml).toContain('<rss version="2.0">');
     expect(xml).toContain("<channel>");
-    expect(xml).toContain("<title>ReZenKi</title>");
+    expect(xml).toContain("<title>RobinElysia</title>");
     expect(xml).toContain("</channel>");
     expect(xml).toContain("</rss>");
   });
 
   it("标题特殊字符被转义", () => {
-    const xml = generateRssFeed(items, "https://example.com", "ReZenKi", "desc");
+    const xml = generateRssFeed(items, "https://example.com", "RobinElysia", "desc");
     expect(xml).toContain("<title>你好 &amp; 再见</title>");
     expect(xml).not.toContain("<title>你好 & 再见</title>");
   });
 
   it("文章链接包含 slug", () => {
-    const xml = generateRssFeed(items, "https://example.com", "ReZenKi", "desc");
+    const xml = generateRssFeed(items, "https://example.com", "RobinElysia", "desc");
     expect(xml).toContain("<link>https://example.com/blog/hello</link>");
   });
 
   it("空列表生成空 channel", () => {
-    const xml = generateRssFeed([], "https://example.com", "ReZenKi", "desc");
+    const xml = generateRssFeed([], "https://example.com", "RobinElysia", "desc");
     expect(xml).toContain("<channel>");
     expect(xml).not.toContain("<item>");
   });

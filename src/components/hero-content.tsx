@@ -35,11 +35,15 @@ export function HeroContent() {
   const opacity = useTransform(exitMV, [0, 0.6], [1, 0]);
   const y = useTransform(exitMV, [0, 1], reduceMotion ? [0, 0] : [0, -60]);
 
-  const letters = "ReZenKi".split("");
+  const letters = "RobinElysia".split("");
 
   return (
     <motion.div style={{ opacity, y }} className="relative z-10 px-6 text-center">
-      <h1 className="font-script text-8xl leading-none md:text-9xl" aria-label="ReZenKi">
+      {/* 11 字符花体：clamp 响应式字号（小屏不溢出） */}
+      <h1
+        className="font-script text-[clamp(3rem,11vw,7rem)] leading-none md:text-[clamp(4rem,9vw,8rem)]"
+        aria-label="RobinElysia"
+      >
         {letters.map((ch, i) => (
           <span
             key={i}
@@ -55,7 +59,7 @@ export function HeroContent() {
         className="mt-8 animate-fade-up text-sm tracking-[0.45em] text-muted uppercase md:text-base"
         style={{ animationDelay: "0.5s" }}
       >
-        RefrainZen And KiKi
+        Robin And Elysia
       </p>
       <p
         className="mt-4 animate-fade-up text-xs tracking-[0.3em] text-muted uppercase"

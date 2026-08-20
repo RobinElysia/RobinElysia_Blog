@@ -1,5 +1,5 @@
 # ============================================
-# ReZenKi Blog — Caddy 反向代理 + 自动 HTTPS
+# RobinElysia Blog — Caddy 反向代理 + 自动 HTTPS
 # ============================================
 # 生产：.env 设 PROD_DOMAIN=你的域名（如 blog.meowin.asia），
 #       DNS 解析到服务器后 Caddy 自动申请 Let's Encrypt 证书并自动续期

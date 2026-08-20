@@ -6,6 +6,15 @@ last-updated: 2026-08-20
 
 # 版本变更日志
 
+## [0.21.2] — 2026-08-20
+
+### Changed
+- **品牌全项目改名 ReZenKi → RobinElysia**（用户要求）：36 文件 107+ 处替换——UI 文案、metadata、RSS、JSON-LD、about/登录/落款/手写 intro（SVG 加宽 640→980）、代码注释、.claude 文档、DEPLOY/README/REASONIX/DESIGN
+- 品牌全称 **RefrainZen And KiKi → Robin And Elysia**；名字含义文案重写（Elysia = 美好、梦幻的天堂；Robin = 象征美好寓意的名字前缀）——about 页、seed 模板、DB 正文同步更新
+- **hello-rezenki → hello-robinelysia**：slug（DB 更新 + e2e）、档案图文件重命名、archive-images 映射键；`rezenkiCodeTheme` → `robinElysiaCodeTheme`（shiki 主题名同步）
+- 环境与基建：`PROD_ADMIN_USERNAME=ReZenKi → RobinElysia`（.env）；本地容器 `rezenki-postgres` 重命名 `robinelysia-postgres`
+- 花体长度适配（11 字符）：Hero 标题 clamp 响应式字号、header logo text-xl、login h1 text-4xl、intro/colophon SVG viewBox 加宽
+
 ## [0.21.1] — 2026-08-20
 
 ### Added
@@ -29,7 +38,7 @@ last-updated: 2026-08-20
 - **首页滚动架构**：单一滚动源（rAF 节流 + IntersectionObserver，替代每卡 listener + getBoundingClientRect）；`--header-h` 变量消除 57px 魔法数；hero-content 滚出动画改用共享源（原 window 监听在局部容器下从未生效）
 - **motion-and-interaction.md**：新增叙事转场例外区（白名单 src/components/home/**）；回滚根因 R1/R2/R3 固化落档
 - **滚动驱动动效（档案/落款章）**：档案章题→年份头→文章依次从左滑入（stagger）+ 滚向落款时整章向视口中心收缩淡出；落款签名式入场（花体签名落笔回正 → 墨线展开 → 文字行浮现），双向可逆 + reduced-motion 降级
-- **转场节奏调优（用户反馈）**：wheel 平滑翻页接管 2s（easeInOut + 中断阈值，替代 snap-mandatory 顿挫）；卡片/档案动效去 spring 改纯函数缓动（跟手零滞后）；卡片入场幅度对齐出场（75px → **+920px/+10° 右下 45° 滑入**，与 -920px/-10° 对称）；档案帖子改**从右往左滑入、退场原路返回**；落款 ReZenKi 改 **SVG 手写描画**（draw-stroke 2.4s + 墨色渐入）；档案/落款章配 Wellcome 蚀刻局部背景（multiply 水印）；three 波浪渲染循环加可见性暂停（Hero 滚出即停，修转场卡顿）
+- **转场节奏调优（用户反馈）**：wheel 平滑翻页接管 2s（easeInOut + 中断阈值，替代 snap-mandatory 顿挫）；卡片/档案动效去 spring 改纯函数缓动（跟手零滞后）；卡片入场幅度对齐出场（75px → **+920px/+10° 右下 45° 滑入**，与 -920px/-10° 对称）；档案帖子改**从右往左滑入、退场原路返回**；落款 RobinElysia 改 **SVG 手写描画**（draw-stroke 2.4s + 墨色渐入）；档案/落款章配 Wellcome 蚀刻局部背景（multiply 水印）；three 波浪渲染循环加可见性暂停（Hero 滚出即停，修转场卡顿）
 - **Dashboard**：移动端顶部导航（修复 md 以下无导航）；统计卡响应式 grid
 - site-header 滚动解耦（去全局 capture hack，订阅共享源）
 
@@ -95,12 +104,12 @@ last-updated: 2026-08-20
 
 ### Changed
 - **Docker 配置注入重构（PROD_* 前缀）**——排查出本机 compose 读不到 .env 新值的两层根因：
-  1. **终端会话残留环境变量**（`ADMIN_PASSWORD=rezenki-admin` 等旧值）——compose 插值优先读 shell 环境，压过 .env 文件
+  1. **终端会话残留环境变量**（`ADMIN_PASSWORD=robinelysia-admin` 等旧值）——compose 插值优先读 shell 环境，压过 .env 文件
   2. Docker Desktop compose v2.29.2-desktop.2 的 `env_file` 失效（两种语法均不注入容器）
   - 修复：environment 插值改用 `PROD_*` 前缀变量名（与任何 shell 残留不冲突，值始终来自 .env）
   - 验证：`docker compose config` 全部展开正确 ✅、db 容器实测注入 `POSTGRES_PASSWORD=***` ✅
   - DEPLOY.md 同步更新（PROD_* 模板 + 说明）
-- **生产配置已填入**：SITE_URL=https://meowin.asia、AUTH_SECRET、ADMIN=ReZenKi/***、POSTGRES=***、GitHub 生产凭证
+- **生产配置已填入**：SITE_URL=https://meowin.asia、AUTH_SECRET、ADMIN=RobinElysia/***、POSTGRES=***、GitHub 生产凭证
 
 ## [0.19.8] — 2025-07-11
 
@@ -147,7 +156,7 @@ last-updated: 2026-08-20
 ## [0.19.1] — 2025-07-11
 
 ### Fixed
-- **全站数据库查询失败（Failed query on posts/comments）**：非代码 bug——Docker Desktop 未运行导致 rezenki-postgres 容器不可达（ECONNREFUSED 被 DrizzleQueryError 包装）。已重启容器 + 设置 `--restart unless-stopped` 预防复发（Docker Desktop 启动时自动拉起数据库）。
+- **全站数据库查询失败（Failed query on posts/comments）**：非代码 bug——Docker Desktop 未运行导致 robinelysia-postgres 容器不可达（ECONNREFUSED 被 DrizzleQueryError 包装）。已重启容器 + 设置 `--restart unless-stopped` 预防复发（Docker Desktop 启动时自动拉起数据库）。
   排查路径记录：Failed query 先查 `docker ps`，容器 Exited/引擎未运行是首要嫌疑。
 
 ## [0.19.0] — 2025-07-11
@@ -496,7 +505,7 @@ last-updated: 2026-08-20
   - 评论系统：Server Action（zod 校验 + pending 审核流）+ `useActionState` 表单
   - `src/lib/comments.ts` 评论数据访问层（不缓存）
   - 根 layout 杂志风导航（花体 Logo + 极简链接）
-- **数据库落地**：Docker postgres:16 容器（rezenki-postgres）+ 迁移 `0000_amused_robin_chapel.sql` + seed 脚本（`pnpm seed`）
+- **数据库落地**：Docker postgres:16 容器（robinelysia-postgres）+ 迁移 `0000_amused_robin_chapel.sql` + seed 脚本（`pnpm seed`）
 - `dotenv`/`tsx` devDependency（seed 与 drizzle-kit 的 .env.local 加载）
 
 ### Fixed
@@ -506,7 +515,7 @@ last-updated: 2026-08-20
 ## [0.2.0] — 2025-07-11
 
 ### Added
-- **品牌定稿**：ReZenKi（RefrainZen And KiKi）· 黑白简约杂志风格
+- **品牌定稿**：RobinElysia（Robin And Elysia）· 黑白简约杂志风格
   - 字体体系：Italianno（花体 Hero）+ Inter（标题）+ SF 系统栈（正文）
   - Design Token：黑白灰四色 oklch 体系，全站禁止彩色强调
 - **数据库架构**：PostgreSQL + Drizzle ORM（ADR-0005）

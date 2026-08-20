@@ -3,7 +3,7 @@ import { FadeIn } from "@/components/motion/fade-in";
 
 export const metadata: Metadata = {
   title: "关于",
-  description: "关于 ReZenKi（RefrainZen And KiKi）",
+  description: "关于 RobinElysia（Robin And Elysia）",
 };
 
 /**
@@ -19,13 +19,14 @@ export default function AboutPage() {
       <FadeIn delay={0.1}>
         <div className="max-w-3xl space-y-8">
           <section>
-            <h2 className="font-script text-5xl leading-none">ReZenKi</h2>
+            <h2 className="font-script text-5xl leading-none">RobinElysia</h2>
             <p className="mt-2 text-xs tracking-[0.35em] text-muted uppercase">
-              RefrainZen And KiKi
+              Robin And Elysia
             </p>
             <p className="mt-6 text-base leading-7 text-muted">
-              RefrainZen 是克制的禅意——黑白、留白、杂志式的排版；KiKi
-              是陪伴的伙伴——写下每一篇的冲动。 这里是个人博客，记录技术、设计与生活的思考。
+              RobinElysia 由姓氏 Robin 与名字 Elysia 组成：Elysia
+              代表美好、梦幻的天堂；Robin 是象征美好寓意的名字前缀。
+              这里是个人博客，记录技术、设计与生活的思考。
             </p>
           </section>
 

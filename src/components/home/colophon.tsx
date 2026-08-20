@@ -47,8 +47,8 @@ export function Colophon({ current }: { current: boolean }) {
         {/* 花体签名手写描画（SVG 两层：描边 + 墨色；CSS 动画由 .colophon-active 触发） */}
         <svg
           data-colophon-sign
-          viewBox="0 0 640 220"
-          className="mx-auto w-[min(78vw,480px)]"
+          viewBox="0 0 980 220"
+          className="mx-auto w-[min(82vw,640px)]"
           aria-hidden
         >
           <text
@@ -64,7 +64,7 @@ export function Colophon({ current }: { current: boolean }) {
             fontFamily="var(--font-script)"
             fontSize={150}
           >
-            ReZenKi
+            RobinElysia
           </text>
           <text
             className="colophon-fill"
@@ -77,7 +77,7 @@ export function Colophon({ current }: { current: boolean }) {
             fontFamily="var(--font-script)"
             fontSize={150}
           >
-            ReZenKi
+            RobinElysia
           </text>
         </svg>
 
@@ -92,7 +92,7 @@ export function Colophon({ current }: { current: boolean }) {
 
         <motion.div initial={false} animate={current ? "shown" : "hidden"} variants={fadeVariants}>
           <p className="mt-6 text-[11px] tracking-[0.3em] text-muted uppercase">
-            © 2025 ReZenKi · RefrainZen And KiKi
+            © 2025 RobinElysia · Robin And Elysia
           </p>
         </motion.div>
 

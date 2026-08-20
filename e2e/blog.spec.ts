@@ -13,7 +13,7 @@ test.describe("博客核心流程", () => {
     await page.addInitScript(() => sessionStorage.setItem("intro-played", "1"));
     await page.goto("/", { waitUntil: "domcontentloaded" });
     // Ch.00 序：花体 Hero + 3D 波浪（canvas 为 three 动态挂载，放宽等待）
-    await expect(page.getByRole("heading", { name: "ReZenKi", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "RobinElysia", exact: true })).toBeVisible();
     await expect(page.locator("header canvas").first()).toBeVisible({ timeout: 15_000 });
     // 滚动容器（scroll-snap）+ 章节导航（4 个章节按钮）
     const scroller = page.locator("[data-scroll-container]");
@@ -26,7 +26,7 @@ test.describe("博客核心流程", () => {
     await expect(
       page
         .getByRole("region", { name: "落款" })
-        .getByText("© 2025 ReZenKi · RefrainZen And KiKi"),
+        .getByText("© 2025 RobinElysia · Robin And Elysia"),
     ).toBeVisible({ timeout: 10_000 });
     // 档案帖子原路返回（x 归位 48px + 淡出）+ 落款手写签名完成（滚动驱动/触发式动效不回归）
     await expect(page.locator("[data-archive-post]").first()).toHaveCSS("opacity", "0");
@@ -43,8 +43,8 @@ test.describe("博客核心流程", () => {
 
   test("点击文章进入详情，正文与 TOC 渲染", async ({ page }) => {
     await page.goto("/blog");
-    await page.getByRole("link", { name: /你好，ReZenKi/ }).click();
-    await expect(page).toHaveURL(/\/blog\/hello-rezenki/);
+    await page.getByRole("link", { name: /你好，RobinElysia/ }).click();
+    await expect(page).toHaveURL(/\/blog\/hello-robinelysia/);
     // 页面标题（MDX 正文 h1 与页面 h1 同名，取页面 header 内的）
     await expect(page.locator("article header h1")).toBeVisible();
     // MDX 正文渲染（h2 标题来自 Markdown）
@@ -58,7 +58,7 @@ test.describe("博客核心流程", () => {
   });
 
   test("提交评论显示成功提示", async ({ page }) => {
-    await page.goto("/blog/hello-rezenki");
+    await page.goto("/blog/hello-robinelysia");
     await page.getByLabel("昵称").fill("E2E 测试");
     await page.getByLabel("评论内容").fill("端到端测试评论。");
     await page.getByRole("button", { name: "提交评论" }).click();

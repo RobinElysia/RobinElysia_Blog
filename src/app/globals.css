@@ -2,7 +2,7 @@
 @plugin "@tailwindcss/typography";
 
 /* ============================================
-   ReZenKi 简约复古艺术风 Design Token（暖纸五色）
+   RobinElysia 简约复古艺术风 Design Token（暖纸五色）
    规范见 .claude/design/visual-style-guide.md（定稿已落地 2026-08-20）
    黑白双模式：白模式（默认）↔ 黑模式（.dark class）
    所有组件必须使用 token 色（ink/paper/muted/line/code），禁止硬编码色值

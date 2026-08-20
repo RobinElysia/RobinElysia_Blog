@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { IntroAnimation } from "@/components/intro-animation";
 
 /**
- * ReZenKi (RefrainZen And KiKi) — 个人博客
+ * RobinElysia (Robin And Elysia) — 个人博客
  * 字体体系（见 .claude/design/visual-style-guide.md，2026-08-20 定稿落地）：
  * - Italianno：意大利花体，用于 Logo/首页 Hero 大字（--font-script）
  * - EB Garamond：衬线正文/标题（--font-serif，字重 400/500/600，禁 700+）
@@ -31,11 +31,11 @@ const italianno = Italianno({
 
 export const metadata: Metadata = {
   title: {
-    default: "ReZenKi",
-    template: "%s · ReZenKi",
+    default: "RobinElysia",
+    template: "%s · RobinElysia",
   },
-  description: "RefrainZen And KiKi 的个人博客 — 黑白简约杂志风",
-  keywords: ["blog", "ReZenKi", "RefrainZen", "KiKi"],
+  description: "Robin And Elysia 的个人博客 — 黑白简约杂志风",
+  keywords: ["blog", "RobinElysia", "Robin", "Elysia"],
 };
 
 export default async function RootLayout({
@@ -71,7 +71,7 @@ export default async function RootLayout({
 
         <footer className="mt-16 border-t border-line">
           <div className="mx-auto flex w-full max-w-4xl items-baseline justify-between px-6 py-6 text-xs text-muted md:px-8">
-            <span>© 2025 ReZenKi · RefrainZen And KiKi</span>
+            <span>© 2025 RobinElysia · Robin And Elysia</span>
             <span>黑白杂志 · 克制即表达</span>
           </div>
         </footer>

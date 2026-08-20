@@ -14,7 +14,7 @@ describe("GitHub 登录白名单", () => {
   });
 
   it("用户名命中白名单允许登录", () => {
-    process.env.AUTH_GITHUB_ALLOWED_USERS = "meowin, kiki";
+    process.env.AUTH_GITHUB_ALLOWED_USERS = "meowin, elysia";
     expect(isGithubUserAllowed("meowin", null)).toBe(true);
   });
 
@@ -34,8 +34,8 @@ describe("GitHub 登录白名单", () => {
   });
 
   it("容忍多余空格与空项", () => {
-    process.env.AUTH_GITHUB_ALLOWED_USERS = " meowin , , kiki ";
-    expect(isGithubUserAllowed("kiki", null)).toBe(true);
+    process.env.AUTH_GITHUB_ALLOWED_USERS = " meowin , , elysia ";
+    expect(isGithubUserAllowed("elysia", null)).toBe(true);
     expect(isGithubUserAllowed("other", null)).toBe(false);
   });
 });

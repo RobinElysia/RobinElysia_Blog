@@ -10,7 +10,7 @@ import { getArchiveImage, formatCredit } from "@/lib/archive-images";
  * 16:9 文章图片卡（v0.21.0：档案图落地，DESIGN.md §4）
  * - 档案图（Wellcome PDM，与 slug 稳定绑定），next/image 优化（AVIF/WebP）
  * - 元数据署名随图展示（底部渐变遮罩 + 小字宽字距）——版面的一部分
- * - 无图 fallback：花体 ReZenKi 占位
+ * - 无图 fallback：花体 RobinElysia 占位
  */
 export function PostCard({
   slug,
@@ -39,7 +39,7 @@ export function PostCard({
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center">
-          <span className="text-xs tracking-[0.3em] text-muted uppercase">ReZenKi</span>
+          <span className="text-xs tracking-[0.3em] text-muted uppercase">RobinElysia</span>
         </div>
       )}
       {/* 底部渐变遮罩（署名可读性） */}

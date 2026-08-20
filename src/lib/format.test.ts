@@ -25,7 +25,7 @@ describe("slugify", () => {
   });
 
   it("保留中文字符", () => {
-    expect(slugify("你好 ReZenKi")).toBe("你好-rezenki");
+    expect(slugify("你好 RobinElysia")).toBe("你好-robinelysia");
   });
 
   it("空串返回空串", () => {

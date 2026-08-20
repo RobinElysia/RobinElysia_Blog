@@ -91,7 +91,7 @@ last-updated: 2026-08-20
 
 | 文件 | 用途 | 状态 |
 |------|------|------|
-| `design/visual-style-guide.md` | Design Token（暖纸五色、Italianno 花体 + EB Garamond 衬线 + 系统栈）、图像规范 | **stable**（品牌 ReZenKi 已定稿） |
+| `design/visual-style-guide.md` | Design Token（暖纸五色、Italianno 花体 + EB Garamond 衬线 + 系统栈）、图像规范 | **stable**（品牌 RobinElysia 已定稿） |
 | `design/layout-patterns.md` | 全局布局、页面布局模式（首页/详情/Dashboard）、约束 | stable |
 | `design/motion-and-interaction.md` | 动效总则、动画分类落地表、禁用清单（含做旧特效）、Server/Client 边界约束 | stable |
 | `design/loading-and-error-states.md` | Loading/Error 策略矩阵、Skeleton 设计原则、error.tsx 规范 | stable |
