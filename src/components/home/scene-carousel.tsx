@@ -58,10 +58,14 @@ function CardSlide({
   const reduceMotion = useReducedMotion();
 
   // 订阅共享滚动源（HomeScenes 的唯一 rAF listener 写入；此处零重排读取）
-  useSyncExternalStore(subscribeHomeScroll, () => {
-    const { scrollTop, viewportH } = getHomeScroll();
-    return `${scrollTop}:${viewportH}`;
-  });
+  useSyncExternalStore(
+    subscribeHomeScroll,
+    () => {
+      const { scrollTop, viewportH } = getHomeScroll();
+      return `${scrollTop}:${viewportH}`;
+    },
+    () => "0:0", // SSR server snapshot：服务端无滚动，恒定 0
+  );
 
   // 纯数学推导（snap 布局每页等高）：
   // 卡片 i 的全局页 = HERO_PAGES + i；elTop = (HERO_PAGES+i)*vh - scrollTop

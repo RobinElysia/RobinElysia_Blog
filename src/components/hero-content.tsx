@@ -13,10 +13,14 @@ import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-sou
 export function HeroContent() {
   const reduceMotion = useReducedMotion();
 
-  useSyncExternalStore(subscribeHomeScroll, () => {
-    const { scrollTop, viewportH } = getHomeScroll();
-    return `${scrollTop}:${viewportH}`;
-  });
+  useSyncExternalStore(
+    subscribeHomeScroll,
+    () => {
+      const { scrollTop, viewportH } = getHomeScroll();
+      return `${scrollTop}:${viewportH}`;
+    },
+    () => "0:0", // SSR server snapshot：服务端无滚动，恒定 0
+  );
 
   const { scrollTop, viewportH } = getHomeScroll();
   // 第 0 页滚出进度：0 = Hero 在视口内，1 = 完全滚出上方
