@@ -58,14 +58,22 @@ export function HomeScenes({
     scroller.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
 
-    // wheel 平滑翻页（easeInOut 2s；中断阈值 120px 累计滚动量）
+    // wheel 平滑翻页（easeInOut 2s）——灵敏度阻尼（2026-08-20 用户反馈"太灵敏"）：
+    // - TRIGGER：空闲态累积 deltaY 达 260px 才翻页（标准滚轮约 2-3 格 / 触控板明显滑动）
+    // - INTERRUPT：动画中累积 420px 才中断直跳（快速连翻仍可达）
+    // - COOLDOWN：动画结束后 550ms 惯性冷却——触控板惯性尾巴直接忽略，防连翻
+    // - deltaMode 换算：line ×40（Firefox 滚轮）、page ×400（明确整页意图，直接触发）
     // 目标为"锚点"：Hero + 4 卡（等高）与各章顶（offsetTop 动态算，兼容档案章超高）
+    const TRIGGER = 260;
+    const INTERRUPT = 420;
+    const COOLDOWN = 550;
     const pageH = () => scroller.clientHeight;
     let animRaf = 0;
     let animFrom = 0;
     let animTo = 0;
     let animStart = 0;
     let pendingDelta = 0;
+    let lastWheelAt = 0;
 
     const stopAnim = () => {
       if (animRaf) cancelAnimationFrame(animRaf);
@@ -93,23 +101,41 @@ export function HomeScenes({
         const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
         scroller.scrollTop = animFrom + (animTo - animFrom) * eased;
         if (t < 1) animRaf = requestAnimationFrame(step);
-        else animRaf = 0;
+        else {
+          animRaf = 0;
+          lastWheelAt = performance.now(); // 完成时刻起算冷却期
+        }
       };
       animRaf = requestAnimationFrame(step);
     };
 
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
-      if (Math.abs(e.deltaY) < 2) return;
+      const now = performance.now();
+      const delta =
+        e.deltaMode === 1 ? e.deltaY * 40 : e.deltaMode === 2 ? e.deltaY * 400 : e.deltaY;
+      if (Math.abs(delta) < 2) return;
+
       if (animRaf) {
-        // 动画中：累计滚动量达阈值则中断直跳，否则吞掉（保持 2s 转场节奏）
-        pendingDelta += e.deltaY;
-        if (Math.abs(pendingDelta) < 120) return;
+        // 动画中：累积达 INTERRUPT 才中断直跳，否则吞掉（保持 2s 转场节奏）
+        pendingDelta += delta;
+        if (Math.abs(pendingDelta) < INTERRUPT) return;
         scroller.scrollTop = animTo;
         stopAnim();
         pendingDelta = 0;
+        lastWheelAt = performance.now();
+        return;
       }
-      const dir = e.deltaY > 0 ? 1 : -1;
+
+      // 冷却期（动画刚结束的惯性尾巴）：忽略，不累积
+      if (now - lastWheelAt < COOLDOWN) return;
+
+      pendingDelta += delta;
+      if (Math.abs(pendingDelta) < TRIGGER) return; // 未达触发阈值：继续累积
+      const dir = pendingDelta > 0 ? 1 : -1;
+      pendingDelta = 0;
+      lastWheelAt = now;
+
       const list = anchors();
       const cur = scroller.scrollTop;
       const next =
@@ -117,6 +143,7 @@ export function HomeScenes({
       if (next === undefined) return;
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
         scroller.scrollTop = next;
+        lastWheelAt = performance.now();
         return;
       }
       animateTo(next);
