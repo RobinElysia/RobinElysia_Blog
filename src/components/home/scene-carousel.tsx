@@ -5,7 +5,6 @@ import {
   motion,
   useMotionValue,
   useReducedMotion,
-  useSpring,
   useTransform,
 } from "motion/react";
 import { PostCard, CardInfo } from "@/components/home/post-card";
@@ -84,24 +83,25 @@ function CardSlide({
 
   // 45° 进出场（x/y 等量）：滚出绝对像素 -920，进入 75（v0.17.0 参数保留）
   // reduce 模式：无位移/旋转，仅 opacity（修 D4）
-  // 修 R4（v0.21.0）：useSpring(number) 只取挂载时初值、不追踪后续数字变化
-  // → useMotionValue + effect 同步源，spring 订阅 MotionValue（motion 官方模式）
+  // 修 R4（v0.21.0）：滚动驱动值一律 useMotionValue + effect 同步源
+  // 去 spring（v0.21.0 补丁）：55/19 弹簧在 snap 过渡中滞后于滚动 → 顿挫；
+  // 改纯函数缓动（easeOutCubic/smoothstep），一帧内计算、与滚动 1:1 跟手
   const enterMV = useMotionValue(enter);
   const exitMV = useMotionValue(exit);
   useEffect(() => {
     enterMV.set(enter);
     exitMV.set(exit);
   });
-  const enterSpring = useSpring(enterMV, { stiffness: 55, damping: 19 });
-  const exitSpring = useSpring(exitMV, { stiffness: 55, damping: 19 });
+  const enterEased = useTransform(enterMV, (t) => 1 - Math.pow(1 - t, 3));
+  const exitEased = useTransform(exitMV, (t) => t * t * (3 - 2 * t));
 
-  const enterX = useTransform(enterSpring, [0, 1], reduceMotion ? [0, 0] : [75, 0]);
-  const enterY = useTransform(enterSpring, [0, 1], reduceMotion ? [0, 0] : [75, 0]);
-  const enterOpacity = useTransform(enterSpring, [0, 0.6], [0, 1]);
-  const exitX = useTransform(exitSpring, [0.25, 1], reduceMotion ? [0, 0] : [0, -920]);
-  const exitY = useTransform(exitSpring, [0.25, 1], reduceMotion ? [0, 0] : [0, -920]);
-  const exitRotate = useTransform(exitSpring, [0.25, 1], reduceMotion ? [0, 0] : [0, -10]);
-  const exitOpacity = useTransform(exitSpring, [0.25, 1], [1, 0]);
+  const enterX = useTransform(enterEased, [0, 1], reduceMotion ? [0, 0] : [75, 0]);
+  const enterY = useTransform(enterEased, [0, 1], reduceMotion ? [0, 0] : [75, 0]);
+  const enterOpacity = useTransform(enterEased, [0, 0.6], [0, 1]);
+  const exitX = useTransform(exitEased, [0.25, 1], reduceMotion ? [0, 0] : [0, -920]);
+  const exitY = useTransform(exitEased, [0.25, 1], reduceMotion ? [0, 0] : [0, -920]);
+  const exitRotate = useTransform(exitEased, [0.25, 1], reduceMotion ? [0, 0] : [0, -10]);
+  const exitOpacity = useTransform(exitEased, [0.25, 1], [1, 0]);
 
   // 有源组合（修 R4：无源 () => a.get()+b.get() 不响应源变化）
   const x = useTransform([enterX, exitX], ([a, b]: number[]) => a + b);

@@ -121,10 +121,31 @@ export function WaveOcean() {
       window.addEventListener("pointermove", onPointerMove);
 
       const timer = new THREE.Timer();
+      let time = 0;
+      let raf = 0;
+
+      // 可见性暂停（2026-08-20 性能优化）：Hero 滚出视口即停渲染循环——
+      // 无 GPU 环境（软件渲染）下 three 每帧吃满主线程，会卡顿章节转场。
+      // 不用 IntersectionObserver：Chromium 对 WebGL canvas 的 isIntersecting 判定
+      // 恒 true（实测），改用 1s 低频 rect 轮询（开销忽略，恢复延迟 ≤1s）
+      const ensureLoop = () => {
+        const r = mount.getBoundingClientRect();
+        // 上边滚出 200px 以上或整体低于视口下沿即暂停（滚出一页后 Hero 底边
+        // 仍贴 header 底部 65px，需放宽阈值避免误判为可见）
+        const onScreen = r.top > -200 && r.top < window.innerHeight;
+        if (onScreen && !raf && !reduced) raf = requestAnimationFrame(animate);
+        else if (!onScreen && raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      };
+      const visibilityTimer = window.setInterval(ensureLoop, 1000);
+
       const animate = () => {
         timer.update();
-        const dt = timer.getDelta();
-        const time = timer.getElapsed();
+        // dt 截断：暂停恢复时不产生相位大跳（自维护 time，不用 getElapsed）
+        const dt = Math.min(timer.getDelta(), 0.05);
+        time += dt;
 
         // 顶点：多层波浪 + 冲击波（v0.16.0：波速减半，慢速惯性感）
         const yArr = pos.array as Float32Array;
@@ -159,7 +180,6 @@ export function WaveOcean() {
         renderer.render(scene, camera);
         raf = requestAnimationFrame(animate);
       };
-      let raf = 0;
       if (!reduced) raf = requestAnimationFrame(animate);
       else renderer.render(scene, camera);
 
@@ -174,6 +194,7 @@ export function WaveOcean() {
 
       dispose = () => {
         cancelAnimationFrame(raf);
+        window.clearInterval(visibilityTimer);
         window.removeEventListener("pointermove", onPointerMove);
         window.removeEventListener("resize", onResize);
         geometry.dispose();

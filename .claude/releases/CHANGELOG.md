@@ -18,6 +18,7 @@ last-updated: 2026-08-20
 - **首页滚动架构**：单一滚动源（rAF 节流 + IntersectionObserver，替代每卡 listener + getBoundingClientRect）；`--header-h` 变量消除 57px 魔法数；hero-content 滚出动画改用共享源（原 window 监听在局部容器下从未生效）
 - **motion-and-interaction.md**：新增叙事转场例外区（白名单 src/components/home/**）；回滚根因 R1/R2/R3 固化落档
 - **滚动驱动动效（档案/落款章）**：档案章题→年份头→文章依次从左滑入（stagger）+ 滚向落款时整章向视口中心收缩淡出；落款签名式入场（花体签名落笔回正 → 墨线展开 → 文字行浮现），双向可逆 + reduced-motion 降级
+- **转场节奏调优（用户反馈）**：wheel 平滑翻页接管 2s（easeInOut + 中断阈值，替代 snap-mandatory 顿挫）；卡片/档案动效去 spring 改纯函数缓动（跟手零滞后）；档案帖子改**从右往左滑入、退场原路返回**；落款 ReZenKi 改 **SVG 手写描画**（draw-stroke 2.4s + 墨色渐入）；档案/落款章配 Wellcome 蚀刻局部背景（multiply 水印）；three 波浪渲染循环加可见性暂停（Hero 滚出即停，修转场卡顿）
 - **Dashboard**：移动端顶部导航（修复 md 以下无导航）；统计卡响应式 grid
 - site-header 滚动解耦（去全局 capture hack，订阅共享源）
 

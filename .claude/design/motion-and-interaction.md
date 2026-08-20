@@ -108,8 +108,10 @@ ReZenKi 是简约复古艺术风（档案馆气质）。**动画必须服务于"
 
 ### 章节式长滚动叙事（v0.21.0，2026-08-20 用户要求）
 
-- **当前形态（以代码为准）**：`src/app/page.tsx` → `HomeScenes`：线性纵向四章——Ch.00 序（3D 波浪 Hero）→ Ch.01 最近（逐卡翻页，每卡一屏）→ Ch.02 档案（年份分组时间轴）→ Ch.03 落款；局部滚动容器（`data-scroll-container`，`snap-y snap-mandatory`）+ 右侧竖向进度指示 + 章节菜单（`nav`/`button`/`aria-current`）。
-- **滚动驱动动效（2026-08-20，v0.21.0）**：档案章章题 → 年份头 → 文章依次从左滑入（x -40→0 + 淡入，stagger 0.08/0.24 窗口）；滚向落款时整章向视口中心收缩（scale 1→0.85 + 淡出）；落款为签名式入场（花体签名 x -28/rotate -4° 落笔回正 → 墨线 scaleX 展开 → © 行 y 12→0 浮现 → 链接行浮现，区间 0.45/0.75/0.9/1 依次错峰）。全部双向可逆（滚动即时间轴），`prefers-reduced-motion` 下位移/旋转/缩放关闭仅保留淡入（JS matchMedia，CSS 全局降级无效——D4 教训）。snap-mandatory 下中间态只出现在翻页过渡瞬间（~300ms），停靠点即稳态。
+- **当前形态（以代码为准）**：`src/app/page.tsx` → `HomeScenes`：线性纵向四章——Ch.00 序（3D 波浪 Hero）→ Ch.01 最近（逐卡翻页，每卡一屏）→ Ch.02 档案（年份分组时间轴）→ Ch.03 落款；局部滚动容器（`data-scroll-container`）+ 右侧竖向进度指示 + 章节菜单（`nav`/`button`/`aria-current`）。
+- **wheel 平滑翻页（2026-08-20 用户要求"转场不顿挫、2~3s"）**：滚轮/触控板接管（preventDefault + easeInOut 2s rAF 动画滚到相邻锚点；动画中累计 120px 可中断直跳）；锚点 = Hero/4 卡等高页 + 各章顶（getBoundingClientRect 动态算，档案章超高兼容）。触摸设备/滚动条拖拽保持原生滚动，reduced-motion 直跳。**快照历史：无 wheel 接管时 snap-mandatory 逐页捕捉（Chrome 过渡 ~300ms），scroll 驱动动效被压缩且 spring 滞后 → 一顿一顿。**
+- **滚动驱动动效（2026-08-20，v0.21.0，wheel 2s 翻页提供时长）**：档案章帖子**从右往左滑入**（x 48→0 + 淡入，stagger 错峰）、退场**原路返回**（x 0→48 向右，倒序），章题/年份头纯淡入淡出；落款为**签名式入场**（SVG 花体手写描画 draw-stroke 2.4s + 墨色渐入 → 墨线展开 → © 行 → 链接行错峰浮现，总约 3s，current 触发）；档案/落款章各配 **Wellcome 蚀刻局部背景**（multiply 水印式底纹，dark 反转 screen）。全部双向可逆（滚动即时间轴），`prefers-reduced-motion` 下位移/旋转/缩放关闭仅保留淡入（JS matchMedia，CSS 全局降级无效——D4 教训）。
+- **R5 滚动转场性能坑（2026-08-20）**：three.js 波浪 render loop 无可见性暂停——Hero 滚出视口后仍每帧渲染，无 GPU 环境（软件渲染）下吃满主线程（实测 2fps），章节转场卡成"一顿一顿"。→ 滚动驱动动效一律**纯函数映射**（去 useSpring——55/19 弹簧滞后于滚动）；three 渲染循环加 **1s 低频 rect 轮询暂停**（Hero 上边滚出 200px 即停，滚回 ≤1s 内恢复；不用 IntersectionObserver——Chromium 对 WebGL canvas 的 isIntersecting 恒 true）。修复后实测 headless 转场 45fps+。
 - **实现纪律**：四步增量（骨架 → 指示器 → 档案章 → 转场），每步独立 commit 独立验收；转场动效最后做且必须随 `prefers-reduced-motion` 降级（JS `matchMedia` 判断，CSS 全局降级对 JS 驱动的 transform 无效——D4 教训）。
 
 > ⚠️ **3D 波浪 Hero 与档案馆定位的张力（待决）**：`wave-ocean.tsx` 的 Three.js 水面是数字生成物，不是档案物，与简约复古艺术风存在气质张力。但它是 v0.10.x 起获用户认可的成果，**不擅自推翻**——是否替换为静态藏品图 Hero 属独立决策，需单独确认。见 `DESIGN.md` §5。

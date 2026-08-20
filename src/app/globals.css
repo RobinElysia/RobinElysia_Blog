@@ -177,6 +177,24 @@ textarea {
   animation: intro-fill 0.6s ease 2.7s forwards;
 }
 
+/* 落款章手写签名（滚动到落款章触发 .colophon-active 播放） */
+.colophon-draw {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+
+.colophon-active .colophon-draw {
+  animation: draw-stroke 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.colophon-fill {
+  opacity: 0;
+}
+
+.colophon-active .colophon-fill {
+  animation: intro-fill 0.5s ease 2.3s forwards;
+}
+
 /* ============================================
    代码高亮（shiki css-variables 主题，黑白灰层次）
    全站禁彩色 → 语法区分靠灰阶；跟随 .dark class
