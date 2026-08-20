@@ -16,6 +16,15 @@ export type ArchiveImage = {
 };
 
 const ARCHIVE: Record<string, ArchiveImage> = {
+  "理性与感性": {
+    src: "/archive/理性与感性-wellcome-M0007634.jpg",
+    title: "A philosopher studying a celestial globe",
+    creator: "",
+    date: "",
+    source: "Wellcome Collection",
+    sourceUrl: "https://wellcomecollection.org/works/fvn5yv6v",
+    license: "Public Domain Mark",
+  },
   "hello-rezenki": {
     src: "/archive/hello-rezenki-wellcome-V0049797.jpg",
     title: "A medical author seated at his desk, writing, a herbal on his lap",

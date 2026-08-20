@@ -148,6 +148,34 @@ textarea {
 }
 
 /* ============================================
+   首次加载手写动画（intro-animation.tsx）
+   - 描画：stroke-dashoffset 100 → 0（pathLength 归一化），慢出缓动
+   - 填充：描画完成后 fill 渐入（同时保留描边在底）
+   ============================================ */
+@keyframes draw-stroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.intro-draw {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: draw-stroke 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes intro-fill {
+  to {
+    opacity: 1;
+  }
+}
+
+.intro-fill {
+  opacity: 0;
+  animation: intro-fill 0.5s ease 1.55s forwards;
+}
+
+/* ============================================
    代码高亮（shiki css-variables 主题，黑白灰层次）
    全站禁彩色 → 语法区分靠灰阶；跟随 .dark class
    ============================================ */

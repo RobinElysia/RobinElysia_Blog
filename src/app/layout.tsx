@@ -3,6 +3,7 @@ import { EB_Garamond, Inter, Italianno } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
+import { IntroAnimation } from "@/components/intro-animation";
 
 /**
  * ReZenKi (RefrainZen And KiKi) — 个人博客
@@ -60,6 +61,9 @@ export default async function RootLayout({
     >
       <head>{/* 主题已由 SSR 输出——无任何脚本注入 */}</head>
       <body className="flex min-h-full flex-col antialiased">
+        {/* 首次加载手写动画（全站入口，同会话一次；reduced-motion 自动跳过） */}
+        <IntroAnimation />
+
         {/* 全局导航（滚动毛玻璃，见 motion-and-interaction.md） */}
         <SiteHeader />
 

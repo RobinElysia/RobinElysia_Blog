@@ -102,7 +102,7 @@ function CardSlide({
       {/* 16:9 图片卡 */}
       <motion.div
         style={{ x, y, rotate: exitRotate, opacity }}
-        className="aspect-video w-[min(90vw,1080px)]"
+        className="relative aspect-video w-[min(90vw,1080px)]"
       >
         <PostCard {...post} index={index} />
       </motion.div>
