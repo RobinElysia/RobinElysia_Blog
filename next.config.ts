@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 图片优化：优先输出 AVIF/WebP（见 .harness/architecture/runtime-and-deployment.md）
+  // 图片优化：优先输出 AVIF/WebP（见 .claude/architecture/runtime-and-deployment.md）
   images: {
     formats: ["image/avif", "image/webp"],
   },

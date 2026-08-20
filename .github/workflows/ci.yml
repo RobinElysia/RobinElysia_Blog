@@ -41,11 +41,17 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Harness 防漂移检查
+        run: pnpm harness:check
+
       - name: Typecheck
         run: pnpm typecheck
 
       - name: Lint
         run: pnpm lint
+
+      - name: Format
+        run: pnpm format:check
 
       - name: Unit tests
         run: pnpm test

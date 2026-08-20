@@ -41,19 +41,18 @@ export default async function DashboardPosts() {
           <li key={post.id} className="flex items-center gap-4 py-4">
             <span
               className={`shrink-0 border px-2 py-0.5 text-xs ${
-                post.status === "published"
-                  ? "border-ink text-ink"
-                  : "border-line text-muted"
+                post.status === "published" ? "border-ink text-ink" : "border-line text-muted"
               }`}
             >
               {post.status === "published" ? "已发布" : "草稿"}
             </span>
-            <Link href={`/blog/${post.slug}`} className="min-w-0 flex-1 truncate text-sm hover:text-muted">
+            <Link
+              href={`/blog/${post.slug}`}
+              className="min-w-0 flex-1 truncate text-sm hover:text-muted"
+            >
               {post.title}
             </Link>
-            <span className="shrink-0 text-xs text-muted">
-              {post.commentCount} 评论
-            </span>
+            <span className="shrink-0 text-xs text-muted">{post.commentCount} 评论</span>
             <span className="hidden shrink-0 text-xs text-muted sm:inline">
               {formatDate(post.publishedAt)}
             </span>

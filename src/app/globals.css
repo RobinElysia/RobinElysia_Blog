@@ -3,9 +3,11 @@
 
 /* ============================================
    ReZenKi 黑白简约杂志风 Design Token
-   规范见 .harness/design/visual-style-guide.md
+   规范见 .claude/design/visual-style-guide.md
    黑白双模式：白模式（默认）↔ 黑模式（.dark class）
    所有组件必须使用 token 色（ink/paper/muted/line/code），禁止硬编码色值
+   ⚠️ 注意：DESIGN.md 与 visual-style-guide.md 已定稿「暖纸五色 + EB Garamond」，
+      本文件仍是旧黑白灰 token（chroma 0）+ Inter——迁移待用户完成（tech-debt.md 登记）
    ============================================ */
 
 /* dark: 变体基于 .dark class（手动切换的黑白模式，而非仅系统偏好） */
@@ -22,8 +24,8 @@
   /* 字体：花体标题 + Inter 标题 + SF 系统栈正文 */
   --font-script: var(--font-italianno), "Brush Script MT", cursive;
   --font-sans:
-    var(--font-inter), -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    var(--font-inter), -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+    "Helvetica Neue", Arial, sans-serif;
 }
 
 /* 黑模式：黑底白字（.dark class，由 header 切换按钮 + localStorage 控制） */
@@ -50,7 +52,9 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* ============================================
@@ -78,7 +82,7 @@ body {
 }
 
 /* ============================================
-   动效系统（见 .harness/design/motion-and-interaction.md）
+   动效系统（见 .claude/design/motion-and-interaction.md）
    原则：克制位移（≤16px）、慢速缓动（easeOutQuint）、黑白灰
    ============================================ */
 

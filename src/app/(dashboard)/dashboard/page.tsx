@@ -30,18 +30,14 @@ export default async function DashboardHome() {
         {stats.map((s) => (
           <div key={s.label} className="border border-line p-5">
             <div className="text-3xl font-semibold">{s.value}</div>
-            <div className="mt-1 text-xs tracking-[0.2em] text-muted uppercase">
-              {s.label}
-            </div>
+            <div className="mt-1 text-xs tracking-[0.2em] text-muted uppercase">{s.label}</div>
           </div>
         ))}
       </div>
 
       <div className="mt-10">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-xs font-medium tracking-[0.25em] text-muted uppercase">
-            最近文章
-          </h2>
+          <h2 className="text-xs font-medium tracking-[0.25em] text-muted uppercase">最近文章</h2>
           <Link href="/dashboard/posts" className="text-xs text-muted hover:text-ink">
             全部 →
           </Link>
@@ -52,9 +48,7 @@ export default async function DashboardHome() {
               <Link href={`/blog/${post.slug}`} className="truncate text-sm hover:text-muted">
                 {post.title}
               </Link>
-              <span className="shrink-0 text-xs text-muted">
-                {formatDate(post.publishedAt)}
-              </span>
+              <span className="shrink-0 text-xs text-muted">{formatDate(post.publishedAt)}</span>
             </li>
           ))}
           {recent.length === 0 && <li className="py-3 text-sm text-muted">还没有文章。</li>}

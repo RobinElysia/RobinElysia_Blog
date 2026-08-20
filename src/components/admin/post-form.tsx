@@ -17,9 +17,7 @@ import type { Post } from "@/lib/schema";
 
 type FormState = { ok: boolean; error?: string };
 
-type PostFormProps =
-  | { mode: "create"; post?: never }
-  | { mode: "edit"; post: Post };
+type PostFormProps = { mode: "create"; post?: never } | { mode: "edit"; post: Post };
 
 /** 工具条按钮：wrap=true 时包裹选区，否则在光标处插入 */
 const TOOLBAR: { label: string; insert: string; wrap?: boolean; title?: string }[] = [
@@ -58,7 +56,8 @@ export function PostForm({ mode, post }: PostFormProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   /** 工具条插入：wrap 包裹选区 / 否则光标处插入 */
-  const insertSyntax = (item: (typeof TOOLBAR)[number]) => {    const el = textareaRef.current;
+  const insertSyntax = (item: (typeof TOOLBAR)[number]) => {
+    const el = textareaRef.current;
     if (!el) return;
     const { selectionStart: start, selectionEnd: end, value } = el;
     const selected = value.slice(start, end);
@@ -242,7 +241,8 @@ export function PostForm({ mode, post }: PostFormProps) {
                   {item.label}
                 </button>
               ))}
-            </div>            <textarea
+            </div>{" "}
+            <textarea
               id="content"
               name="content"
               ref={textareaRef}
@@ -253,12 +253,12 @@ export function PostForm({ mode, post }: PostFormProps) {
               onPaste={handlePaste}
               onDrop={handleDrop}
               onDragOver={handleDragOver}
-              placeholder={"# 标题\n\n支持 Markdown、LaTeX（$x^2$）、Mermaid（```mermaid 代码块）、MDX 组件（<Callout>）\n\n可粘贴或拖拽图片到此处自动上传"}
+              placeholder={
+                "# 标题\n\n支持 Markdown、LaTeX（$x^2$）、Mermaid（```mermaid 代码块）、MDX 组件（<Callout>）\n\n可粘贴或拖拽图片到此处自动上传"
+              }
               className="w-full resize-y border border-line bg-transparent p-3 font-mono text-sm leading-6 outline-none focus:border-ink"
             />
-            {uploading && (
-              <p className="mt-1 text-xs text-muted">图片上传中…</p>
-            )}
+            {uploading && <p className="mt-1 text-xs text-muted">图片上传中…</p>}
           </>
         ) : (
           <div className="prose prose-neutral mt-2 max-w-none border border-line p-6 dark:prose-invert">

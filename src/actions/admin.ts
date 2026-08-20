@@ -10,7 +10,7 @@ import { auth } from "@/lib/auth";
 
 /**
  * Dashboard 管理 Server Actions —— 全部先鉴权
- * 契约见 .harness/data-layer/server-actions-contract.md
+ * 契约见 .claude/data-layer/server-actions-contract.md
  */
 
 type ActionResult = { ok: true } | { ok: false; error: string };
@@ -32,9 +32,13 @@ const postSchema = z.object({
     .regex(/^[a-z0-9\u4e00-\u9fa5-]+$/, "slug 只允许小写字母、数字、中文和连字符"),
   excerpt: z.string().trim().min(1, "摘要不能为空").max(500),
   content: z.string().trim().min(1, "正文不能为空"),
-  tags: z
-    .string()
-    .transform((s) => s.split(/[,，]/).map((t) => t.trim()).filter(Boolean).slice(0, 10)),
+  tags: z.string().transform((s) =>
+    s
+      .split(/[,，]/)
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .slice(0, 10),
+  ),
   status: z.enum(["draft", "published"]),
 });
 

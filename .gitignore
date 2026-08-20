@@ -42,3 +42,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# multiagent orchestration (dsh) — 编排状态机与临时脚本不入库
+.dsm/
+_md_output/

@@ -13,8 +13,7 @@ build
 # Git / 文档 / 工具
 .git
 .gitignore
-.harness
-REVIEW-REPORT.md
+.claude
 *.md
 .dockerignore
 Dockerfile

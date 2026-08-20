@@ -15,7 +15,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "npx next build && npx next start -p 3011",
+    command: "pnpm build && pnpm start -p 3011",
     port: 3011,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

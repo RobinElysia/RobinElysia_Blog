@@ -6,10 +6,12 @@ import { SiteHeader } from "@/components/site-header";
 
 /**
  * ReZenKi (RefrainZen And KiKi) — 个人博客
- * 字体体系（见 .harness/design/visual-style-guide.md）：
+ * 字体体系（见 .claude/design/visual-style-guide.md）：
  * - Italianno：意大利花体，用于主页标题/Logo
  * - Inter：SF Pro Display 的开放近似，用于文章标题
  * - 正文走系统栈（-apple-system → 苹果设备上即 SF Pro Text）
+ * ⚠️ 注意：visual-style-guide.md 已定稿 EB Garamond（--font-serif），
+ *    本文件仍加载 Inter——迁移待用户完成（tech-debt.md 登记）
  */
 const inter = Inter({
   variable: "--font-inter",

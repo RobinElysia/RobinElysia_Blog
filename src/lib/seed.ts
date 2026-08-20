@@ -88,7 +88,7 @@ function greet(name: string): string {
 
 文章失去 git 版本历史；需要维护数据库。
 
-详见 .harness/architecture/adr/0005-database-and-orm.md。`,
+详见 .claude/architecture/adr/0005-database-and-orm.md。`,
     tags: ["architecture", "postgres"],
     status: "published" as const,
     publishedAt: new Date(now.getTime() - 86400000),
@@ -170,17 +170,17 @@ sequenceDiagram
 ];
 
 async function main() {
+  // eslint-disable-next-line no-console -- seed 是 CLI 脚本，进度输出是其职责
   console.log("🧹 清空现有数据...");
   await db.delete(comments);
   await db.delete(posts);
 
+  // eslint-disable-next-line no-console -- 同上：CLI 进度输出
   console.log("📝 插入示例文章...");
   const fillers = Array.from({ length: 12 }, (_, i) => fillerPost(i + 1));
   for (const post of [...samplePosts, ...fillers]) {
-    const [inserted] = await db
-      .insert(posts)
-      .values(post)
-      .returning({ id: posts.id });
+    const [inserted] = await db.insert(posts).values(post).returning({ id: posts.id });
+    // eslint-disable-next-line no-console -- 同上：CLI 进度输出
     console.log(`  ✓ ${post.slug} (id=${inserted.id})`);
 
     if (post.slug === "hello-rezenki") {
@@ -193,6 +193,7 @@ async function main() {
     }
   }
 
+  // eslint-disable-next-line no-console -- 同上：CLI 完成提示
   console.log("✅ Seed 完成");
   process.exit(0);
 }

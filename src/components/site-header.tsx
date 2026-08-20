@@ -24,10 +24,7 @@ function subscribeTheme(cb: () => void): () => void {
 }
 
 function readTheme(): boolean {
-  return (
-    typeof document !== "undefined" &&
-    document.documentElement.classList.contains("dark")
-  );
+  return typeof document !== "undefined" && document.documentElement.classList.contains("dark");
 }
 
 export function SiteHeader() {

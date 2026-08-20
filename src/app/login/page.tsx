@@ -7,9 +7,7 @@ import { LoginForm } from "@/components/login-form";
  * v0.19.8：GitHub 按钮由服务端判断凭证是否配置（运行时生效，Docker 换凭证无需重建镜像）
  */
 export default function LoginPage() {
-  const githubEnabled = Boolean(
-    process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET,
-  );
+  const githubEnabled = Boolean(process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET);
 
   return (
     <Suspense>

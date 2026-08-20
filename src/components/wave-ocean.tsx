@@ -62,7 +62,8 @@ export function WaveOcean() {
 
       // 环境反射贴图（PMREM + RoomEnvironment——水面高光/波光）
       (async () => {
-        const { RoomEnvironment } = await import("three/examples/jsm/environments/RoomEnvironment.js");
+        const { RoomEnvironment } =
+          await import("three/examples/jsm/environments/RoomEnvironment.js");
         const pmrem = new THREE.PMREMGenerator(renderer);
         const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
         material.envMap = env;

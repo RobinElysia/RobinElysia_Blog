@@ -27,9 +27,7 @@ export default async function ArchivePage() {
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-16 md:px-8 md:py-20">
       <FadeIn>
-        <h1 className="mb-12 text-xs font-medium tracking-[0.25em] text-muted uppercase">
-          归档
-        </h1>
+        <h1 className="mb-12 text-xs font-medium tracking-[0.25em] text-muted uppercase">归档</h1>
       </FadeIn>
 
       {groups.size === 0 ? (

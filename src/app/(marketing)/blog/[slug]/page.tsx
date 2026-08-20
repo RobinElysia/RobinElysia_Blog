@@ -2,11 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import {
-  getPostBySlug,
-  getAdjacentPosts,
-  getRelatedPosts,
-} from "@/lib/posts";
+import { getPostBySlug, getAdjacentPosts, getRelatedPosts } from "@/lib/posts";
 import { getApprovedComments } from "@/lib/comments";
 import { formatDate, readingTime } from "@/lib/format";
 import { extractHeadings } from "@/lib/toc";
@@ -21,7 +17,7 @@ import "katex/dist/katex.min.css";
  * /blog/[slug] 文章详情
  * - MDX：代码高亮（shiki 黑白灰）+ Callout + 图片放大 + TOC（rehype-slug）
  * - 前后篇导航 + 相关文章（同标签）
- * - 评论（不缓存 + pending 审核流）
+ * - 评论（不缓存；v0.7.0 起无审核流，提交即显示）
  */
 export const dynamic = "force-dynamic";
 
@@ -53,11 +49,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: rawSlug } = await params;
   const slug = decodeSlug(rawSlug);
   const post = await getPostBySlug(slug);
@@ -98,9 +90,7 @@ export default async function BlogPostPage({
           {/* 正文区 */}
           <div className="min-w-0 flex-1">
             <header className="mx-auto max-w-3xl">
-              <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
-                {post.title}
-              </h1>
+              <h1 className="text-4xl font-semibold leading-tight md:text-5xl">{post.title}</h1>
               <div className="mt-4 flex items-baseline gap-3 text-xs text-muted">
                 <time>{formatDate(post.publishedAt)}</time>
                 <span>·</span>
@@ -137,9 +127,7 @@ export default async function BlogPostPage({
           {toc.length >= 2 && (
             <aside className="hidden w-60 shrink-0 lg:block" aria-label="文章目录">
               <nav className="sticky top-24 border-l border-line pl-5">
-                <h2 className="text-xs font-medium tracking-[0.25em] text-muted uppercase">
-                  目录
-                </h2>
+                <h2 className="text-xs font-medium tracking-[0.25em] text-muted uppercase">目录</h2>
                 <ul className="mt-4 space-y-2 text-sm">
                   {toc.map((item) => (
                     <li key={item.id} className={item.level === 3 ? "pl-4" : ""}>
@@ -176,10 +164,7 @@ export default async function BlogPostPage({
               <span />
             )}
             {prev ? (
-              <Link
-                href={`/blog/${prev.slug}`}
-                className="group max-w-[45%] text-right"
-              >
+              <Link href={`/blog/${prev.slug}`} className="group max-w-[45%] text-right">
                 <span className="block text-xs text-muted">上一篇 →</span>
                 <span className="mt-1 block font-medium transition-colors group-hover:text-muted">
                   {prev.title}
@@ -196,9 +181,7 @@ export default async function BlogPostPage({
       {related.length > 0 && (
         <FadeIn delay={0.15}>
           <section className="mx-auto mt-14 max-w-3xl">
-            <h2 className="text-xs font-medium tracking-[0.25em] text-muted uppercase">
-              相关文章
-            </h2>
+            <h2 className="text-xs font-medium tracking-[0.25em] text-muted uppercase">相关文章</h2>
             <ul className="mt-4 grid gap-x-10 gap-y-6 sm:grid-cols-2">
               {related.map((p) => (
                 <li key={p.slug}>
@@ -220,7 +203,8 @@ export default async function BlogPostPage({
         <section className="mx-auto mt-16 max-w-3xl">
           <h2 className="text-xs font-medium tracking-[0.25em] text-muted uppercase">
             评论（{comments.length}）
-          </h2>          {comments.length > 0 && (
+          </h2>{" "}
+          {comments.length > 0 && (
             <ul className="mt-4 divide-y divide-line">
               {comments.map((comment) => (
                 <li key={comment.id} className="py-4">

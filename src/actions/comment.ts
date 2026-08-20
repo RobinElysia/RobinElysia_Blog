@@ -9,10 +9,10 @@ import { checkRateLimit, sweepRateLimits } from "@/lib/rate-limit";
 
 /**
  * 评论提交 Server Action
- * 契约见 .harness/data-layer/server-actions-contract.md：
+ * 契约见 .claude/data-layer/server-actions-contract.md：
  * - 返回 { ok, error }，不 throw
  * - zod 校验所有用户输入
- * - 新评论默认 pending（审核后可见）
+ * - 提交即 approved（v0.7.0 起无审核流，评论直接显示）
  */
 
 const commentSchema = z.object({

@@ -10,7 +10,7 @@ import {
 /**
  * 数据库 Schema —— PostGre 存储架构
  *
- * 设计决策（详见 .harness/architecture/adr/0005-database-and-orm.md）：
+ * 设计决策（详见 .claude/architecture/adr/0005-database-and-orm.md）：
  * 1. 正文存 Markdown 原文（text），渲染时由 next-mdx-remote 编译，
  *    不存 HTML —— 存储与渲染解耦，XSS 面最小
  * 2. metadata（title/excerpt/tags）独立列，不塞 JSON —— 列表查询不读 content 大字段
@@ -29,7 +29,9 @@ export const posts = pgTable(
     excerpt: text("excerpt").notNull(),
     /** Markdown 原文，渲染时编译 */
     content: text("content").notNull(),
-    status: text("status", { enum: ["draft", "published"] }).notNull().default("draft"),
+    status: text("status", { enum: ["draft", "published"] })
+      .notNull()
+      .default("draft"),
     tags: text("tags").array().notNull().default([]),
     coverImage: text("cover_image"),
     publishedAt: timestamp("published_at", { withTimezone: true }),
@@ -53,14 +55,13 @@ export const comments = pgTable(
     authorName: text("author_name").notNull(),
     authorEmail: text("author_email"),
     content: text("content").notNull(),
-    /** 审核流：待审 → 通过/垃圾 */
-    status: text("status", { enum: ["pending", "approved", "spam"] }).notNull().default("pending"),
+    /** status 枚举兼容保留（v0.7.0 起无审核流，代码只写 approved；历史 pending 数据仍可读） */
+    status: text("status", { enum: ["pending", "approved", "spam"] })
+      .notNull()
+      .default("pending"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [
-    index("comments_post_id_idx").on(t.postId),
-    index("comments_status_idx").on(t.status),
-  ],
+  (t) => [index("comments_post_id_idx").on(t.postId), index("comments_status_idx").on(t.status)],
 );
 
 /**

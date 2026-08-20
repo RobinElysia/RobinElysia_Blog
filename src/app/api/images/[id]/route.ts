@@ -7,10 +7,7 @@ import { getImageById } from "@/lib/images";
  */
 export const runtime = "nodejs";
 
-export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const image = await getImageById(Number(id));
   if (!image) {

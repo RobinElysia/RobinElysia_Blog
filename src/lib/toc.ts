@@ -13,7 +13,10 @@ export function extractHeadings(markdown: string): TocItem[] {
     if (!m) continue;
     const level = m[1].length as 2 | 3;
     const text = m[2].trim().replace(/[`*_]/g, "");
-    const id = text.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, "").replace(/\s+/g, "-");
+    const id = text
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s-]/gu, "")
+      .replace(/\s+/g, "-");
     items.push({ id, text, level });
   }
   return items;

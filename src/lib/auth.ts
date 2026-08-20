@@ -8,11 +8,9 @@ import { isGithubUserAllowed } from "@/lib/auth-allowlist";
  * - GitHub OAuth（生产，需 .env.local 配置 AUTH_GITHUB_ID/AUTH_GITHUB_SECRET，
  *   未配置时不注册 provider——避免点击登录跳转报错，v0.19.5）
  * - Credentials（本地开发：.env.local 的 ADMIN_USERNAME/ADMIN_PASSWORD）
- * 规范见 .harness/architecture/app-router-map.md「鉴权边界」
+ * 规范见 .claude/architecture/app-router-map.md「鉴权边界」
  */
-const githubEnabled = Boolean(
-  process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET,
-);
+const githubEnabled = Boolean(process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET);
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [

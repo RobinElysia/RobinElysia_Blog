@@ -4,3 +4,8 @@ dist
 build
 coverage
 *.md
+# 生成物与编排临时目录
+drizzle/
+pnpm-lock.yaml
+.dsm/
+_md_output/

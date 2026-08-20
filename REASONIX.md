@@ -8,9 +8,9 @@
 
 **Blog** — 基于 Next.js 16（App Router）的个人博客。全栈单仓库，非 monorepo。
 
-## .harness 文档架构
+## .claude 文档架构
 
-`.harness/` 是本项目的核心文档体系。所有 agent 开始任务前必须读 `.harness/INDEX.md`。
+`.claude/` 是本项目的核心文档体系。所有 agent 开始任务前必须读 `.claude/INDEX.md`。
 
 ### 设计原则
 
@@ -36,9 +36,22 @@
 | `problem/` | 哪里有问题？（已知问题、技术债务、阻塞项） |
 | `onboarding/` | Agent 怎么入門？（阅读顺序指南） |
 
+### 文档分层（圆桌决议 A1，2026-08-20）
+
+为根治"文档与代码脱钩"的结构性成因（历史三次脱钩均因同步依赖自觉、无自动化门禁），文档分两层：
+
+- **契约层**（必须与代码逐字对齐，由 CI 门禁 `pnpm harness:check` 强制校验）：
+  - `architecture/app-router-map.md`（路由树）、`architecture/runtime-and-deployment.md`（环境变量表）
+  - `data-layer/caching-and-revalidation.md`（缓存 tag）、`data-layer/server-actions-contract.md`（Action 契约）
+  - `conventions/code-style/eslint-notes.md`（lint 规则）
+  - 契约文档 frontmatter 维护 `last-updated`；修改契约层时同步检查 `scripts/harness-check.mjs` 的检查项是否需扩展
+- **叙事层**（记录决策与理由，允许时效性；变更时更新 `last-updated`）：
+  - ADR、tech-radar、roadmap、releases 审查报告（review-snapshot 为历史快照不做螺旋更新）
+  - design（**设计意图禁改**；其中对代码实际行为的事实陈述受"代码为唯一事实源"管辖，可修正）
+
 ### 螺旋增量式更新（核心规则）
 
-**每有代码变动，必须结合上下文进行对应 `.harness/` 文档的更新。更新是融合（fusion），不是追加（append）。**
+**每有代码变动，必须结合上下文进行对应 `.claude/` 文档的更新。更新是融合（fusion），不是追加（append）。**
 
 - ❌ 追加模式：文档顶部是最新内容，往下翻是三个月前的内容，前后矛盾，没人知道哪个是对的。
 - ✅ 融合模式：新信息融入文档的对应位置，替换过时内容。文档始终是一个自洽的整体，反映当前代码的真实状态。
@@ -60,21 +73,21 @@
 
 **融合更新的格式**：直接在文档对应位置修改内容，更新 `last-updated` 日期。如果文档整体结构需要调整（如新增章节），同时更新。保持文档内部一致性——改动了 A 段，检查 B 段是否也需要同步。
 
-**审查报告登记规则**：每次审查生成的报告（REVIEW-REPORT 或等价物）必须：
-1. 归档到 `.harness/releases/`，命名 `NNNN-{type}.md`（序号递增）
-2. 在 `.harness/INDEX.md` 中登记，类型标注 `review-snapshot`
-3. 在 `.harness/releases/CHANGELOG.md` 中记录
+**审查报告登记规则**：每次审查生成的报告（归档物）必须：
+1. 归档到 `.claude/releases/`，命名 `NNNN-{type}.md`（序号递增）
+2. 在 `.claude/INDEX.md` 中登记，类型标注 `review-snapshot`
+3. 在 `.claude/releases/CHANGELOG.md` 中记录
 4. 在本文档（REASONIX.md）的变更记录中提及（如涉及架构决策）
 
 未登记索引的审查报告 = 孤儿文档。
 
 ### 元信息头规范
 
-每个 `.harness/` 下的 `.md` 文件顶部必须包含：
+每个 `.claude/` 下的 `.md` 文件顶部必须包含：
 
 ```yaml
 ---
-status: draft | stable | superseded
+status: draft | stable | superseded | review-snapshot
 owner: <负责的模块或子系统>
 last-updated: YYYY-MM-DD
 related-adr: [nnnn, nnnn]  # 如适用
@@ -84,6 +97,7 @@ related-adr: [nnnn, nnnn]  # 如适用
 - `draft` → 占位或编写中，不可作为决策依据
 - `stable` → 当前生效的规范或决策
 - `superseded` → 已被新文档取代，保留作为历史记录
+- `review-snapshot` → 审查报告归档（`releases/NNNN-*.md` 的历史快照，随 INDEX 登记同步标注；此类文档记录发布时点的状态，不做螺旋更新，保留原 `last-updated`）
 
 ### ADR 规则
 
@@ -110,6 +124,6 @@ ADR 一旦写入不可修改内容。需要变更决策时：新建 ADR（编号
 | 文件 | 面向 | 职责 |
 |------|------|------|
 | `REASONIX.md` | Agent（不可变前缀） | 本文件——项目宪法 |
-| `AGENTS.md` | Agent（session 首读） | 指向 `.harness/INDEX.md` + 螺旋更新规则 |
+| `AGENTS.md` | Agent（session 首读） | 指向 `.claude/INDEX.md` + 螺旋更新规则 |
 | `CLAUDE.md` | Agent（Claude 特化） | → `AGENTS.md` |
-| `README.md` | 人类开发者 | 项目介绍 + 快速上手 + 链接到 `.harness/` |
+| `README.md` | 人类开发者 | 项目介绍 + 快速上手 + 链接到 `.claude/` |

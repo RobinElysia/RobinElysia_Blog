@@ -90,9 +90,7 @@ export default async function BlogPage({
                         {formatDate(post.publishedAt)}
                       </time>
                       {post.tags.length > 0 && (
-                        <span className="truncate text-xs text-muted">
-                          {post.tags.join(" · ")}
-                        </span>
+                        <span className="truncate text-xs text-muted">{post.tags.join(" · ")}</span>
                       )}
                     </div>
                     <h2 className="mt-2 text-3xl font-semibold leading-snug transition-colors group-hover:text-muted">
@@ -110,7 +108,11 @@ export default async function BlogPage({
             <nav aria-label="分页" className="mt-14 flex items-center justify-center gap-2">
               {page > 1 && (
                 <Link
-                  href={tag ? `/blog?tag=${encodeURIComponent(tag)}&page=${page - 1}` : `/blog?page=${page - 1}`}
+                  href={
+                    tag
+                      ? `/blog?tag=${encodeURIComponent(tag)}&page=${page - 1}`
+                      : `/blog?page=${page - 1}`
+                  }
                   className="border border-line px-3 py-1 text-xs text-muted transition-colors hover:border-ink hover:text-ink"
                 >
                   上一页
@@ -132,7 +134,11 @@ export default async function BlogPage({
               ))}
               {page < totalPages && (
                 <Link
-                  href={tag ? `/blog?tag=${encodeURIComponent(tag)}&page=${page + 1}` : `/blog?page=${page + 1}`}
+                  href={
+                    tag
+                      ? `/blog?tag=${encodeURIComponent(tag)}&page=${page + 1}`
+                      : `/blog?page=${page + 1}`
+                  }
                   className="border border-line px-3 py-1 text-xs text-muted transition-colors hover:border-ink hover:text-ink"
                 >
                   下一页

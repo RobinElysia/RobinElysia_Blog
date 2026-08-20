@@ -95,13 +95,9 @@ function CardSlide({
 
   const x = useTransform(() => enterX.get() + exitX.get());
   const y = useTransform(() => enterY.get() + exitY.get());
-  const opacity = useTransform(
-    (): number => Math.min(enterOpacity.get(), exitOpacity.get()),
-  );
+  const opacity = useTransform((): number => Math.min(enterOpacity.get(), exitOpacity.get()));
   // 信息渐进渐出进度
-  const infoProgress = useTransform(
-    (): number => Math.min(enterOpacity.get(), exitOpacity.get()),
-  );
+  const infoProgress = useTransform((): number => Math.min(enterOpacity.get(), exitOpacity.get()));
 
   return (
     <div

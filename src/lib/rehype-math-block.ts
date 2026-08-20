@@ -28,9 +28,7 @@ export function rehypeMathBlock() {
   return (tree: HastNode) => {
     visit(tree as never, "element", (node: HastNode) => {
       if (node.tagName !== "pre") return;
-      const code = (node.children ?? []).find(
-        (c) => c.type === "element" && c.tagName === "code",
-      );
+      const code = (node.children ?? []).find((c) => c.type === "element" && c.tagName === "code");
       if (!code) return;
 
       const props = (code.properties ?? {}) as Record<string, unknown>;

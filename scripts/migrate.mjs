@@ -15,6 +15,7 @@ const pool = new Pool({ connectionString });
 try {
   const db = drizzle(pool);
   await migrate(db, { migrationsFolder: "./drizzle" });
+  // eslint-disable-next-line no-console -- 迁移脚本是 CLI 工具，输出是其职责（同 seed.ts）
   console.log("✓ 数据库迁移完成");
 } catch (err) {
   console.error("✗ 数据库迁移失败:", err);

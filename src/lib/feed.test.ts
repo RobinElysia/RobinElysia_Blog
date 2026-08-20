@@ -15,9 +15,7 @@ describe("escapeXml", () => {
 
 describe("toRfc822", () => {
   it("输出 UTC 格式", () => {
-    expect(toRfc822(new Date("2025-07-11T00:00:00Z"))).toBe(
-      "Fri, 11 Jul 2025 00:00:00 GMT",
-    );
+    expect(toRfc822(new Date("2025-07-11T00:00:00Z"))).toBe("Fri, 11 Jul 2025 00:00:00 GMT");
   });
 
   it("null 返回 epoch", () => {

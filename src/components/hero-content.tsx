@@ -19,11 +19,7 @@ export function HeroContent() {
   const letters = "ReZenKi".split("");
 
   return (
-    <motion.div
-      ref={ref}
-      style={{ opacity, y }}
-      className="relative z-10 px-6 text-center"
-    >
+    <motion.div ref={ref} style={{ opacity, y }} className="relative z-10 px-6 text-center">
       <h1 className="font-script text-8xl leading-none md:text-9xl" aria-label="ReZenKi">
         {letters.map((ch, i) => (
           <span

@@ -6,9 +6,9 @@ import { and, desc, eq, sql } from "drizzle-orm";
 /**
  * 数据访问层 —— 所有数据库查询集中于此。
  *
- * 缓存策略（见 .harness/data-layer/caching-and-revalidation.md）：
+ * 缓存策略（见 .claude/data-layer/caching-and-revalidation.md）：
  * - 数据库查询不走 fetch Data Cache，用 unstable_cache 函数级缓存
- * - tag 规范：post:{slug} / post-list，写入后 revalidateTag
+ * - tag 规范：统一 post-list（全站粒度），写入后 revalidateTag("post-list", "max")
  */
 
 /** 已发布文章列表（首页 /blog），按发布时间倒序 */
@@ -101,7 +101,10 @@ export async function getPostsPage(page = 1, pageSize = 10) {
           .orderBy(desc(posts.publishedAt))
           .limit(pageSize)
           .offset(offset),
-        db.select({ count: sql<number>`count(*)` }).from(posts).where(eq(posts.status, "published")),
+        db
+          .select({ count: sql<number>`count(*)` })
+          .from(posts)
+          .where(eq(posts.status, "published")),
       ]);
       const total = Number(countRows[0]?.count ?? 0);
       return { items, total, totalPages: Math.max(1, Math.ceil(total / pageSize)) };
@@ -122,23 +125,13 @@ export async function getAdjacentPosts(slug: string, publishedAt: Date | string 
         db
           .select({ slug: posts.slug, title: posts.title })
           .from(posts)
-          .where(
-            and(
-              eq(posts.status, "published"),
-              sql`${posts.publishedAt} < ${ts}`,
-            ),
-          )
+          .where(and(eq(posts.status, "published"), sql`${posts.publishedAt} < ${ts}`))
           .orderBy(desc(posts.publishedAt))
           .limit(1),
         db
           .select({ slug: posts.slug, title: posts.title })
           .from(posts)
-          .where(
-            and(
-              eq(posts.status, "published"),
-              sql`${posts.publishedAt} > ${ts}`,
-            ),
-          )
+          .where(and(eq(posts.status, "published"), sql`${posts.publishedAt} > ${ts}`))
           .orderBy(posts.publishedAt)
           .limit(1),
       ]);
@@ -166,7 +159,10 @@ export async function getRelatedPosts(slug: string, tags: string[], limit = 3) {
         .where(
           and(
             eq(posts.status, "published"),
-            sql`${posts.tags} && ARRAY[${sql.join(tags.map((t) => sql`${t}`), sql`, `)}]`,
+            sql`${posts.tags} && ARRAY[${sql.join(
+              tags.map((t) => sql`${t}`),
+              sql`, `,
+            )}]`,
             sql`${posts.slug} != ${slug}`,
           ),
         )

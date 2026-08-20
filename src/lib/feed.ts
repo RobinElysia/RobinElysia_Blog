@@ -1,6 +1,6 @@
 /**
  * RSS 2.0 生成 —— 纯函数，可单元测试
- * 见 .harness/api/route-handlers.md
+ * 见 .claude/api/route-handlers.md
  */
 
 export type FeedItem = {

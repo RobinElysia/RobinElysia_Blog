@@ -4,15 +4,11 @@ import { auth, signOut } from "@/lib/auth";
 
 /**
  * Dashboard 布局 —— 集中鉴权（C 端不需要，仅后台）
- * 见 .harness/architecture/app-router-map.md「鉴权边界」
+ * 见 .claude/architecture/app-router-map.md「鉴权边界」
  */
 export const dynamic = "force-dynamic";
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   if (!session) redirect("/login");
 

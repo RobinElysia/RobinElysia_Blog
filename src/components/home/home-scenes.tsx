@@ -20,7 +20,10 @@ export function HomeScenes({
   }[];
 }) {
   return (
-    <div data-scroll-container className="h-[calc(100dvh-57px)] snap-y snap-mandatory overflow-y-auto">
+    <div
+      data-scroll-container
+      className="h-[calc(100dvh-57px)] snap-y snap-mandatory overflow-y-auto"
+    >
       {/* Scene 1：3D 波浪 Hero（全屏） */}
       <section className="relative h-full snap-start">
         <Hero />

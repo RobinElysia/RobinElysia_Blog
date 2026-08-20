@@ -10,15 +10,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## 必读（每次 session 第一步）
 
-1. **`.harness/INDEX.md`** — 文档总索引，了解全部文档的用途和必读顺序
-2. **`.harness/loop-engine/loop-protocol.md`** — 五阶段 Agent 循环（READ → PLAN → ACT → VERIFY → ARCHIVE），所有代码修改必须走此流程
-3. **`.harness/onboarding/how-agents-should-read-this-repo.md`** — 16 步阅读指南 + 修改代码前的文档映射表
+1. **`.claude/INDEX.md`** — 文档总索引，了解全部文档的用途和必读顺序
+2. **`.claude/loop-engine/loop-protocol.md`** — 五阶段 Agent 循环（READ → PLAN → ACT → VERIFY → ARCHIVE），所有代码修改必须走此流程
+3. **`.claude/onboarding/how-agents-should-read-this-repo.md`** — 16 步阅读指南 + 修改代码前的文档映射表
 
 ## 核心约束
 
 ### 螺旋增量式更新
 
-**每当你修改了代码，必须同步更新对应的 `.harness/` 文档。更新方式是融合（fusion），不是追加（append）。**
+**每当你修改了代码，必须同步更新对应的 `.claude/` 文档。更新方式是融合（fusion），不是追加（append）。**
 
 - 不要创建新的"补充说明"文件
 - 不要在文档顶部追加段落
@@ -58,4 +58,4 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **框架**：Next.js 16 + TypeScript strict + Tailwind CSS 4
 - **内容**：MDX 文件（`src/content/`）
 - **部署**：Vercel
-- **详见**：`.harness/architecture/system-overview.md`
+- **详见**：`.claude/architecture/system-overview.md`

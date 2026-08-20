@@ -2,19 +2,13 @@
 
 /**
  * 全局错误边界（路由级 error.tsx，需 Client Component）
- * 规范见 .harness/design/loading-and-error-states.md
+ * 规范见 .claude/design/loading-and-error-states.md
  */
-export default function GlobalError({
-  reset,
-}: {
-  reset: () => void;
-}) {
+export default function GlobalError({ reset }: { reset: () => void }) {
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-24 text-center">
       <h1 className="text-3xl font-semibold">出了点问题</h1>
-      <p className="mt-4 text-sm leading-6 text-muted">
-        页面加载失败，请稍后重试。
-      </p>
+      <p className="mt-4 text-sm leading-6 text-muted">页面加载失败，请稍后重试。</p>
       <button
         type="button"
         onClick={reset}

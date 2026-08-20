@@ -16,7 +16,10 @@ export const rezenkiCodeTheme: ThemeInput = {
   },
   tokenColors: [
     // 注释：最浅灰
-    { scope: ["comment", "punctuation.definition.comment"], settings: { foreground: "var(--color-muted)" } },
+    {
+      scope: ["comment", "punctuation.definition.comment"],
+      settings: { foreground: "var(--color-muted)" },
+    },
     // 关键字/类型：最深黑
     {
       scope: ["keyword", "storage.type", "storage.modifier", "storage"],
@@ -40,6 +43,9 @@ export const rezenkiCodeTheme: ThemeInput = {
     // 类型名
     { scope: ["entity.name.type", "support.type"], settings: { foreground: "var(--color-ink)" } },
     // 变量/属性：默认文字色
-    { scope: ["variable", "variable.other", "entity.name.variable"], settings: { foreground: "var(--color-ink)" } },
+    {
+      scope: ["variable", "variable.other", "entity.name.variable"],
+      settings: { foreground: "var(--color-ink)" },
+    },
   ],
 };

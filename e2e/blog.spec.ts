@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * 博客核心流程 E2E（5 条，见 .harness/testing/e2e-testing.md）
+ * 博客核心流程 E2E（6 条，见 .claude/testing/e2e-testing.md）
  * 前置：pnpm seed（数据）、pnpm build（webServer 自动）
  */
 

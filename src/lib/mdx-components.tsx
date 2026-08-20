@@ -14,7 +14,7 @@ type MDXComponents = Record<string, ComponentType<Record<string, unknown>>>;
  *   <Callout type="note">内容</Callout>
  *   <MathBlock>\int_0^1 x^2 dx</MathBlock>   ← 块级公式（服务端渲染，100% 可靠）
  *   <ZoomableImage src="/x.jpg" alt="..." />
- * 规范见 .harness/design/motion-and-interaction.md（黑白克制）
+ * 规范见 .claude/design/motion-and-interaction.md（黑白克制）
  */
 export const mdxComponents: MDXComponents = {
   // 提示框：左侧粗线 + 浅底，黑白 token
