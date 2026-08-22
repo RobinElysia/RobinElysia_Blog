@@ -102,7 +102,7 @@ export function ArchiveChapter({
           <p className="text-xs tracking-[0.35em] text-muted uppercase">Archive</p>
           <h2 className="mt-3 text-4xl font-medium leading-tight md:text-5xl">档案</h2>
           <p className="mt-4 max-w-lg text-sm leading-6 text-muted">
-            按年份归档的全部文章——写作是克制的禅意，展示也是。
+            按年份归档的全部文章——写作是克制，展示也是。
           </p>
         </FadeBlock>
 
