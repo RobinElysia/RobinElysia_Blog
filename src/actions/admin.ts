@@ -7,6 +7,8 @@ import { db } from "@/lib/db";
 import { posts } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
+import { getImageById, parseImageIdFromSrc } from "@/lib/images";
+import { formatCredit } from "@/lib/archive-images";
 
 /**
  * Dashboard 管理 Server Actions —— 全部先鉴权
@@ -32,7 +34,7 @@ const postSchema = z.object({
     .regex(/^[a-z0-9\u4e00-\u9fa5-]+$/, "slug 只允许小写字母、数字、中文和连字符"),
   excerpt: z.string().trim().min(1, "摘要不能为空").max(500),
   content: z.string().trim().min(1, "正文不能为空"),
-  // 封面图片（可选）：空字符串 → null；路径（/archive/...）或 URL
+  // 封面图片（可选）：空字符串 → null；/api/images/{id}（编辑器档案图绑定）或 /archive/ 路径或 URL
   coverImage: z
     .string()
     .trim()
@@ -47,6 +49,33 @@ const postSchema = z.object({
   ),
   status: z.enum(["draft", "published"]),
 });
+
+/**
+ * 封面署名解析（v0.22.0）：
+ * - coverImage 是 /api/images/{id} → 查 images 表元数据生成署名行（服务端生成，不信任客户端）
+ * - 其他（/archive/ 静态路径 / 外链 URL / null）→ coverCredit = null，展示层回退 slug 映射
+ * - 引用了不存在的图片 id → 返回错误（防止编辑器绑定已清扫的孤儿图）
+ */
+async function resolveCoverCredit(
+  coverImage: string | null,
+): Promise<{ credit: string | null; error?: string }> {
+  if (!coverImage) return { credit: null };
+  const id = parseImageIdFromSrc(coverImage);
+  if (id === null) return { credit: null };
+  const img = await getImageById(id);
+  if (!img) return { credit: null, error: "绑定的封面图片不存在，请重新选择" };
+  return {
+    credit: formatCredit({
+      src: coverImage,
+      title: img.title ?? "",
+      creator: img.creator ?? "",
+      date: img.date ?? "",
+      source: img.source ?? "",
+      sourceUrl: img.sourceUrl ?? "",
+      license: img.license ?? "",
+    }),
+  };
+}
 
 /** 新建文章 */
 export async function createPost(formData: FormData): Promise<ActionResult> {
@@ -66,8 +95,12 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "表单不合法" };
   }
 
+  const cover = await resolveCoverCredit(parsed.data.coverImage);
+  if (cover.error) return { ok: false, error: cover.error };
+
   await db.insert(posts).values({
     ...parsed.data,
+    coverCredit: cover.credit,
     publishedAt: parsed.data.status === "published" ? new Date() : null,
   });
 
@@ -93,10 +126,14 @@ export async function updatePost(postId: number, formData: FormData): Promise<Ac
     return { ok: false, error: parsed.error.issues[0]?.message ?? "表单不合法" };
   }
 
+  const cover = await resolveCoverCredit(parsed.data.coverImage);
+  if (cover.error) return { ok: false, error: cover.error };
+
   await db
     .update(posts)
     .set({
       ...parsed.data,
+      coverCredit: cover.credit,
       // 从草稿发布时设置发布时间；保持已发布文章的 publishedAt 不变
       publishedAt: parsed.data.status === "published" ? new Date() : null,
     })

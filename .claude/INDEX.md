@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: architecture
-last-updated: 2026-08-20
+last-updated: 2026-08-22
 ---
 
 # .claude 文档总索引
@@ -53,6 +53,7 @@ last-updated: 2026-08-20
 | `architecture/adr/0003-state-management-choice.md` | 不使用全局状态库的决策及触发重新评估的信号 | stable |
 | `architecture/adr/0004-supersedes-0003-xxx.md` | 预留：推翻 0003 时在此声明 supersedes | draft |
 | `architecture/adr/0005-database-and-orm.md` | PostGre + Drizzle 选型、评论自建（存 Markdown 原文） | stable |
+| `architecture/adr/0006-editor-archive-cover-candidates.md` | 编辑器档案图候选管线：Wellcome 直连 + BYTEA 入库 + cover_credit + 孤儿清扫 | stable |
 
 ### conventions/ — 代码规范与编写约定
 
@@ -91,7 +92,7 @@ last-updated: 2026-08-20
 
 | 文件 | 用途 | 状态 |
 |------|------|------|
-| `design/visual-style-guide.md` | Design Token（暖纸五色、Italianno 花体 + EB Garamond 衬线 + 系统栈）、图像规范 | **stable**（品牌 RobinElysia 已定稿） |
+| `design/visual-style-guide.md` | Design Token（暖纸五色、Italianno 花体 + EB Garamond 衬线 + 系统栈）、图像规范 | **stable**（品牌 ReZenKi 已定稿） |
 | `design/layout-patterns.md` | 全局布局、页面布局模式（首页/详情/Dashboard）、约束 | stable |
 | `design/motion-and-interaction.md` | 动效总则、动画分类落地表、禁用清单（含做旧特效）、Server/Client 边界约束 | stable |
 | `design/loading-and-error-states.md` | Loading/Error 策略矩阵、Skeleton 设计原则、error.tsx 规范 | stable |
@@ -130,7 +131,9 @@ last-updated: 2026-08-20
 | `releases/0008-editor-and-rendering-report.md` | 编辑器与渲染增强报告（v0.7.0） | review-snapshot |
 | `releases/0009-harness-sync-report.md` | Harness 文档-代码同步报告（v0.20.0，五阶段 S1-S5） | review-snapshot |
 | `releases/0010-ui-scroll-narrative-report.md` | UI 优化与滚动叙事报告（v0.21.0：章节叙事/档案图/token 迁移） | review-snapshot |
-| `releases/migrations/` | 数据库 / 数据迁移脚本 | 暂无 |
+| `releases/0011-harness-consistency-fix-report.md` | Harness 自洽性修复报告（内容存储断言/工具名对齐/清理工具落地/门禁扩展） | review-snapshot |
+| `releases/0012-archive-cover-candidates-report.md` | 编辑器档案图候选报告（Wellcome 直连/编辑器绑定/署名/孤儿清扫） | review-snapshot |
+| `releases/migrations/` | 数据库 / 数据迁移脚本 | `0001-brand-rezenki.sql` |
 
 ### future/ — 未来规划
 
@@ -162,18 +165,18 @@ last-updated: 2026-08-20
 | 分类 | 总数 | stable | draft | not-applicable | review-snapshot |
 |------|------|--------|-------|----------------|-----------------|
 | onboarding | 1 | 1 | 0 | 0 | 0 |
-| architecture | 11 | 10 | 1 | 0 | 0 |
+| architecture | 12 | 11 | 1 | 0 | 0 |
 | conventions | 9 | 8 | 0 | 1 | 0 |
 | data-layer | 4 | 4 | 0 | 0 | 0 |
 | loop-engine | 3 | 3 | 0 | 0 | 0 |
 | design | 5 | 5 | 0 | 0 | 0 |
 | api | 4 | 1 | 3 | 0 | 0 |
 | testing | 4 | 4 | 0 | 0 | 0 |
-| releases | 11 | 1 | 0 | 0 | 10 |
+| releases | 13 | 1 | 0 | 0 | 12 |
 | future | 2 | 2 | 0 | 0 | 0 |
 | task | 1 | 1 | 0 | 0 | 0 |
 | problem | 2 | 2 | 0 | 0 | 0 |
-| **合计** | **57** | **42** | **4** | **1** | **10** |
+| **合计** | **60** | **43** | **4** | **1** | **12** |
 
 ---
 

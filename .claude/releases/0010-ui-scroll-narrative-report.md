@@ -31,7 +31,7 @@ review-scope: v0.21.0 UI 优化 + 章节式长滚动叙事 + 档案图落地 + t
 | pnpm test | 30/30 ✅ |
 | pnpm format:check | ✅ |
 | pnpm harness:check | ✅（158 files；契约层一致） |
-| 本地 E2E | 未跑（robinelysia-postgres 容器缺失，环境性；CI 覆盖） |
+| 本地 E2E | 未跑（rezenki-postgres 容器缺失，环境性；CI 覆盖） |
 | 黑白双模式 | 静态核对 token 两套值落地（未目测，需用户在 dev 环境验收） |
 
 ## 三、已登记遗留
@@ -51,6 +51,6 @@ review-scope: v0.21.0 UI 优化 + 章节式长滚动叙事 + 档案图落地 + t
 | P1 | 首页文章卡片图片"网络正常但看不见"（疑被遮挡） | **R4 motion 数字源陷阱**：`useSpring(number)`/无源 `useTransform(() => n)` 不追踪后续变化，卡片 opacity 恒 0、transform 恒 75px——卡片整体透明，非 z-index/图层遮挡（Playwright 探针实测：img opacity 1、elementFromPoint 命中 img 自身） | `scene-carousel.tsx`/`hero-content.tsx` 改 `useMotionValue` + effect `mv.set()` 源同步；多源组合改有源 `useTransform([a,b], fn)` |
 | P2 | 手写进入动画太快 | 描画 1.6s 偏快，缺书写从容感 | 描画 2.8s（cubic-bezier(0.22,1,0.36,1)）+ 墨色渐入 2.7s 起 0.6s；淡出 3.6s / 卸载 4.4s |
 | P3 | 档案→落款缺转场动效（用户要求补） | 档案章为静态排版、落款无入场 | 档案章题/年份头/文章依次从左滑入（stagger 0.08）；滚向落款时整章向视口中心收缩（scale 1→0.85 + 淡出）；落款签名式入场（签名落笔回正 → 墨线展开 → © 行 → 链接行错峰浮现）；双向可逆 + reduced-motion 纯淡入 |
-| P4 | 转场"一顿一顿"；档案帖子方向反转；落款要手写；补局部背景图（用户二轮反馈） | ① snap-mandatory 逐页捕捉 + useSpring 滞后 + three 波浪滚出视口后仍吃满主线程（无 GPU 实测 2fps）；② 原方向与用户意图相反 | ① wheel 平滑翻页接管（easeInOut 2s + 120px 中断阈值）；卡片/档案动效去 spring 改纯函数缓动；three 渲染循环加 1s rect 轮询可见性暂停（修复后 headless 转场 45fps+）；② 帖子改右入左出（x 48→0）、退场原路返回（倒序 x 0→48）、其他元素纯淡出；③ 落款 RobinElysia 改 SVG 手写描画（draw-stroke 2.4s + 墨色渐入 + 文字行错峰约 3s）；④ MCP 取 Wellcome 蚀刻 2 张（1848 书房书架 / 磨鹅毛笔书写者）作章节局部背景（multiply 水印底纹） |
+| P4 | 转场"一顿一顿"；档案帖子方向反转；落款要手写；补局部背景图（用户二轮反馈） | ① snap-mandatory 逐页捕捉 + useSpring 滞后 + three 波浪滚出视口后仍吃满主线程（无 GPU 实测 2fps）；② 原方向与用户意图相反 | ① wheel 平滑翻页接管（easeInOut 2s + 120px 中断阈值）；卡片/档案动效去 spring 改纯函数缓动；three 渲染循环加 1s rect 轮询可见性暂停（修复后 headless 转场 45fps+）；② 帖子改右入左出（x 48→0）、退场原路返回（倒序 x 0→48）、其他元素纯淡出；③ 落款 ReZenKi 改 SVG 手写描画（draw-stroke 2.4s + 墨色渐入 + 文字行错峰约 3s）；④ MCP 取 Wellcome 蚀刻 2 张（1848 书房书架 / 磨鹅毛笔书写者）作章节局部背景（multiply 水印底纹） |
 
 P1 验证（Playwright 探针，dev:3001）：逐屏滚动 4 张卡片页——每屏当前卡片 motion 容器 opacity 1、transform 归零、未被遮挡；其余卡片视口外 opacity 0；build/typecheck/lint/harness 全绿。

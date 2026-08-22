@@ -8,11 +8,11 @@ import { test, expect } from "@playwright/test";
 test.describe("博客核心流程", () => {
   test("首页章节叙事（视差舞台 Hero + 逐卡翻页 + 档案 + 章节导航）", async ({ page }) => {
     test.setTimeout(60_000);
-    // 跳过 RobinElysia 手写 intro（非本测试目标；overlay 会挡点击 + 拖慢预算）
+    // 跳过 ReZenKi 手写 intro（非本测试目标；overlay 会挡点击 + 拖慢预算）
     await page.addInitScript(() => sessionStorage.setItem("intro-played", "1"));
     await page.goto("/", { waitUntil: "domcontentloaded" });
     // Ch.00 序：衬线大标题 + 主图舞台（v0.21.3 删 3D 水波纹，无 canvas）+ 散落图集
-    await expect(page.getByRole("heading", { name: "RobinElysia", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "ReZenKi", exact: true })).toBeVisible();
     await expect(page.getByText("Scroll To Explore")).toBeVisible();
     await expect(page.locator("img[src*='hero-paradise']")).toBeVisible();
     await expect(page.locator("[data-hero-scatter]")).toHaveCount(6);
@@ -27,7 +27,7 @@ test.describe("博客核心流程", () => {
     await expect(
       page
         .getByRole("region", { name: "落款" })
-        .getByText("© 2025 RobinElysia · Robin And Elysia"),
+        .getByText("© 2025 ReZenKi · ReZen And KiKi"),
     ).toBeVisible({ timeout: 10_000 });
     // 档案帖子原路返回（x 归位 48px + 淡出）+ 落款手写签名完成（滚动驱动/触发式动效不回归）
     await expect(page.locator("[data-archive-post]").first()).toHaveCSS("opacity", "0");
@@ -44,8 +44,8 @@ test.describe("博客核心流程", () => {
 
   test("点击文章进入详情，正文与 TOC 渲染", async ({ page }) => {
     await page.goto("/blog");
-    await page.getByRole("link", { name: /你好，RobinElysia/ }).click();
-    await expect(page).toHaveURL(/\/blog\/hello-robinelysia/);
+    await page.getByRole("link", { name: /你好，ReZenKi/ }).click();
+    await expect(page).toHaveURL(/\/blog\/hello-rezenki/);
     // 页面标题（MDX 正文 h1 与页面 h1 同名，取页面 header 内的）
     await expect(page.locator("article header h1")).toBeVisible();
     // MDX 正文渲染（h2 标题来自 Markdown）
@@ -59,7 +59,7 @@ test.describe("博客核心流程", () => {
   });
 
   test("提交评论显示成功提示", async ({ page }) => {
-    await page.goto("/blog/hello-robinelysia");
+    await page.goto("/blog/hello-rezenki");
     await page.getByLabel("昵称").fill("E2E 测试");
     await page.getByLabel("评论内容").fill("端到端测试评论。");
     await page.getByRole("button", { name: "提交评论" }).click();

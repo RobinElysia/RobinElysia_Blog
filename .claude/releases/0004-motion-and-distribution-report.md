@@ -30,7 +30,7 @@ related-adr: []
 |------|----------|
 | `/feed.xml` | 200 + `application/rss+xml` + 文章条目 ✅ |
 | `/sitemap.xml` | 200 + urlset + 文章 loc ✅ |
-| `/blog?tag=meta` | 命中「你好，RobinElysia」，不含其他文章，筛选栏高亮 ✅ |
+| `/blog?tag=meta` | 命中「你好，ReZenKi」，不含其他文章，筛选栏高亮 ✅ |
 | 全路由状态码 | 首页/列表/详情 200；草稿/不存在 404 ✅ |
 
 ## 三、新增/变更文件

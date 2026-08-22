@@ -1,10 +1,27 @@
 ---
 status: stable
 owner: releases
-last-updated: 2026-08-20
+last-updated: 2026-08-22
 ---
 
 # 版本变更日志
+
+## [Unreleased] — 2026-08-22
+
+### Added
+- **友链页（用户要求，先静态后动画）**：`/links` 页面 + 导航栏「友链」字段；数据 `src/lib/friends.ts`（9 位友站，静态不动 DB，SSG）；卡片含头像（远程源 unoptimized 直连 + 首字母占位兜底）/描述/tag 徽章；无链接条目渲染「链接待补充」卡片；tag 三色为站长指定例外色（DESIGN.md §2 例外条款，`--color-friend-*` 亮/暗两套）
+- **编辑器档案图候选（用户要求，ADR-0006）**：编辑页「获取 3 张」直连 Wellcome API（免 key）检索公共领域藏品 → license 白名单过滤 + 站内已用 work id 去重 → 下载 3 张入 PostGre（images 表 kind='cover' + 元数据列）→ 点选 1 张绑定封面；保存时服务端生成 `posts.cover_credit` 署名行，PostCard/CardInfo 优先展示；未选中候选 24h 孤儿清扫
+- **浮动底栏（用户要求）**：文章/归档/关于/友链页（含文章详情）的页脚改为固定视口底部的浮动底栏——**下滚出现、上滚隐藏**（fade + 16px，0.35s，easeOutQuint；reduced-motion 降级），顶部恒隐、底部恒显、内容短于一屏恒显；首页/登录/Dashboard/404 保持静态页脚不变
+- 迁移 `0002_overconfident_gamma_corps`：images + kind/source_id/元数据 7 列；posts + cover_credit
+- `src/lib/archive-source.test.ts`：14 个纯函数单测（URL 构造/license 白名单/主题池/命中过滤）
+- `eslint-plugin-react` 显式声明为 devDependency（`react/jsx-no-leaked-render` 依赖它；pnpm 严格模式不提升传递依赖，eslint.config.mjs 显式注册修复解析失败）
+
+### Changed
+- **品牌全项目改回 ReZenKi（用户要求，镜像 0.21.0 改名）**：全称更新为 **ReZen And KiKi**——ReZen 与 KiKi 两个人（废弃 RefrainZen 表述）；34+ 文件替换——UI 文案/metadata/RSS/JSON-LD/about/登录/落款/手写 intro、代码注释、.claude 文档、DEPLOY/README/REASONIX/DESIGN/Caddyfile/Dockerfile/compose；名字含义文案重写（ReZen = 克制的禅意；KiKi = 陪伴的伙伴）——about 页、seed 模板、DB 正文同步；`hello-robinelysia` → `hello-rezenki`（slug、档案图文件 git mv、archive-images 键、e2e 断言）；`robinElysiaCodeTheme` → `rezenkiCodeTheme`（shiki 主题名同步）；花体 6 字符长度适配：Hero clamp 响应式字号、header text-2xl、login text-5xl、intro/colophon SVG viewBox 980→640 收窄；`.env` `PROD_ADMIN_USERNAME=RobinElysia → ReZenKi`（GitHub 白名单保留——账号标识，与品牌无关）；DB 迁移脚本 `releases/migrations/0001-brand-rezenki.sql`（本地已执行，线上按 DEPLOY.md 部署时同步）
+- **Harness 自洽性修复**（详见 0011 报告）：`AGENTS.md` / `runtime-and-deployment.md` 内容存储断言与代码对齐（PostgreSQL `posts` 表存 Markdown 原文，删除过时的 src/content 断言）；`loop-protocol.md` 工具名补 harness 通用等价名；`auto-cleanup.md` 补 ts-prune/depcheck 误报例外；`seed.ts` 历史叙述去 `src/content/` 路径
+- `ts-prune@0.10.3` + `depcheck@1.4.7` 落地 devDependencies（auto-cleanup 清单 1/2 工具），登记 tech-radar
+- `scripts/harness-check.mjs` 新增"内容存储断言漂移"门禁检查（`MDX 文件…src/content/` 正面断言 = 漂移，豁免 releases/ADR/脚本自身）
+- DESIGN.md §4 补"编辑器内置取图"小节（选图准则/署名格式/技术约束对编辑器管线同样生效）
 
 ## [0.21.3] — 2026-08-20
 

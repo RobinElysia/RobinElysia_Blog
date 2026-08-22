@@ -2,7 +2,7 @@
 status: stable
 owner: design
 implementation-status: in-progress  # token/字体已落地代码（2026-08-20）；图像规范（档案图）落地中
-last-updated: 2026-08-20
+last-updated: 2026-08-22
 ---
 
 # DESIGN.md — 简约复古艺术风视觉总纲
@@ -21,7 +21,7 @@ last-updated: 2026-08-20
 
 ## 1. 风格定位
 
-**RobinElysia 是一本"档案馆气质"的个人博客——简约复古艺术风。**
+**ReZenKi 是一本"档案馆气质"的个人博客——简约复古艺术风。**
 
 一句话判据：**页面读起来应该像一份被精心排版的博物馆图录，而不是一个技术博客模板。**
 
@@ -60,6 +60,8 @@ last-updated: 2026-08-20
 
 > **为什么不引入复古强调色（朱砂红/普鲁士蓝）？**
 > 一旦 UI 有了自己的强调色，它就会和藏品图的固有色抢戏——Getty 的做法恰恰证明了双色 UI 反而让藏品更"colorful"。保留此选项为未来 ADR 议题，当前不采用。
+
+> **⚠️ 友链 tag 例外（2026-08-22 用户要求）**：友链页标签使用站长指定的三色（紫/绿/橙）作为**内容色彩**，不是 UI 强调色——它们标记的是友站主人的身份信息（与藏品图同理，属于"页面承载的内容"而非"本站 UI 自己的发声"）。约束：① 仅限 `/links` 页 tag 徽章，不扩散到其他页面/组件；② 低彩度克制值（亮/暗两套，`--color-friend-*` token，见 visual-style-guide.md）；③ 徽章文字/边框用色，底色保持透明（纸色透出）。
 
 ### Token 值
 
@@ -206,6 +208,18 @@ last-updated: 2026-08-20
 ```
 
 > Key 申请：Smithsonian → [api.data.gov/signup](https://api.data.gov/signup/)；Europeana → [pro.europeana.eu/page/get-api](https://pro.europeana.eu/page/get-api)。均免费、2 分钟内完成。缺 key 时对应工具返回带注册地址的错误提示，不影响其余工具。
+
+### 编辑器内置取图（v0.22.0，ADR-0006）
+
+MCP 手动取图流程（上节）保留给一次性/装饰性图片（Hero、散落图、背景）。文章封面的取图已内置进编辑器：
+
+- **入口**：文章编辑页「档案图候选」——可选关键词，点击「获取 3 张」；
+- **管线**：服务端直连 Wellcome API（MCP 同源逻辑，免 key）→ license 白名单 → 排除站内已用 work id → 下载 3 张入 PostGre（`images` 表 `kind='cover'`，与粘贴上传同管道）；
+- **绑定**：点击候选填入封面字段，保存时服务端从图片元数据生成署名行（`posts.cover_credit`），展示层优先显示；
+- **去重**：`images.source_id` 记录已取 work id，同一藏品不再重复推荐；
+- **清扫**：未选中的候选图 24h 后自动清除。
+
+选图准则、署名格式、技术约束（上三节）对编辑器取图**同样生效**——license 白名单在管线中强制执行，署名行自动生成，不再依赖人工登记。
 
 ### 选图准则
 

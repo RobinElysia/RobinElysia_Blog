@@ -22,6 +22,7 @@ export const getPublishedPosts = unstable_cache(
         excerpt: posts.excerpt,
         tags: posts.tags,
         coverImage: posts.coverImage,
+        coverCredit: posts.coverCredit,
         publishedAt: posts.publishedAt,
       })
       .from(posts)

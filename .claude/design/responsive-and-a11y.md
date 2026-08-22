@@ -81,6 +81,8 @@ last-updated: 2026-08-20
 
 > **⚠️ CSS 全局降级对 JS 驱动动效无效**（2026-08-20 教训 D4）：首页逐卡翻页/章节转场用 `useMotionValue`/`useSpring` 驱动 transform，不经 CSS animation/transition——必须由组件侧 `matchMedia('(prefers-reduced-motion: reduce)')` 显式判断：关闭位移/旋转转场（保留淡入与 snap），指示器保持可用。验收项：系统开 reduce 后，首页无位移动效、章节跳转可用。
 
+> **浮动底栏无障碍（v0.22.x）**：文章/归档/关于页的浮动底栏（`site-footer.tsx`）随滚动显隐。隐藏时 `aria-hidden` + `opacity: 0`；底栏内无交互元素且 `pointer-events-none`，不拦截内容点击、不进 Tab 序。键盘滚动（方向键/空格/PgUp/PgDn）与滚轮同样触发 scroll 事件，显隐一致。reduced-motion 下由 `useReducedMotion` 关闭位移、保留淡入。
+
 ## 检测工具
 
 | 工具 | 用途 | 如何运行 |

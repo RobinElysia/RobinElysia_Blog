@@ -30,7 +30,7 @@ related-adr: []
 
 1. **全局 loading.tsx 让 404 状态码回归 200**（v0.4.1 修复后复发）：app/loading.tsx 包裹全部路由（含 [slug]）。**决策：本项目全局不配 loading.tsx**（查询有 unstable_cache 兜底），组件级 Suspense 是替代。文档已更新。
 2. **unstable_cache Date 序列化**：缓存命中后 publishedAt 从 Date 变 string，归档页 `getFullYear is not a function`。消费方统一 `new Date()`；tech-debt 记录"数据访问层应统一序列化日期为 string 类型标注"。
-3. **shiki 4 移除 css-variables 主题**：编译时报 "Theme not included in bundle"。自建 `robinElysiaCodeTheme`（tokenColors + CSS 变量色值）。
+3. **shiki 4 移除 css-variables 主题**：编译时报 "Theme not included in bundle"。自建 `rezenkiCodeTheme`（tokenColors + CSS 变量色值）。
 
 ## 三、当前博客功能全景
 

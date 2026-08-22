@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: loop-engine
-last-updated: 2026-08-20
+last-updated: 2026-08-22
 ---
 
 # Agent Loop 协议
@@ -30,7 +30,7 @@ last-updated: 2026-08-20
 - 读取 `.claude/INDEX.md` 确定涉及的文档模块
 - 读取相关 `architecture/` 文档理解系统设计
 - 读取相关 `conventions/` 文档确认编码约束
-- 使用 `search_content` 确认符号位置，不靠记忆推断
+- 使用搜索工具确认符号位置，不靠记忆推断（如 Claude Code `search_content` / DSH `grep`、`glob`）
 
 **失败条件**：找不到目标代码、文档缺失导致无法理解现有行为。
 
@@ -59,7 +59,7 @@ last-updated: 2026-08-20
 
 **必须执行**：
 - 严格按计划执行，不自行扩大变更范围
-- 使用 `edit_file`（小改）或 `multi_edit`（跨文件同主题改）或 `write_file`（新文件）
+- 使用编辑工具：小改用精确替换（`edit_file` / `edit`），跨文件同主题改用批量编辑（`multi_edit`），新文件用全文写入（`write_file` / `write`）
 - 每完成一个逻辑步骤，执行该步骤对应的验证
 
 **禁止**：

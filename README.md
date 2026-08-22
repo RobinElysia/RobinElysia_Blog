@@ -1,6 +1,6 @@
 # Blog
 
-基于 Next.js 16 的个人博客（品牌 RobinElysia · 简约复古艺术风）。TypeScript strict + Tailwind CSS 4。
+基于 Next.js 16 的个人博客（品牌 ReZenKi · 简约复古艺术风）。TypeScript strict + Tailwind CSS 4。
 
 ## 快速开始
 

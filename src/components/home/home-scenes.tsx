@@ -37,6 +37,7 @@ export function HomeScenes({
     publishedAt: Date | string | null;
     tags?: string[];
     coverImage?: string | null;
+    coverCredit?: string | null;
   }[];
 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -185,12 +186,7 @@ export function HomeScenes({
       className="h-[calc(100dvh-var(--header-h))] overflow-y-auto"
     >
       {/* Ch.00 序：3D 波浪 Hero（原样保留） */}
-      <Chapter
-        id="chapter-00"
-        index={0}
-        label="序"
-        className="h-[calc(100dvh-var(--header-h))]"
-      >
+      <Chapter id="chapter-00" index={0} label="序" className="h-[calc(100dvh-var(--header-h))]">
         <Hero />
       </Chapter>
 

@@ -2,7 +2,7 @@
 @plugin "@tailwindcss/typography";
 
 /* ============================================
-   RobinElysia 简约复古艺术风 Design Token（暖纸五色）
+   ReZenKi 简约复古艺术风 Design Token（暖纸五色）
    规范见 .claude/design/visual-style-guide.md（定稿已落地 2026-08-20）
    黑白双模式：白模式（默认）↔ 黑模式（.dark class）
    所有组件必须使用 token 色（ink/paper/muted/line/code），禁止硬编码色值
@@ -29,6 +29,11 @@
   --font-sans:
     var(--font-inter), -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
     "Helvetica Neue", Arial, sans-serif;
+
+  /* 友链 tag 例外色（站长指定，DESIGN.md §2 例外条款；仅限友链标签，亮/暗两套） */
+  --color-friend-purple: oklch(0.42 0.12 310);
+  --color-friend-green: oklch(0.45 0.11 155);
+  --color-friend-orange: oklch(0.5 0.12 65);
 }
 
 /* 黑模式：深褐墨底暖白字（.dark class，由 header 切换按钮 + localStorage 控制） */
@@ -38,6 +43,10 @@
   --color-muted: oklch(0.68 0.012 75);
   --color-line: oklch(0.32 0.014 65);
   --color-code: oklch(0.23 0.012 60);
+  /* 友链 tag 例外色（暗模式提亮） */
+  --color-friend-purple: oklch(0.76 0.1 310);
+  --color-friend-green: oklch(0.78 0.1 155);
+  --color-friend-orange: oklch(0.8 0.1 65);
 }
 
 /* 跟随系统（无手动选择时；.light class 显式锁定白模式） */

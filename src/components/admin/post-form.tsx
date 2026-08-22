@@ -7,6 +7,7 @@ import { slugify } from "@/lib/format";
 import { previewRemarkPlugins, previewRehypePlugins } from "@/lib/mdx-options";
 import { MermaidRenderer } from "@/components/mermaid";
 import { PRESET_GALLERY } from "@/lib/archive-images";
+import { ArchiveCandidatePicker } from "@/components/admin/archive-candidate-picker";
 import type { Post } from "@/lib/schema";
 
 /**
@@ -239,6 +240,8 @@ export function PostForm({ mode, post }: PostFormProps) {
             </button>
           ))}
         </div>
+
+        <ArchiveCandidatePicker />
       </div>
 
       <div>

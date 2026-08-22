@@ -3,7 +3,7 @@ import rehypeSlug from "rehype-slug";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import type { PluggableList } from "unified";
-import { robinElysiaCodeTheme } from "@/lib/code-theme";
+import { rezenkiCodeTheme } from "@/lib/code-theme";
 import { rehypeMathBlock } from "@/lib/rehype-math-block";
 
 /**
@@ -20,7 +20,7 @@ export const mdxOptions: { remarkPlugins: PluggableList; rehypePlugins: Pluggabl
   remarkPlugins: [remarkMath],
   rehypePlugins: [
     rehypeSlug,
-    [rehypePrettyCode, { theme: robinElysiaCodeTheme, keepBackground: false }],
+    [rehypePrettyCode, { theme: rezenkiCodeTheme, keepBackground: false }],
     rehypeMathBlock,
     rehypeKatex,
   ],
@@ -30,7 +30,7 @@ export const mdxOptions: { remarkPlugins: PluggableList; rehypePlugins: Pluggabl
 export const previewRemarkPlugins: PluggableList = [remarkMath];
 export const previewRehypePlugins: PluggableList = [
   rehypeSlug,
-  [rehypePrettyCode, { theme: robinElysiaCodeTheme, keepBackground: false }],
+  [rehypePrettyCode, { theme: rezenkiCodeTheme, keepBackground: false }],
   rehypeMathBlock,
   rehypeKatex,
 ];

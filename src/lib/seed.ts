@@ -32,18 +32,18 @@ function fillerPost(i: number) {
 
 const samplePosts = [
   {
-    slug: "hello-robinelysia",
-    coverImage: "/archive/hello-robinelysia-wellcome-V0049797.jpg",
-    title: "你好，RobinElysia",
+    slug: "hello-rezenki",
+    coverImage: "/archive/hello-rezenki-wellcome-V0049797.jpg",
+    title: "你好，ReZenKi",
     excerpt: "第一篇博客——关于这个网站的名字、风格，以及为什么开始写。",
-    content: `# 你好，RobinElysia
+    content: `# 你好，ReZenKi
 
-**RobinElysia** 由姓氏 *Robin* 与名字 *Elysia* 组成。
+**ReZenKi** 由 *ReZen* 与 *KiKi* 两个人组成。
 
 ## 名字的含义
 
-- **Elysia**：美好、梦幻的天堂——名字的意象
-- **Robin**：象征美好寓意的名字前缀
+- **ReZen**：克制的禅意——黑白、留白、杂志式的排版
+- **KiKi**：陪伴的伙伴——写下每一篇的冲动
 
 ## 风格
 
@@ -78,7 +78,7 @@ function greet(name: string): string {
 
 ## 背景
 
-最初设想是 MDX 文件方案——文章存在 src/content/，git 管理，CI 部署。
+最初设想是 MDX 文件方案——文章放代码仓库文件目录，git 管理，CI 部署。
 
 ## 为什么改
 
@@ -187,11 +187,11 @@ async function main() {
     // eslint-disable-next-line no-console -- 同上：CLI 进度输出
     console.log(`  ✓ ${post.slug} (id=${inserted.id})`);
 
-    if (post.slug === "hello-robinelysia") {
+    if (post.slug === "hello-rezenki") {
       await db.insert(comments).values({
         postId: inserted.id,
-        authorName: "Elysia",
-        content: "第一篇评论！欢迎来到 RobinElysia。",
+        authorName: "KiKi",
+        content: "第一篇评论！欢迎来到 ReZenKi。",
         status: "approved",
       });
     }

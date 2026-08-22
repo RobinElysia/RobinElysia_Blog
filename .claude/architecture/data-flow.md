@@ -1,8 +1,8 @@
 ---
 status: stable
 owner: architecture
-last-updated: 2026-08-20
-related-adr: [0002, 0005]
+last-updated: 2026-08-22
+related-adr: [0002, 0005, 0006]
 ---
 
 # 数据流完整链路
@@ -90,6 +90,42 @@ Next.js Server
 ```
 
 > ⚠️ **当前无内容审核**：评论提交即显示，唯一的防线是 IP 限流（进程内存实现，多实例部署下失效）。垃圾评论治理见 `future/roadmap.md`「评论反垃圾」。
+
+## 写数据链路：编辑器获取档案图候选（v0.22.0，ADR-0006）
+
+```
+用户浏览器（编辑器）
+  │
+  │ 点击「获取 3 张」→ POST /api/archive-candidates { query? }
+  ▼
+Next.js Server（Node runtime）
+  │
+  │ 1. 鉴权：auth() 无 session → 401
+  │ 2. 防刷：内存固定窗口 60s/5 次 → 超限 429
+  │ 3. 孤儿清扫：删除 >24h 未被任何文章引用的 kind='cover' 图
+  │ 4. 检索：Wellcome images API（关键词缺省时主题池随机；超时 8s）
+  │    └─ license 白名单（PDM/CC0/CC-BY）+ 排除站内已用 work id
+  │ 5. 下载 3 张（IIIF width 1200，≤5MB/张）→ images 表（kind='cover' + 元数据）
+  │ 6. 返回 { candidates: [{ id, url: /api/images/{id}, title, creator, license, … }] }
+  ▼
+用户浏览器
+  │
+  │ 点击候选 → 填入 #coverImage 表单字段 → 保存文章
+  ▼
+Next.js Server
+  │
+  │ Server Action createPost/updatePost（src/actions/admin.ts）
+  │   ├─ zod 校验 coverImage ≤500 字符
+  │   ├─ resolveCoverCredit：/api/images/{id} → 查 images 元数据
+  │   │    └─ 服务端生成 cover_credit 署名行（不信任客户端文本）
+  │   └─ db.insert/update(posts) { coverImage, coverCredit }
+  ▼
+展示层（PostCard/CardInfo）
+  │
+  │ coverCredit 优先展示；老文章回退静态映射（archive-images.ts）
+  ▼
+完成
+```
 
 ## 每一步使用的机制汇总
 

@@ -2,12 +2,12 @@
 status: stable
 owner: design
 implementation-status: in-progress  # token/字体已落地代码（2026-08-20）；图像规范（档案图）落地中
-last-updated: 2026-08-20
+last-updated: 2026-08-22
 ---
 
 # 视觉风格指南
 
-**品牌定稿：RobinElysia（Robin And Elysia）· 简约复古艺术风（档案馆气质）。**
+**品牌定稿：ReZenKi（ReZen And KiKi）· 简约复古艺术风（档案馆气质）。**
 
 > 风格定位、色彩与字体的**决策理由**见根目录 `DESIGN.md`。本文件只承载**落地 Token 与写法细则**，不重复论证。
 
@@ -37,6 +37,16 @@ last-updated: 2026-08-20
 `line` 为纯装饰边框（1.36 / 1.48），不承载文字，WCAG 无对比度要求。
 
 **规则**：全站 UI 禁止使用上述五个 token 以外的颜色。链接不加蓝色（下划线 + ink）、按钮不加彩色背景（边框 + ink）、标签用边框 + muted。**页面的色彩浓度全部来自藏品图本身，UI 一滴不出**（Getty Tracing Art 的取舍逻辑，见 `DESIGN.md` §1）。红色仅保留给极少数破坏性操作，且需先写 ADR 并同时提供亮/暗两套值。
+
+**友链 tag 例外色**（2026-08-22 站长指定，仅限 `/links` 页 tag 徽章；DESIGN.md §2 例外条款）：
+
+| Token | 用途 | 白模式 | 黑模式 |
+|-------|------|--------|--------|
+| `--color-friend-purple` | 友链 tag：紫 | `oklch(0.42 0.12 310)` | `oklch(0.76 0.1 310)` |
+| `--color-friend-green` | 友链 tag：绿 | `oklch(0.45 0.11 155)` | `oklch(0.78 0.1 155)` |
+| `--color-friend-orange` | 友链 tag：橙 | `oklch(0.5 0.12 65)` | `oklch(0.8 0.1 65)` |
+
+三色为低彩度克制值，徽章底色透明、边框 40% 透明度——彩色是"内容"不是"UI 强调色"。无 color 字段的 tag 仍走 `border-line text-muted`。
 
 ### 黑白双模式
 
@@ -105,7 +115,7 @@ last-updated: 2026-08-20
 
 ## Logo / Favicon
 
-文字 Logo：Italianno 花体 "RobinElysia" + 下方小字 "ROBIN AND ELYSIA"（大写、宽字距）。
+文字 Logo：Italianno 花体 "ReZenKi" + 下方小字 "REZEN AND KIKI"（大写、宽字距）。
 Favicon：待提供——占位用黑色方块 + 白色 "R"（衬线）。
 
 ## 动效准则

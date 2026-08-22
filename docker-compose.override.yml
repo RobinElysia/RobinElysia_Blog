@@ -1,0 +1,7 @@
+# 本地开发专用 override（docker compose -f docker-compose.yml -f docker-compose.override.yml up -d）
+# 仅开发：db 发布 5432 到宿主机，让宿主机 dev server 可直连 localhost:5432
+# 生产不引入本文件（compose 默认不发布 db 端口，见 docker-compose.yml 注释）
+services:
+  db:
+    ports:
+      - "5432:5432"

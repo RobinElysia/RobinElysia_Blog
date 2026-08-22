@@ -1,5 +1,5 @@
 # ============================================
-# RobinElysia Blog — Docker Compose（生产）
+# ReZenKi Blog — Docker Compose（生产）
 # 用法：
 #   1. 修改 .env 中的生产值（SITE_URL/AUTH_SECRET/密码/PROD_DOMAIN）
 #   2. docker compose up -d --build
@@ -8,7 +8,7 @@
 #
 # v0.19.9：environment 插值改用 PROD_* 变量名——
 #   踩坑记录：compose 插值优先读 shell 环境变量，本机终端会话残留旧值
-#   （ADMIN_PASSWORD=robinelysia-admin 等）压过 .env；且 desktop 版 env_file 失效。
+#   （ADMIN_PASSWORD=rezenki-admin 等）压过 .env；且 desktop 版 env_file 失效。
 #   PROD_* 前缀保证不与任何 shell 残留冲突，值始终来自 .env。
 # v0.21.1：内置 Caddy 反向代理 + 自动 HTTPS（Let's Encrypt）——
 #   app 不再暴露宿主机端口（compose 内网由 Caddy 访问），SSL 全权交给 Caddy。

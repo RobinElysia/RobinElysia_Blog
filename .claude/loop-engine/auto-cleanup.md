@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: loop-engine
-last-updated: 2026-08-20
+last-updated: 2026-08-22
 ---
 
 # 自动代码清理规则
@@ -32,8 +32,10 @@ pnpm exec ts-prune 2>&1
 
 **不会清理的例外**：
 - `page.tsx`、`layout.tsx`、`route.ts` — Next.js 通过文件系统路由引用，ts-prune 会误报
+- `*.config.ts`（`next.config.ts`/`drizzle.config.ts`/`vitest.config.ts`/`playwright.config.ts` 等）的 `default` 导出 — CLI 引用，ts-prune 同样误报
 - `next.config.ts` 中引用的模块
 - Barrel export（`index.ts`）中 re-export 的模块
+- **CLI 工具自身**：`ts-prune`、`depcheck` 及 config 文件引用类依赖（`tailwindcss`、`@testing-library/*`、`@types/*` 等）——depcheck 不会解析 config/脚本/类型文件引用，会把它们报为 unused；报 `missing` 的隐式依赖才需要处理
 
 ### 2. 未使用依赖清理
 

@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: future
-last-updated: 2026-08-20
+last-updated: 2026-08-22
 ---
 
 # 技术雷达
@@ -27,9 +27,12 @@ last-updated: 2026-08-20
 | **next-auth (v5 beta)** | Dashboard 鉴权（GitHub + Credentials，仅后台） | ✅ 生产可用 |
 | **lucide-react** | 图标（'use client' 组件） | ✅ 生产可用 |
 | ESLint 9 (flat config) | 代码检查 | ✅ 生产可用 |
+| eslint-plugin-react (7.37.5) | react/jsx-no-leaked-render 规则的插件（显式 devDependency，v0.22.0） | ✅ 生产可用 |
 | Prettier 3 | 代码格式 | ✅ 生产可用 |
-| Vitest + Testing Library | 单元/组件测试（30 单测） | ✅ 生产可用 |
+| Vitest + Testing Library | 单元/组件测试（44 单测） | ✅ 生产可用 |
 | Playwright | E2E 测试（6 条核心流程） | ✅ 生产可用 |
+| **ts-prune** | 死代码/未使用导出检测（auto-cleanup 清单 1） | ✅ 生产可用 |
+| **depcheck** | 未使用/缺失依赖检测（auto-cleanup 清单 2） | ✅ 生产可用 |
 
 ## 试验中
 

@@ -2,12 +2,7 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 import Image from "next/image";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useTransform,
-} from "motion/react";
+import { motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-source";
 import { HeroScatter } from "@/components/hero-scatter";
 
@@ -106,11 +101,7 @@ export function HeroContent() {
       className="relative z-10 flex h-full w-full items-center justify-center"
     >
       {/* 背景装饰层（z-0）：细网格 + 径向微光，视差 ±8/6 */}
-      <motion.div
-        aria-hidden
-        style={{ x: bgX, y: bgY }}
-        className="absolute inset-0 opacity-60"
-      >
+      <motion.div aria-hidden style={{ x: bgX, y: bgY }} className="absolute inset-0 opacity-60">
         <div
           className="absolute inset-0"
           style={{
@@ -157,16 +148,16 @@ export function HeroContent() {
         className="relative z-20 flex flex-col items-center px-6 text-center"
       >
         <h1
-          className="font-serif text-[clamp(2.6rem,9.5vw,6.2rem)] font-medium leading-[1.05] tracking-tight"
-          aria-label="RobinElysia"
+          className="font-serif text-[clamp(4.2rem,15vw,10rem)] font-medium leading-[1.05] tracking-tight"
+          aria-label="ReZenKi"
         >
           <span className="hero-line">
-            <span className="hero-line-inner">RobinElysia</span>
+            <span className="hero-line-inner">ReZenKi</span>
           </span>
         </h1>
         <p className="hero-line mt-5">
           <span className="hero-line-inner hero-line-delay block text-xs tracking-[0.42em] text-muted uppercase md:text-sm">
-            Robin And Elysia
+            ReZen And KiKi
           </span>
         </p>
       </motion.div>
@@ -182,9 +173,7 @@ export function HeroContent() {
 
       {/* 底部滚动提示（z-30，固定不随视差移动） */}
       <div className="hero-fade-in absolute inset-x-0 bottom-8 z-30 flex flex-col items-center gap-3">
-        <span className="text-[10px] tracking-[0.5em] text-muted uppercase">
-          Scroll To Explore
-        </span>
+        <span className="text-[10px] tracking-[0.5em] text-muted uppercase">Scroll To Explore</span>
         <span aria-hidden className="h-10 w-px bg-ink/50" />
       </div>
     </motion.div>

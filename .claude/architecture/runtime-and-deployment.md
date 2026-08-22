@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: architecture
-last-updated: 2026-08-20
+last-updated: 2026-08-22
 related-adr: []
 ---
 
@@ -18,9 +18,8 @@ related-adr: []
 
 ### 为什么不把更多东西放 Edge？
 
-1. **MDX 编译需要文件系统**：博客文章以 MDX 文件存储在 `src/content/`，读取和编译这些文件需要 `fs` 模块。Edge Runtime 不支持 `fs`。
-2. **数据库驱动需要 Node 模块**：未来如果用 PostgreSQL（`pg` 或 Drizzle），这些底层驱动依赖 Node.js 原生模块（TCP socket）。
-3. **Edge 的包体积限制**：Edge Runtime 有 1MB（Vercel）到 4MB 的包体积限制，而 `next-mdx-remote` 等 Markdown 处理库通常远超这个限制。
+1. **PostgreSQL 驱动需要 Node 原生模块**：文章、评论、图片都存 PostGre（`pg` + Drizzle），底层依赖 TCP socket 等 Node.js 原生能力，Edge Runtime 不支持。
+2. **Markdown/MDX 编译管线过重**：正文以 Markdown 存 PostGre，渲染走 `src/lib/mdx-options.ts` 统一管线（next-mdx-remote + rehype-pretty-code + shiki 等），包体积远超 Edge 的 1MB（Vercel）–4MB 限制。
 
 ## 部署目标
 

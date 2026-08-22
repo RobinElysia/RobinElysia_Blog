@@ -56,6 +56,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 - **类型**：个人博客
 - **框架**：Next.js 16 + TypeScript strict + Tailwind CSS 4
-- **内容**：MDX 文件（`src/content/`）
+- **内容**：PostgreSQL `posts` 表存 Markdown 原文（drizzle 访问，渲染走 `src/lib/mdx-options.ts` 管线）
 - **部署**：Vercel
 - **详见**：`.claude/architecture/system-overview.md`

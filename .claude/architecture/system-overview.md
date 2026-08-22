@@ -1,8 +1,8 @@
 ---
 status: stable
 owner: architecture
-last-updated: 2026-08-20
-related-adr: [0001, 0002]
+last-updated: 2026-08-22
+related-adr: [0001, 0002, 0006]
 ---
 
 # 系统全局架构
@@ -35,6 +35,7 @@ related-adr: [0001, 0002]
 │  ├───────────────────────────────────────┤  │
 │  │  Route Handlers (对外端点)             │  │
 │  │  - RSS / Sitemap / 图片上传 / 图片服务  │  │
+│  │  - 档案图候选（Wellcome 直连，ADR-0006） │  │
 │  └───────────────────────────────────────┘  │
 ├─────────────────────────────────────────────┤
 │                ▲ 数据层                      │
@@ -43,7 +44,7 @@ related-adr: [0001, 0002]
 │  │  PostgreSQL（单一数据源）             │  │
 │  │  - posts：文章（Markdown 原文存储）    │  │
 │  │  - comments：评论（提交即 approved）   │  │
-│  │  - images：文章图片（BYTEA，v0.18.0）  │  │
+│  │  - images：文章图片（BYTEA，v0.18.0；v0.22.0 + kind/source_id/档案元数据） │  │
 │  │  访问：Drizzle ORM（src/lib/）         │  │
 │  └───────────────────────────────────────┘  │
 └─────────────────────────────────────────────┘
@@ -56,7 +57,7 @@ related-adr: [0001, 0002]
 | Server Components | 数据获取（drizzle 查 PostGre）、渲染 HTML/RSC Payload | Node.js |
 | Client Components | 交互、浏览器 API、状态管理 | 浏览器 |
 | Server Actions | 数据变更（评论提交、文章 CRUD）、revalidation | Node.js |
-| Route Handlers | 对外端点（RSS/Sitemap/图片上传/图片服务 + NextAuth `/api/auth/*`） | Node.js |
+| Route Handlers | 对外端点（RSS/Sitemap/图片上传/图片服务/档案图候选 + NextAuth `/api/auth/*`） | Node.js |
 | Middleware | **无**——Dashboard 鉴权集中在 `(dashboard)/layout.tsx`（`auth()` + `redirect`），不引入中间件 | — |
 
 ## 数据访问
@@ -69,5 +70,5 @@ related-adr: [0001, 0002]
 ## 关键边界
 
 - **Server ↔ Client 边界**：通过 `'use client'` 指令标记。Server Component 可以渲染 Client Component，反之不行。Server Component 不能 import 浏览器专用模块。
-- **Server Actions ↔ Route Handlers 边界**：内部数据变更走 Server Actions；对外端点（RSS/Sitemap/图片服务/图片上传）走 Route Handlers。本项目无 webhook 端点（`/api/revalidate` 仅为预留概念）。详见 ADR-0002。
+- **Server Actions ↔ Route Handlers 边界**：内部数据变更走 Server Actions；对外端点（RSS/Sitemap/图片服务/图片上传/档案图候选）走 Route Handlers。本项目无 webhook 端点（`/api/revalidate` 仅为预留概念）。详见 ADR-0002/0006。
 - **Static ↔ Dynamic 边界**：Next.js 框架默认静态渲染；**本项目策略为页面级显式 `force-dynamic` 动态渲染**（见 `rendering-strategy.md`）。任何 `cookies()`/`headers()`/`searchParams` 访问或未缓存 `fetch` 也会使页面退化为动态。

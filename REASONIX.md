@@ -109,7 +109,7 @@ ADR 一旦写入不可修改内容。需要变更决策时：新建 ADR（编号
 
 | 层 | 选型 | 状态 |
 |----|------|------|
-| 品牌 | RobinElysia（Robin And Elysia）· 黑白简约杂志风 | 已就绪 |
+| 品牌 | ReZenKi（ReZen And KiKi）· 黑白简约杂志风 | 已就绪 |
 | 框架 | Next.js 16 (App Router) | 已就绪 |
 | 语言 | TypeScript 5 (strict) | 已就绪 |
 | 样式 | Tailwind CSS 4（黑白灰 oklch token） | 已就绪 |
@@ -127,3 +127,7 @@ ADR 一旦写入不可修改内容。需要变更决策时：新建 ADR（编号
 | `AGENTS.md` | Agent（session 首读） | 指向 `.claude/INDEX.md` + 螺旋更新规则 |
 | `CLAUDE.md` | Agent（Claude 特化） | → `AGENTS.md` |
 | `README.md` | 人类开发者 | 项目介绍 + 快速上手 + 链接到 `.claude/` |
+
+## 变更记录（架构决策提及）
+
+- 2026-08-22：**ADR-0006** 编辑器档案图候选管线——Wellcome 直连（不内嵌 MCP stdio server）+ PostGre BYTEA 入库 + `posts.cover_credit` 服务端生成署名 + 24h 孤儿清扫。迁移 `0002`（images + 7 列，posts + cover_credit）。

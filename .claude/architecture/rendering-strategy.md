@@ -1,7 +1,7 @@
 ---
 status: stable
 owner: architecture
-last-updated: 2026-08-20
+last-updated: 2026-08-22
 related-adr: [0005]
 ---
 
@@ -19,6 +19,7 @@ related-adr: [0005]
 | `/blog` | SSR → 可升 ISR | 文章列表更新频率中等（每天 1-3 篇） | `unstable_cache` revalidate=300s |
 | `/blog/[slug]` | SSR → 可升 ISR | 文章发布后很少修改 | `unstable_cache` revalidate=300s |
 | `/archive` | SSR（force-dynamic） | 归档页，数据来自同一列表查询 | `unstable_cache` + `post-list` tag |
+| `/links` | SSG（静态） | 友链是静态数据（`src/lib/friends.ts`），不依赖请求上下文 | 构建时生成，无缓存策略 |
 | `/dashboard` | SSR | 后台数据个性化，且需鉴权 | 不缓存（每次查询） |
 | `/login` | SSR 外壳 + 客户端表单 | GitHub 按钮是否显示由服务端按凭证判断（运行时生效，Docker 换凭证无需重建镜像） | 不适用 |
 

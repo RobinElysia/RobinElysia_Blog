@@ -1,5 +1,5 @@
 # ============================================
-# RobinElysia Blog — 多阶段 Docker 构建
+# ReZenKi Blog — 多阶段 Docker 构建
 # 阶段 1：依赖（pnpm 全量 install——构建中唯一一次网络下载）
 # 阶段 2：构建（next build → pnpm prune --prod 裁剪 devDeps）
 # 阶段 3：运行（复制裁剪后的 node_modules + 产物——零网络）

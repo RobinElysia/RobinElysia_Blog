@@ -1,18 +1,18 @@
 # 部署指南（Docker 生产部署）
 
-> 适用：自有服务器（VPS/云主机）部署 RobinElysia 博客。镜像已包含 Next.js 应用与自动数据库迁移；**Caddy 反向代理内置在 compose 中，自动 HTTPS（Let's Encrypt）**。
+> 适用：自有服务器（VPS/云主机）部署 ReZenKi 博客。镜像已包含 Next.js 应用与自动数据库迁移；**Caddy 反向代理内置在 compose 中，自动 HTTPS（Let's Encrypt）**。
 >
-> **本站生产域名：`elysia.wiki`**（2026-08-20 定）——Caddy 将自动为该域名申请 Let's Encrypt 证书；`.env` 已配置 `PROD_SITE_URL=https://elysia.wiki` 与 `PROD_DOMAIN=elysia.wiki`，部署前只需确认 DNS 已解析（见下）。
+> **本站生产域名：`kiki.wiki`**（2026-08-20 定）——Caddy 将自动为该域名申请 Let's Encrypt 证书；`.env` 已配置 `PROD_SITE_URL=https://kiki.wiki` 与 `PROD_DOMAIN=kiki.wiki`，部署前只需确认 DNS 已解析（见下）。
 
-## 〇、elysia.wiki 上线检查清单（部署前逐项确认）
+## 〇、kiki.wiki 上线检查清单（部署前逐项确认）
 
 | # | 检查项 | 命令 / 说明 |
 |---|--------|-------------|
-| 1 | **DNS 解析** | `nslookup elysia.wiki` 必须返回服务器 IP（`A` 记录；如用 Cloudflare 等托管，注意**先关代理灰云**再签发证书，签完可开） |
+| 1 | **DNS 解析** | `nslookup kiki.wiki` 必须返回服务器 IP（`A` 记录；如用 Cloudflare 等托管，注意**先关代理灰云**再签发证书，签完可开） |
 | 2 | **80/443 可达** | 云安全组 + 系统防火墙放行 TCP 80、443（80 用于 ACME 验证与 HTTP→HTTPS 重定向） |
-| 3 | **`.env` 三件套** | `PROD_SITE_URL=https://elysia.wiki`、`PROD_DOMAIN=elysia.wiki`、`PROD_AUTH_SECRET`（44 字符，已生成） |
+| 3 | **`.env` 三件套** | `PROD_SITE_URL=https://kiki.wiki`、`PROD_DOMAIN=kiki.wiki`、`PROD_AUTH_SECRET`（44 字符，已生成） |
 | 4 | **compose 校验** | `docker compose config --quiet` 无报错（本地已通过） |
-| 5 | **签发成功** | 启动后 `docker compose logs caddy` 出现 `certificate obtained successfully`；浏览器访问 `https://elysia.wiki` 无证书警告 |
+| 5 | **签发成功** | 启动后 `docker compose logs caddy` 出现 `certificate obtained successfully`；浏览器访问 `https://kiki.wiki` 无证书警告 |
 | 6 | **自动续期** | Caddy 到期前自动续期（默认剩余 30 天即续），无需任何手动操作；`caddy_data` 卷持久化证书，重建容器不重复签发 |
 
 > ⚠️ **证书签发失败最常见原因**：DNS 未生效、或 80 端口被占用/未放行。签发成功后若迁移 DNS 到代理模式（Cloudflare 灰云→橙云），证书续期会受影响——保持 80 直连或用 DNS-01 验证（需改造 Caddyfile，默认 HTTP-01）。
@@ -23,15 +23,15 @@
 
 ```bash
 # 1. 构建镜像（多阶段：依赖 → 构建 → 运行）
-docker build -t <your-registry>/robinelysia-blog:latest .
+docker build -t <your-registry>/rezenki-blog:latest .
 
 # 2. 推送到镜像仓库（任选其一）
 # Docker Hub：
-docker push <your-registry>/robinelysia-blog:latest
+docker push <your-registry>/rezenki-blog:latest
 
 # GitHub Container Registry：
-docker tag <your-registry>/robinelysia-blog:latest ghcr.io/<你的用户名>/robinelysia-blog:latest
-docker push ghcr.io/<你的用户名>/robinelysia-blog:latest
+docker tag <your-registry>/rezenki-blog:latest ghcr.io/<你的用户名>/rezenki-blog:latest
+docker push ghcr.io/<你的用户名>/rezenki-blog:latest
 
 # 阿里云 ACR / 腾讯云 TCR 同理：先登录再 push
 ```
@@ -50,7 +50,7 @@ sudo systemctl enable --now docker
 docker --version && docker compose version
 
 # 3. 创建部署目录
-mkdir -p /opt/robinelysia && cd /opt/robinelysia
+mkdir -p /opt/rezenki && cd /opt/rezenki
 
 # 4. 防火墙开放 80/443（HTTPS 必需；80 用于签发证书与 HTTP→HTTPS 重定向）
 # ufw 示例：sudo ufw allow 80/tcp && sudo ufw allow 443/tcp
@@ -59,14 +59,14 @@ mkdir -p /opt/robinelysia && cd /opt/robinelysia
 
 ## 三、部署文件
 
-在 `/opt/robinelysia/` 下放置三个文件（与仓库根目录一致：`docker-compose.yml`、`Caddyfile`、`.env`）：
+在 `/opt/rezenki/` 下放置三个文件（与仓库根目录一致：`docker-compose.yml`、`Caddyfile`、`.env`）：
 
 ### 1. `docker-compose.yml`（与仓库一致，app 改用镜像地址）
 
 ```yaml
 services:
   app:
-    image: <your-registry>/robinelysia-blog:latest   # ← 换成你的镜像地址
+    image: <your-registry>/rezenki-blog:latest   # ← 换成你的镜像地址
     restart: unless-stopped
     environment:
       SITE_URL: ${PROD_SITE_URL:?请在 .env 设置 PROD_SITE_URL}
@@ -173,7 +173,7 @@ PROD_AUTH_GITHUB_ALLOWED_USERS=
 ## 四、启动
 
 ```bash
-cd /opt/robinelysia
+cd /opt/rezenki
 docker compose up -d
 docker compose ps            # 三个容器应为 Up (healthy)
 docker compose logs -f app   # 应看到 "✓ 数据库迁移完成" + "Ready"
@@ -191,23 +191,23 @@ docker compose logs -f app   # 应看到 "✓ 数据库迁移完成" + "Ready"
 - **HSTS**：响应头自动附加 `Strict-Transport-Security`
 - **排障**：`docker compose logs caddy`；证书签发失败多为 DNS 未生效或 80 端口被占用
 
-### elysia.wiki 部署后验证
+### kiki.wiki 部署后验证
 
 ```bash
 # 1. 证书已签发（日志关键词 certificate obtained successfully）
 docker compose logs caddy | grep -i "certificate obtained"
 
 # 2. HTTPS 全链路（应看到 200 与 308 重定向）
-curl -s -o /dev/null -w "%{http_code}\n" https://elysia.wiki/
-curl -s -o /dev/null -w "%{http_code} → %{redirect_url}\n" http://elysia.wiki/
+curl -s -o /dev/null -w "%{http_code}\n" https://kiki.wiki/
+curl -s -o /dev/null -w "%{http_code} → %{redirect_url}\n" http://kiki.wiki/
 
 # 3. 关键页面
-curl -s -o /dev/null -w "%{http_code}\n" https://elysia.wiki/blog
-curl -s -o /dev/null -w "%{http_code}\n" https://elysia.wiki/login
-curl -s -o /dev/null -w "%{http_code}\n" https://elysia.wiki/feed.xml
+curl -s -o /dev/null -w "%{http_code}\n" https://kiki.wiki/blog
+curl -s -o /dev/null -w "%{http_code}\n" https://kiki.wiki/login
+curl -s -o /dev/null -w "%{http_code}\n" https://kiki.wiki/feed.xml
 
 # 4. 证书详情（到期时间 / 颁发机构）
-echo | openssl s_client -servername elysia.wiki -connect elysia.wiki:443 2>/dev/null | openssl x509 -noout -issuer -enddate
+echo | openssl s_client -servername kiki.wiki -connect kiki.wiki:443 2>/dev/null | openssl x509 -noout -issuer -enddate
 ```
 
 ### 本地测试（无域名）

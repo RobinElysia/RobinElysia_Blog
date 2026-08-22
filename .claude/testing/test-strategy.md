@@ -1,10 +1,24 @@
 ---
 status: stable
 owner: testing
-last-updated: 2026-08-20
+last-updated: 2026-08-22
 ---
 
 # 测试策略
+
+## 现有测试清单（2026-08-22）
+
+| 文件 | 覆盖 |
+|------|------|
+| `src/lib/auth-allowlist.test.ts` | GitHub 登录白名单（空=拒绝、大小写、逗号、空格） |
+| `src/lib/feed.test.ts` | RSS 生成 |
+| `src/lib/format.test.ts` | 日期/slug 格式化 |
+| `src/lib/toc.test.ts` | 目录提取 |
+| `src/lib/archive-source.test.ts` | 档案图候选：IIIF URL 构造、license 白名单、主题池抽取、命中过滤（14 个） |
+
+共计 44 单测；6 条 E2E 核心流程（清单见 e2e-testing.md）。
+
+> 注：`archive-source.test.ts` 只测纯函数不触网；管线整体（Wellcome 检索→下载→入库→孤儿清扫）依赖外部服务，通过编辑器人工冒烟验证（见 0012 报告），不做 CI 自动化——上游不可用会让测试抖动。
 
 ## 分层策略
 

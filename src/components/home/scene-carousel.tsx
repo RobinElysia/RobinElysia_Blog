@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useTransform,
-} from "motion/react";
+import { motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 import { PostCard, CardInfo } from "@/components/home/post-card";
-import { subscribeHomeScroll, getHomeScroll, setCarouselPages } from "@/components/home/scroll-source";
+import {
+  subscribeHomeScroll,
+  getHomeScroll,
+  setCarouselPages,
+} from "@/components/home/scroll-source";
 
 /**
  * Ch.01 最近：滚动逐卡翻页
@@ -33,6 +32,7 @@ export function SceneCarousel({
     publishedAt: Date | string | null;
     tags?: string[];
     coverImage?: string | null;
+    coverCredit?: string | null;
   }[];
 }) {
   const items = posts.slice(0, 4);
@@ -63,6 +63,7 @@ function CardSlide({
     publishedAt: Date | string | null;
     tags?: string[];
     coverImage?: string | null;
+    coverCredit?: string | null;
   };
   index: number;
   total: number;
@@ -117,9 +118,7 @@ function CardSlide({
   const x = useTransform([enterX, exitX], ([a, b]: number[]) => a + b);
   const y = useTransform([enterY, exitY], ([a, b]: number[]) => a + b);
   const rotate = useTransform([enterRotate, exitRotate], ([a, b]: number[]) => a + b);
-  const opacity = useTransform([enterOpacity, exitOpacity], ([a, b]: number[]) =>
-    Math.min(a, b),
-  );
+  const opacity = useTransform([enterOpacity, exitOpacity], ([a, b]: number[]) => Math.min(a, b));
   // 信息渐进渐出进度
   const infoProgress = opacity;
 
@@ -143,6 +142,7 @@ function CardSlide({
         progress={infoProgress}
         slug={post.slug}
         coverImage={post.coverImage}
+        coverCredit={post.coverCredit}
       />
 
       {/* 页签 */}

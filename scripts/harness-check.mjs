@@ -5,7 +5,8 @@
  * 退出码：0 = 通过；1 = 有阻断项（CI 将失败）
  *
  * 检查项：
- *  1. 禁用词残留：.harness / pending 审核流 / npm run（排除历史快照与生成物）
+ *  1. 禁用词残留：.harness / pending 审核流 / npm run / 内容存储断言（MDX 文件 → src/content）
+ *     （排除历史快照、ADR、生成物与脚本自身）
  *  2. INDEX 双向孤儿：.claude 下 md 文件 vs INDEX.md 登记（INDEX 自身除外）
  *  3. .env.example 键集 vs runtime-and-deployment.md 环境变量表
  *  4. src/app 路由文件 vs app-router-map.md 路由树（关键字抽查：存在的路由文件不应被标注"不存在"）
@@ -55,6 +56,13 @@ const FORBIDDEN = [
     re: /npm run |npx tsc/,
     label: "npm 命令残留",
     exclude: (p) => isRelease(p) || isSelf(p) || p.includes("roundtable"),
+  },
+  {
+    // 内容存 PostGre 后，任何"MDX 文件在 src/content/"的正面断言都是漂移。
+    // 反向表述（"没有 src/content/ MDX 目录"）与历史 ADR/release 快照不受影响。
+    re: /MDX 文件[^。\n]{0,15}`?src\/content/,
+    label: "内容存储断言漂移（MDX 文件 → src/content）",
+    exclude: (p) => isRelease(p) || isSelf(p) || p.split(/[\\/]/).includes("adr"),
   },
 ];
 for (const f of files) {

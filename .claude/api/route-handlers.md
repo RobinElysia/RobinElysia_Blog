@@ -1,8 +1,8 @@
 ---
 status: stable
 owner: api
-last-updated: 2025-07-11
-related-adr: [0002]
+last-updated: 2026-08-22
+related-adr: [0002, 0006]
 ---
 
 # Route Handlers
@@ -15,6 +15,7 @@ related-adr: [0002]
 | `/sitemap.xml` | Sitemap | 搜索引擎 | `app/sitemap.ts`（Next.js 内置约定，已实现） |
 | `/api/upload-image` | 文章图片上传（PostGre BYTEA） | 编辑器（仅 admin） | `app/api/upload-image/route.ts`（已实现） |
 | `/api/images/[id]` | 图片服务（公开、永久缓存） | 文章 `<img>` | `app/api/images/[id]/route.ts`（已实现） |
+| `/api/archive-candidates` | 档案图候选获取（Wellcome 检索+下载入库，v0.22.0） | 编辑器（仅 admin） | `app/api/archive-candidates/route.ts`（已实现） |
 | `/api/revalidate` | 按需 Revalidation | 未来 CMS/CI webhook（预留） | 未实现 |
 
 > **评论系统已改为自建（PostGre）**：评论提交走 Server Action（`src/actions/comment.ts`），不需要 webhook 端点。
@@ -58,3 +59,4 @@ export async function GET() {
 | `/feed.xml` | 无鉴权（公开） |
 | `/sitemap.xml` | 无鉴权（公开） |
 | `/api/revalidate` | 共享 secret（环境变量 `REVALIDATION_SECRET`） |
+| `/api/archive-candidates` | 仅 admin（`auth()` 检查，同 `/api/upload-image`）+ 60s/5 次限流（外呼上游 API 需限制频率） |

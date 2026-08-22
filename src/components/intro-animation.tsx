@@ -4,7 +4,7 @@ import { useLayoutEffect, useState } from "react";
 
 /**
  * 站点首次加载进入动画（v0.21.0）
- * - 全屏 overlay（暖纸底）中央 SVG 手写描画 "RobinElysia"（Italianno 花体 stroke 描画 → fill 渐入）
+ * - 全屏 overlay（暖纸底）中央 SVG 手写描画 "ReZenKi"（Italianno 花体 stroke 描画 → fill 渐入）
  * - 同会话只播一次（sessionStorage）；prefers-reduced-motion 直接跳过
  * - 挂载于根 layout，全站入口首帧播放
  */
@@ -38,10 +38,10 @@ export function IntroAnimation() {
       }`}
     >
       <div className="flex flex-col items-center">
-        <svg viewBox="0 0 980 240" className="h-32 w-auto md:h-48" role="presentation">
+        <svg viewBox="0 0 640 240" className="h-32 w-auto md:h-48" role="presentation">
           {/* 描画层：stroke 手写效果（pathLength 归一化，dash 描画与字号无关） */}
           <text
-            x="490"
+            x="320"
             y="165"
             textAnchor="middle"
             pathLength={100}
@@ -51,22 +51,22 @@ export function IntroAnimation() {
             strokeLinecap="round"
             strokeLinejoin="round"
             fontFamily="var(--font-script)"
-            fontSize="150"
+            fontSize="140"
             className="intro-draw"
           >
-            RobinElysia
+            ReZenKi
           </text>
           {/* 填充层：描画完成后渐入 */}
           <text
-            x="490"
+            x="320"
             y="165"
             textAnchor="middle"
             fill="var(--color-ink)"
             fontFamily="var(--font-script)"
-            fontSize="150"
+            fontSize="140"
             className="intro-fill"
           >
-            RobinElysia
+            ReZenKi
           </text>
         </svg>
       </div>

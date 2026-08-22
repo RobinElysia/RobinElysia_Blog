@@ -1,12 +1,12 @@
 import type { ThemeInput } from "shiki";
 
 /**
- * RobinElysia 代码高亮主题 —— 黑白灰层次（全站禁彩色）
+ * ReZenKi 代码高亮主题 —— 黑白灰层次（全站禁彩色）
  * 颜色用 CSS 变量引用 token，自动跟随 .dark class（shiki 4 已移除内置 css-variables 主题）
  * 灰阶层次：关键字最黑 → 函数/常量 → 字符串 → 注释最浅
  */
-export const robinElysiaCodeTheme: ThemeInput = {
-  name: "robinelysia",
+export const rezenkiCodeTheme: ThemeInput = {
+  name: "rezenki",
   type: "light",
   bg: "var(--color-code)",
   fg: "var(--color-ink)",

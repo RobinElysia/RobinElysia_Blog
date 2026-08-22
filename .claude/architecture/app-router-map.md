@@ -1,8 +1,8 @@
 ---
 status: stable
 owner: architecture
-last-updated: 2026-08-20
-related-adr: [0001]
+last-updated: 2026-08-22
+related-adr: [0001, 0006]
 ---
 
 # App Router 路由地图
@@ -11,7 +11,7 @@ related-adr: [0001]
 
 ```
 src/app/
-├── layout.tsx               # 根布局：<html>/<body>、字体变量（Inter+Italianno）、SSR 主题 class（cookie 读取）、metadata、SiteHeader + footer
+├── layout.tsx               # 根布局：<html>/<body>、字体变量（Inter+Italianno）、SSR 主题 class（cookie 读取）、metadata、SiteHeader + SiteFooter（文章/归档/关于页为浮动底栏，其余静态）
 ├── page.tsx                 # 首页 "/"（force-dynamic）：章节式长滚动叙事——Ch.00 波浪 Hero → Ch.01 逐卡翻页 → Ch.02 年份档案 → Ch.03 落款（getPublishedPosts → HomeScenes）
 ├── error.tsx                # 全局错误边界
 ├── not-found.tsx            # 全局 404
@@ -22,6 +22,7 @@ src/app/
 ├── (marketing)/             # Route Group：无需鉴权的公开页面（无独立 layout——共用根 layout + SiteHeader）
 │   ├── about/page.tsx       # /about（品牌故事）
 │   ├── archive/page.tsx     # /archive（按 年→月 分组的归档）
+│   ├── links/page.tsx       # /links（友链：静态数据 src/lib/friends.ts，SSG；tag 三色为 DESIGN.md §2 例外）
 │   └── blog/
 │       ├── page.tsx         # /blog（文章列表：?tag= 筛选 + ?page= 分页，每页 10 篇，force-dynamic）
 │       ├── [slug]/page.tsx  # /blog/:slug（详情：MDX 正文 + TOC + 前后篇 + 相关文章 + 评论 + JSON-LD，decodeSlug 处理中文 slug）
@@ -40,6 +41,7 @@ src/app/
 ├── api/auth/[...nextauth]/route.ts  # NextAuth v5 handlers
 ├── api/upload-image/route.ts        # POST：文章图片上传（admin 鉴权 + jpeg/png/webp/gif + ≤5MB → images 表 BYTEA）
 ├── api/images/[id]/route.ts         # GET：图片服务（公开，Cache-Control immutable 永久缓存）
+├── api/archive-candidates/route.ts  # POST：档案图候选获取（admin 鉴权 + 限流；Wellcome 检索+下载入库，见 ADR-0006）
 │
 └── feed.xml/route.ts       # RSS Feed（GET，XML Content-Type）
 ```

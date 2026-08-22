@@ -16,7 +16,7 @@ export type ArchiveImage = {
 };
 
 const ARCHIVE: Record<string, ArchiveImage> = {
-  "理性与感性": {
+  理性与感性: {
     src: "/archive/理性与感性-wellcome-M0007634.jpg",
     title: "A philosopher studying a celestial globe",
     creator: "",
@@ -25,8 +25,8 @@ const ARCHIVE: Record<string, ArchiveImage> = {
     sourceUrl: "https://wellcomecollection.org/works/fvn5yv6v",
     license: "Public Domain Mark",
   },
-  "hello-robinelysia": {
-    src: "/archive/hello-robinelysia-wellcome-V0049797.jpg",
+  "hello-rezenki": {
+    src: "/archive/hello-rezenki-wellcome-V0049797.jpg",
     title: "A medical author seated at his desk, writing, a herbal on his lap",
     creator: "P. Aubry",
     date: "ca. 1657",
@@ -73,7 +73,7 @@ export function getArchiveImage(slug: string): ArchiveImage | null {
  */
 export const PRESET_GALLERY: { src: string; label: string }[] = [
   { src: "/archive/理性与感性-wellcome-M0007634.jpg", label: "哲学家与天球仪" },
-  { src: "/archive/hello-robinelysia-wellcome-V0049797.jpg", label: "书写的医学作者" },
+  { src: "/archive/hello-rezenki-wellcome-V0049797.jpg", label: "书写的医学作者" },
   { src: "/archive/why-postgres-for-blog-wellcome-V0024913.jpg", label: "黄道十二宫天文图" },
   { src: "/archive/design-tokens-in-black-and-white-wellcome-V0024667.jpg", label: "印刷机" },
   { src: "/archive/latex-and-mermaid-wellcome-V0046512.jpg", label: "波斯科学图解" },
@@ -91,6 +91,16 @@ export const PRESET_GALLERY: { src: string; label: string }[] = [
 /** 按 src 反查档案图元数据（编辑器预设图命中映射时可得署名） */
 export function getArchiveImageBySrc(src: string): ArchiveImage | null {
   return Object.values(ARCHIVE).find((img) => img.src === src) ?? null;
+}
+
+/** 静态映射里所有 Wellcome work id（编辑器档案图候选去重用） */
+export function getArchiveWorkIds(): string[] {
+  return Object.values(ARCHIVE)
+    .map((img) => {
+      const m = img.sourceUrl.match(/works\/([^/]+)/);
+      return m ? m[1] : null;
+    })
+    .filter((v): v is string => v !== null);
 }
 
 /** 署名格式：Creator, *Title*, date — Source (License) */

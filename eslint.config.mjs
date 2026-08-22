@@ -1,10 +1,15 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import reactPlugin from "eslint-plugin-react";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  // 显式声明 react 插件（规则 react/jsx-no-leaked-render 依赖它；
+  // eslint-plugin-react 是 eslint-config-next 的传递依赖，pnpm 严格模式下
+  // 不提升到根 node_modules，必须作为直接依赖声明 + 显式注册，否则解析失败）
+  { plugins: { react: reactPlugin } },
   // 项目自有规则（与 .claude/conventions/code-style/eslint-notes.md 对齐，2026-08-20 落地）
   {
     rules: {

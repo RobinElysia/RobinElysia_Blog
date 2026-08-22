@@ -73,9 +73,9 @@ export function SiteHeader() {
       <div className="mx-auto flex w-full max-w-4xl items-center justify-between px-6 py-4 md:px-8">
         <Link
           href="/"
-          className="font-script text-xl leading-none transition-transform duration-300 hover:rotate-[-2deg] hover:opacity-70 md:text-2xl"
+          className="font-script text-2xl leading-none transition-transform duration-300 hover:rotate-[-2deg] hover:opacity-70"
         >
-          RobinElysia
+          ReZenKi
         </Link>
         <nav className="flex items-center gap-6 font-sans text-xs tracking-[0.2em] text-muted uppercase">
           <Link href="/" className="transition-colors hover:text-ink">
@@ -89,6 +89,9 @@ export function SiteHeader() {
           </Link>
           <Link href="/about" className="hidden transition-colors hover:text-ink sm:inline">
             关于
+          </Link>
+          <Link href="/links" className="hidden transition-colors hover:text-ink sm:inline">
+            友链
           </Link>
           {/* 黑白模式切换（lucide-react 图标为独立 Client 用法，符合 server-client-boundary） */}
           <button

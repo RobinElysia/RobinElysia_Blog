@@ -4,32 +4,31 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useTransform, type MotionValue } from "motion/react";
 import { formatDate } from "@/lib/format";
-import {
-  getArchiveImage,
-  getArchiveImageBySrc,
-  formatCredit,
-} from "@/lib/archive-images";
+import { getArchiveImage, getArchiveImageBySrc, formatCredit } from "@/lib/archive-images";
 
 /**
- * 16:9 文章图片卡（v0.21.4：文章绑定封面图）
- * - 图源优先级：文章 coverImage（编辑器绑定）→ 档案图 slug 映射（老文章兼容）→ 花体占位
- * - 档案图（Wellcome PDM）带署名元数据（底部渐变遮罩 + 小字宽字距）——版面的一部分
+ * 16:9 文章图片卡（v0.21.4：文章绑定封面图；v0.22.0：编辑器档案图绑定 + coverCredit）
+ * - 图源优先级：文章 coverImage（编辑器绑定 /api/images/{id} 或静态 /archive/）→ 档案图 slug 映射（老文章兼容）→ 花体占位
+ * - 署名优先级：posts.cover_credit（编辑器绑定的档案图）→ 静态映射元数据（档案图 slug 映射）
  */
 export function PostCard({
   slug,
   title,
   coverImage,
+  coverCredit,
   index = 0,
 }: {
   slug: string;
   title: string;
   coverImage?: string | null;
+  /** 编辑器绑定的档案图署名行（服务端生成，v0.22.0） */
+  coverCredit?: string | null;
   index?: number;
 }) {
   // 封面优先；命中档案图映射时可取署名元数据
   const archive = getArchiveImage(slug);
   const src = coverImage || archive?.src || null;
-  const meta = coverImage ? getArchiveImageBySrc(coverImage) ?? archive : archive;
+  const meta = coverImage ? (getArchiveImageBySrc(coverImage) ?? archive) : archive;
 
   return (
     <Link
@@ -47,17 +46,18 @@ export function PostCard({
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center">
-          <span className="text-xs tracking-[0.3em] text-muted uppercase">RobinElysia</span>
+          <span className="text-xs tracking-[0.3em] text-muted uppercase">ReZenKi</span>
         </div>
       )}
       {/* 底部渐变遮罩（署名可读性） */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-paper/90 to-transparent" />
-      {/* 档案署名（元数据即排版元素） */}
-      {meta && (
+      {/* 档案署名（元数据即排版元素）：编辑器绑定图用 coverCredit，否则静态映射 */}
+      {(coverCredit || meta) && (
         <div className="absolute inset-x-0 bottom-0 px-4 pb-3">
           <p className="truncate text-[10px] leading-4 tracking-[0.15em] text-muted">
-            {meta.creator || meta.source}
-            {meta.date ? `, ${meta.date}` : ""} · {meta.license}
+            {coverCredit
+              ? coverCredit
+              : `${meta?.creator || meta?.source}${meta?.date ? `, ${meta.date}` : ""} · ${meta?.license}`}
           </p>
         </div>
       )}
@@ -78,6 +78,7 @@ export function CardInfo({
   progress,
   slug,
   coverImage,
+  coverCredit,
 }: {
   title: string;
   excerpt: string;
@@ -87,9 +88,12 @@ export function CardInfo({
   progress: MotionValue<number>;
   slug: string;
   coverImage?: string | null;
+  /** 编辑器绑定的档案图署名行（服务端生成，v0.22.0） */
+  coverCredit?: string | null;
 }) {
   const y = useTransform(progress, (p) => (1 - p) * 24);
   const image = getArchiveImageBySrc(coverImage ?? "") ?? getArchiveImage(slug);
+  const credit = coverCredit ?? (image ? formatCredit(image) : null);
 
   return (
     <motion.div
@@ -108,9 +112,9 @@ export function CardInfo({
           ))}
         </div>
       )}
-      {image && (
+      {credit && (
         <p className="mt-3 line-clamp-1 max-w-lg text-[10px] tracking-[0.15em] text-muted">
-          {formatCredit(image)}
+          {credit}
         </p>
       )}
     </motion.div>
