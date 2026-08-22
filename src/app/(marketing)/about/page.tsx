@@ -22,8 +22,7 @@ export default function AboutPage() {
             <h2 className="font-script text-5xl leading-none">ReZenKi</h2>
             <p className="mt-2 text-xs tracking-[0.35em] text-muted uppercase">ReZen And KiKi</p>
             <p className="mt-6 text-base leading-7 text-muted">
-              ReZenKi 由 ReZen 与 KiKi 两个人组成：ReZen
-              是克制的禅意——黑白、留白、杂志式的排版；KiKi 是陪伴的伙伴——写下每一篇的冲动。
+              ReZenKi 由 ReZen 与 KiKi 两个人组成——两个人的名字，合在一起就是这个博客的名字。
               这里是个人博客，记录技术、设计与生活的思考。
             </p>
           </section>
