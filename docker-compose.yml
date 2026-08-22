@@ -74,7 +74,7 @@ services:
       DOMAIN: ${PROD_DOMAIN:-localhost}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data        # 证书与私钥持久化（不丢证书、不反复签发）
+      - caddy_data:/data # 证书与私钥持久化（不丢证书、不反复签发）
       - caddy_config:/config
     depends_on:
       - app

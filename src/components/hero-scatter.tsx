@@ -13,10 +13,32 @@ import { motion, useTransform, type MotionValue } from "motion/react";
 const SCATTER = [
   { src: "/archive/scatter-2.jpg", cls: "left-[4%] top-[12%] w-36 md:w-44", rotate: -5, reveal: 0 },
   { src: "/archive/scatter-4.jpg", cls: "right-[6%] top-[9%] w-40 md:w-48", rotate: 4, reveal: 0 },
-  { src: "/archive/scatter-1.jpg", cls: "left-[2%] top-[40%] w-28 md:w-32", rotate: 2, reveal: 0, mobile: false },
-  { src: "/archive/scatter-6.jpg", cls: "right-[3%] top-[34%] w-32 md:w-40", rotate: -6, reveal: 0, mobile: false },
-  { src: "/archive/scatter-3.jpg", cls: "left-[7%] bottom-[16%] w-28 md:w-36", rotate: 3, reveal: 0.22 },
-  { src: "/archive/scatter-5.jpg", cls: "right-[8%] bottom-[14%] w-36 md:w-44", rotate: -3, reveal: 0.34 },
+  {
+    src: "/archive/scatter-1.jpg",
+    cls: "left-[2%] top-[40%] w-28 md:w-32",
+    rotate: 2,
+    reveal: 0,
+    mobile: false,
+  },
+  {
+    src: "/archive/scatter-6.jpg",
+    cls: "right-[3%] top-[34%] w-32 md:w-40",
+    rotate: -6,
+    reveal: 0,
+    mobile: false,
+  },
+  {
+    src: "/archive/scatter-3.jpg",
+    cls: "left-[7%] bottom-[16%] w-28 md:w-36",
+    rotate: 3,
+    reveal: 0.22,
+  },
+  {
+    src: "/archive/scatter-5.jpg",
+    cls: "right-[8%] bottom-[14%] w-36 md:w-44",
+    rotate: -3,
+    reveal: 0.34,
+  },
 ] as const;
 
 export function HeroScatter({
@@ -77,13 +99,7 @@ function ScatterItem({
       {/* 纸片式小卡（保留原图白底，像图录里的散落藏品） */}
       <div className="border border-line bg-paper/70 p-1 shadow-sm">
         <div className="relative aspect-[4/3] w-full">
-          <Image
-            src={src}
-            alt=""
-            fill
-            sizes="220px"
-            className="object-cover"
-          />
+          <Image src={src} alt="" fill sizes="220px" className="object-cover" />
         </div>
       </div>
     </motion.div>

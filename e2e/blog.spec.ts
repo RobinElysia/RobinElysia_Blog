@@ -25,9 +25,7 @@ test.describe("博客核心流程", () => {
     // 限定章节区域——全局 contentinfo footer 也有同名文案，避免 strict 歧义）
     await page.getByRole("button", { name: "第 4 章：落款" }).click();
     await expect(
-      page
-        .getByRole("region", { name: "落款" })
-        .getByText("© 2025 ReZenKi · ReZen And KiKi"),
+      page.getByRole("region", { name: "落款" }).getByText("© 2025 ReZenKi · ReZen And KiKi"),
     ).toBeVisible({ timeout: 10_000 });
     // 档案帖子原路返回（x 归位 48px + 淡出）+ 落款手写签名完成（滚动驱动/触发式动效不回归）
     await expect(page.locator("[data-archive-post]").first()).toHaveCSS("opacity", "0");

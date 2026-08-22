@@ -10,7 +10,11 @@ import {
   useTransform,
   type MotionValue,
 } from "motion/react";
-import { subscribeHomeScroll, getHomeScroll, getCarouselPages } from "@/components/home/scroll-source";
+import {
+  subscribeHomeScroll,
+  getHomeScroll,
+  getCarouselPages,
+} from "@/components/home/scroll-source";
 
 /**
  * Ch.02 档案 —— 按年份分组的时间轴（最多展示 6 篇，v0.21.4）
