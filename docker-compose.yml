@@ -17,7 +17,11 @@
 services:
   # 应用（Next.js，standalone 运行时）
   app:
-    build: .
+    build:
+      context: .
+      args:
+        # 依赖镜像源：默认 npmmirror（国内快）；海外服务器可设 registry.npmjs.org
+        NPM_REGISTRY: ${PROD_NPM_REGISTRY:-https://registry.npmmirror.com}
     restart: unless-stopped
     environment:
       SITE_URL: ${PROD_SITE_URL:?请在 .env 设置 PROD_SITE_URL}

@@ -5,8 +5,12 @@
 # 阶段 3：运行（复制裁剪后的 node_modules + 产物——零网络）
 #
 # 网络韧性（慢网络 VPS 实测）：
-# - registry 固定 npmmirror；fetch-timeout 10 分钟 + 重试 5 次（.npmrc，
-#   不存在的键被忽略不报错——npm 的 --network-timeout pnpm 无此 CLI flag）
+# - registry 默认 npmmirror，可用 build arg NPM_REGISTRY 覆盖（海外服务器可换 registry.npmjs.org）
+# - 超时/重试直接以 CLI 参数强制：fetch-timeout 10 分钟 + 重试 5 次 + network-concurrency 4
+#   （.npmrc 的 fetch-timeout 在 pnpm 11 慢网络下不总是生效——实测 60s 默认仍触发，
+#    CLI 参数优先级最高，杜绝大包如 next/mermaid/katex 单请求超时）
+# - install 失败自动重试至多 3 次：pnpm store 在同一 RUN 层内保留，
+#   重试只补下载缺失的大 tarball（首次 810/832 后中断的场景重试即成功）
 # - --trust-lockfile 跳过 supply-chain 逐条校验（lockfile 受 git 信任，
 #   否则 935 entries 逐个请求元数据，单次构建 6 分钟+ 且易超时）
 # - runner 不再二次 install：prune --prod 是纯本地操作，
@@ -20,13 +24,27 @@ WORKDIR /app
 # pnpm 11（corepack 在 node 22 可用）
 RUN corepack enable && corepack prepare pnpm@11.18.0 --activate
 
+# 镜像源可配（compose 传 PROD_NPM_REGISTRY；默认 npmmirror 国内快）
+ARG NPM_REGISTRY=https://registry.npmmirror.com
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN echo "fetch-timeout=600000" > .npmrc \
- && echo "fetch-retries=5" >> .npmrc \
- && echo "fetch-retry-maxtimeout=120000" >> .npmrc
+RUN echo "fetch-retry-maxtimeout=120000" > .npmrc
 # --frozen-lockfile 保证可复现；onlyBuiltDependencies（esbuild/sharp）由 pnpm-workspace.yaml 生效
-RUN pnpm install --frozen-lockfile --trust-lockfile \
-    --registry=https://registry.npmmirror.com
+# 重试循环：慢网络下大包下载中断时，store 保留已下载内容，仅补缺失部分
+RUN set -e; \
+    attempt=1; \
+    while [ $attempt -le 3 ]; do \
+      if pnpm install --frozen-lockfile --trust-lockfile \
+        --fetch-timeout=600000 --fetch-retries=5 --network-concurrency=4 \
+        --registry=$NPM_REGISTRY; then \
+        exit 0; \
+      fi; \
+      echo "[deps] install attempt $attempt failed, retrying in 20s (store keeps downloaded tarballs)"; \
+      sleep 20; \
+      attempt=$((attempt+1)); \
+    done; \
+    echo "[deps] pnpm install failed after 3 attempts"; \
+    exit 1
 
 # ---------- 阶段 2：构建 ----------
 FROM node:22-alpine AS builder

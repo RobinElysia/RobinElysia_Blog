@@ -2,17 +2,17 @@
 
 > 适用：自有服务器（VPS/云主机）部署 ReZenKi 博客。镜像已包含 Next.js 应用与自动数据库迁移；**Caddy 反向代理内置在 compose 中，自动 HTTPS（Let's Encrypt）**。
 >
-> **本站生产域名：`kiki.wiki`**（2026-08-20 定）——Caddy 将自动为该域名申请 Let's Encrypt 证书；`.env` 已配置 `PROD_SITE_URL=https://kiki.wiki` 与 `PROD_DOMAIN=kiki.wiki`，部署前只需确认 DNS 已解析（见下）。
+> **本站生产域名：`meowin.asia`**（2026-08-20 定）——Caddy 将自动为该域名申请 Let's Encrypt 证书；`.env` 已配置 `PROD_SITE_URL=https://meowin.asia` 与 `PROD_DOMAIN=meowin.asia`，部署前只需确认 DNS 已解析（见下）。
 
-## 〇、kiki.wiki 上线检查清单（部署前逐项确认）
+## 〇、meowin.asia 上线检查清单（部署前逐项确认）
 
 | # | 检查项 | 命令 / 说明 |
 |---|--------|-------------|
-| 1 | **DNS 解析** | `nslookup kiki.wiki` 必须返回服务器 IP（`A` 记录；如用 Cloudflare 等托管，注意**先关代理灰云**再签发证书，签完可开） |
+| 1 | **DNS 解析** | `nslookup meowin.asia` 必须返回服务器 IP（`A` 记录；如用 Cloudflare 等托管，注意**先关代理灰云**再签发证书，签完可开） |
 | 2 | **80/443 可达** | 云安全组 + 系统防火墙放行 TCP 80、443（80 用于 ACME 验证与 HTTP→HTTPS 重定向） |
-| 3 | **`.env` 三件套** | `PROD_SITE_URL=https://kiki.wiki`、`PROD_DOMAIN=kiki.wiki`、`PROD_AUTH_SECRET`（44 字符，已生成） |
+| 3 | **`.env` 三件套** | `PROD_SITE_URL=https://meowin.asia`、`PROD_DOMAIN=meowin.asia`、`PROD_AUTH_SECRET`（44 字符，已生成） |
 | 4 | **compose 校验** | `docker compose config --quiet` 无报错（本地已通过） |
-| 5 | **签发成功** | 启动后 `docker compose logs caddy` 出现 `certificate obtained successfully`；浏览器访问 `https://kiki.wiki` 无证书警告 |
+| 5 | **签发成功** | 启动后 `docker compose logs caddy` 出现 `certificate obtained successfully`；浏览器访问 `https://meowin.asia` 无证书警告 |
 | 6 | **自动续期** | Caddy 到期前自动续期（默认剩余 30 天即续），无需任何手动操作；`caddy_data` 卷持久化证书，重建容器不重复签发 |
 
 > ⚠️ **证书签发失败最常见原因**：DNS 未生效、或 80 端口被占用/未放行。签发成功后若迁移 DNS 到代理模式（Cloudflare 灰云→橙云），证书续期会受影响——保持 80 直连或用 DNS-01 验证（需改造 Caddyfile，默认 HTTP-01）。
@@ -146,6 +146,10 @@ volumes:
 # 站点绝对 URL（RSS/Sitemap 链接前缀）
 PROD_SITE_URL=https://blog.example.com
 
+# 依赖镜像源（可选：Docker 构建时 npm registry；默认 npmmirror 国内快，
+# 海外服务器可设 https://registry.npmjs.org；慢网络构建已内置超时与自动重试）
+PROD_NPM_REGISTRY=https://registry.npmmirror.com
+
 # 域名（Caddy 自动 HTTPS 的证书域名；DNS 必须先指向服务器 IP）
 PROD_DOMAIN=blog.example.com
 
@@ -191,23 +195,23 @@ docker compose logs -f app   # 应看到 "✓ 数据库迁移完成" + "Ready"
 - **HSTS**：响应头自动附加 `Strict-Transport-Security`
 - **排障**：`docker compose logs caddy`；证书签发失败多为 DNS 未生效或 80 端口被占用
 
-### kiki.wiki 部署后验证
+### meowin.asia 部署后验证
 
 ```bash
 # 1. 证书已签发（日志关键词 certificate obtained successfully）
 docker compose logs caddy | grep -i "certificate obtained"
 
 # 2. HTTPS 全链路（应看到 200 与 308 重定向）
-curl -s -o /dev/null -w "%{http_code}\n" https://kiki.wiki/
-curl -s -o /dev/null -w "%{http_code} → %{redirect_url}\n" http://kiki.wiki/
+curl -s -o /dev/null -w "%{http_code}\n" https://meowin.asia/
+curl -s -o /dev/null -w "%{http_code} → %{redirect_url}\n" http://meowin.asia/
 
 # 3. 关键页面
-curl -s -o /dev/null -w "%{http_code}\n" https://kiki.wiki/blog
-curl -s -o /dev/null -w "%{http_code}\n" https://kiki.wiki/login
-curl -s -o /dev/null -w "%{http_code}\n" https://kiki.wiki/feed.xml
+curl -s -o /dev/null -w "%{http_code}\n" https://meowin.asia/blog
+curl -s -o /dev/null -w "%{http_code}\n" https://meowin.asia/login
+curl -s -o /dev/null -w "%{http_code}\n" https://meowin.asia/feed.xml
 
 # 4. 证书详情（到期时间 / 颁发机构）
-echo | openssl s_client -servername kiki.wiki -connect kiki.wiki:443 2>/dev/null | openssl x509 -noout -issuer -enddate
+echo | openssl s_client -servername meowin.asia -connect meowin.asia:443 2>/dev/null | openssl x509 -noout -issuer -enddate
 ```
 
 ### 本地测试（无域名）
@@ -245,3 +249,4 @@ docker compose exec db pg_dump -U postgres blog > backup-$(date +%F).sql
 | 登录 500 | AUTH_SECRET 未设置或与构建时不一致（构建占位符仅构建期使用，运行期必须真实值） |
 | 图片上传 401 | 未登录；登录后重试 |
 | RSS 链接是 localhost | SITE_URL 未配置或未生效（改 .env 后 `docker compose up -d` 重建容器） |
+| 构建时 `pnpm install` 下载超时/速度极低 | 构建已内置抗性（fetch 超时 10 分钟 + 自动重试 3 次，store 跨重试保留）；仍失败多为镜像源链路问题——换源重试：`PROD_NPM_REGISTRY=https://registry.npmjs.org docker compose build app`（海外服务器通常更快）；或稍后重试（npmmirror 偶发限速） |

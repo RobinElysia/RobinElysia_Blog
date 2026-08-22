@@ -35,7 +35,7 @@ const RAW: RawFriend[] = [
     name: "ReZenKi",
     avatar: "/",
     description: "全栈开发ing | 热爱技术与创新",
-    link: "https://kiki.wiki",
+    link: "https://meowin.asia",
     tags: [{ text: "CS补天计划ing" }, { text: "站长", color: "purple" }],
   },
   {
