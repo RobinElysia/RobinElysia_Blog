@@ -21,3 +21,11 @@ UPDATE comments
 SET author_name = 'KiKi',
     content     = '第一篇评论！欢迎来到 ReZenKi。'
 WHERE post_id = (SELECT id FROM posts WHERE slug = 'hello-rezenki');
+
+-- 路径级兼容修复（2026-08-22 线上碎图事故）：
+-- 旧文件名 hello-robinelysia-*.jpg 已被品牌改名移除；若库中残留该路径的 cover_image
+-- （典型：管理员在后台改过标题/slug 的帖子，如原 hello 帖改名为「艺术的故事」，
+-- 按 slug 的 UPDATE 匹配不到），统一改写为新文件名。幂等，可重复执行。
+UPDATE posts
+SET cover_image = REPLACE(cover_image, 'hello-robinelysia', 'hello-rezenki')
+WHERE cover_image LIKE '%hello-robinelysia%';
