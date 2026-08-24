@@ -412,34 +412,3 @@ code[data-line-numbers] > [data-line]::before {
   margin-top: 2em;
   margin-bottom: 2em;
 }
-
-/* ============================================
-   音乐页圆环开屏（v0.23.0，见 circle-reveal.tsx）
-   纯 CSS keyframes（无 JS state 翻转）：从 --reveal-from 缩放至 1，反向收回
-   reduced-motion 由调用方跳过（不渲染圆环）
-   ============================================ */
-@keyframes circle-reveal-open {
-  from {
-    transform: translate(-50%, -50%) scale(var(--reveal-from));
-  }
-  to {
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-@keyframes circle-reveal-close {
-  from {
-    transform: translate(-50%, -50%) scale(1);
-  }
-  to {
-    transform: translate(-50%, -50%) scale(var(--reveal-from));
-  }
-}
-
-.animate-circle-reveal-open {
-  animation: circle-reveal-open 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.animate-circle-reveal-close {
-  animation: circle-reveal-close 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-}

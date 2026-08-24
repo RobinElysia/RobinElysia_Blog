@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { Disc3, Moon, Sun } from "lucide-react";
 import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-source";
 import { useMusic } from "@/components/music/music-audio";
-import { setRevealOrigin } from "@/components/music/circle-reveal";
 
 /**
  * 全局导航 —— 滚动后毛玻璃（黑白灰半透明 + backdrop-blur）
@@ -35,8 +33,7 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   // 主题状态：直接读 DOM（服务端返回 false；水合后 MutationObserver 实时同步）
   const dark = useSyncExternalStore(subscribeTheme, readTheme, () => false);
-  const router = useRouter();
-  const { isPlaying } = useMusic();
+  const { isPlaying, isOpen, openMusic, closeMusic } = useMusic();
 
   useEffect(() => {
     // v0.21.0（修 D8）：不再全局 capture 监听兜底——
@@ -98,20 +95,23 @@ export function SiteHeader() {
           <Link href="/links" className="hidden transition-colors hover:text-ink sm:inline">
             友链
           </Link>
-          {/* 音乐页入口：点击后圆环从本图标半径向外覆盖全屏（circle-reveal.tsx） */}
+          {/* 音乐页入口：点击从本图标为中心径向展开（overlay 非路由），再点一下收回 */}
           <button
             type="button"
             onClick={(e) => {
               const el = e.currentTarget;
               const rect = el.getBoundingClientRect();
-              setRevealOrigin({
-                x: rect.left + rect.width / 2,
-                y: rect.top + rect.height / 2,
-                r: Math.max(rect.width, rect.height) / 2,
-              });
-              router.push("/music");
+              if (isOpen) {
+                closeMusic();
+              } else {
+                openMusic({
+                  x: rect.left + rect.width / 2,
+                  y: rect.top + rect.height / 2,
+                  r: Math.max(rect.width, rect.height) / 2,
+                });
+              }
             }}
-            aria-label={isPlaying ? "音乐（正在播放）" : "音乐"}
+            aria-label={isOpen ? "收起音乐页" : isPlaying ? "音乐（正在播放）" : "音乐"}
             className="relative flex h-8 w-8 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-ink hover:text-ink"
           >
             <Disc3 size={14} strokeWidth={1.5} />

@@ -30,8 +30,6 @@ src/app/
 │
 ├── login/page.tsx           # /login（server wrapper：按 AUTH_GITHUB_ID/SECRET 判断是否显示 GitHub 按钮 + client LoginForm）
 │
-├── music/page.tsx           # /music（音乐播放页 v0.23.0：导航栏图标圆环开屏进入——纯纸色圆环从图标半径缩放覆盖全屏，收起反向收回；全局唯一 <audio> 在根布局 MusicAudio，跨页播放不中断；图录风格曲目清单 src/lib/music.ts 静态映射）
-│
 ├── (dashboard)/             # Route Group：需鉴权的后台
 │   ├── layout.tsx           # 集中鉴权：auth() 无 session → redirect("/login")；侧边导航（概览/文章管理/退出）
 │   ├── dashboard/page.tsx   # /dashboard（概览：文章/已发布/评论统计 + 最近文章）
@@ -72,7 +70,7 @@ src/app/
 
 ## 鉴权边界（用户决策）
 
-- **C 端（公开页面：首页、/blog、文章详情、/about、/archive、/links、/music）不需要鉴权**——全部走 `(marketing)/`；根级 `/login` 与 `/music` 同样无需鉴权（前者是登录入口本身，后者是播放页）。
+- **C 端（公开页面：首页、/blog、文章详情、/about、/archive）不需要鉴权**——全部走 `(marketing)/`；根级 `/login` 同样无需鉴权（它是登录入口本身）。音乐页是**根布局全屏 overlay**（非路由，见 layout.tsx：`MusicOverlay`），无需鉴权且不占 URL 空间。
 - **Dashboard 需要鉴权**（NextAuth v5：GitHub OAuth + Credentials 双 provider，GitHub 登录受 `AUTH_GITHUB_ALLOWED_USERS` 白名单限制）——`(dashboard)/layout.tsx` 集中做登录检查，未登录 `redirect("/login")`。
 - **无 middleware.ts**：本项目不引入全局鉴权中间件——C 端页面不能被拖进鉴权流程，Dashboard 鉴权由 layout 层完成（早期文档"Middleware 重定向"的描述已过时，以本文档为准）。
 

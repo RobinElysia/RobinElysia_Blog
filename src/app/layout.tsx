@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { IntroAnimation } from "@/components/intro-animation";
 import { MusicAudio } from "@/components/music/music-audio";
+import { MusicOverlay } from "@/components/music/music-overlay";
 
 /**
  * ReZenKi (ReZen And KiKi) — 个人博客
@@ -74,6 +75,9 @@ export default async function RootLayout({
           {children}
 
           <SiteFooter />
+
+          {/* 音乐全屏 overlay（非路由：图标为中心径向展开，旧页面保持挂载） */}
+          <MusicOverlay />
         </MusicAudio>
       </body>
     </html>
