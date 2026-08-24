@@ -1,7 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pause, Play, SkipBack, SkipForward, Volume2, VolumeX, X } from "lucide-react";
+import {
+  Pause,
+  Play,
+  Repeat,
+  Repeat1,
+  SkipBack,
+  SkipForward,
+  Volume2,
+  VolumeX,
+  X,
+} from "lucide-react";
 import { useMusic } from "@/components/music/music-audio";
 
 /**
@@ -213,10 +223,23 @@ export function MusicOverlay() {
               </button>
               <button
                 type="button"
+                onClick={music.toggleLoop}
+                aria-label={music.loopMode === "all" ? "列表循环" : "单曲循环"}
+                aria-pressed={music.loopMode === "one"}
+                className="ml-auto flex h-8 w-8 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-ink hover:text-ink"
+              >
+                {music.loopMode === "all" ? (
+                  <Repeat size={14} strokeWidth={1.5} aria-hidden />
+                ) : (
+                  <Repeat1 size={14} strokeWidth={1.5} aria-hidden />
+                )}
+              </button>
+              <button
+                type="button"
                 onClick={music.toggleMute}
                 aria-label={muted ? "取消静音" : "静音"}
                 aria-pressed={muted}
-                className="ml-auto flex h-8 w-8 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-ink hover:text-ink"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-ink hover:text-ink"
               >
                 {muted ? (
                   <VolumeX size={14} strokeWidth={1.5} aria-hidden />
