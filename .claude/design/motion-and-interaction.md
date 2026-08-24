@@ -56,6 +56,7 @@ ReZenKi 是简约复古艺术风（档案馆气质）。**动画必须服务于"
 | 鼠标视差 | Hero 舞台（v0.21.3）：normalized -1..1 + lerp 0.06，背景 ±8/6 · 主图 ±18/12（+rotateY ±1.5°/rotateX ±1°）· 主图内层反向 ±6/4 · 前景标题 ±28/20；鼠标离开回中心 | 仅桌面 pointermove；rAF 循环**收敛即停**（目标 0 且稳定 → 停循环，移动时重启）；reduced-motion 全部归零 |
 | 滚动视差 | Hero 舞台随滚动轻微上移淡出（滚出转场，属例外区白名单） | 位移 ≤ 60px；驱动源为共享滚动源 `scroll-source.ts`（首页为局部滚动容器，window 不滚动——`useScroll` 监听 window 无效，D8 教训） |
 | 底栏显隐 | 文章/归档/关于页的浮动底栏（`site-footer.tsx`）：**下滚出现、上滚隐藏**；顶部恒隐藏、底部恒显示、内容短于一屏恒显 | fade + 位移 16px（≤16px 约束内），0.35s，ease `[0.22, 1, 0.36, 1]`；阈值 6px 防抖动；reduced-motion 位移归零仅淡入；底栏无交互元素，`pointer-events-none` |
+| 圆环开屏 | 音乐页（v0.23.0）：点击导航栏 Disc3 图标 → 纯纸色圆环**从图标半径向外缩放**覆盖全屏（0.55s），「收起」反向缩回图标（0.45s） | 仅 `/music` 入口使用；1px line 描边；圆为 `--color-paper` 实色（全屏遮罩性质，非装饰动画）；纯 CSS keyframes 无 JS 状态翻转（遵守 react-hooks set-state-in-effect 门禁）；reduced-motion 不渲染圆环（内容直接淡入/返回） |
 | 骨架屏 | 已在 loading 规范中 | 见 `loading-and-error-states.md` |
 
 ### 文字类

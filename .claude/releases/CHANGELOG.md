@@ -9,6 +9,9 @@ last-updated: 2026-08-22
 ## [Unreleased] — 2026-08-22
 
 ### Added
+- **音乐播放页（用户要求）**：导航栏 Disc3 图标点击 → **圆环开屏**——纯纸色圆环从图标半径向外缩放覆盖全屏进入 `/music`（CSS keyframes 无状态翻转；reduced-motion 降级为直接淡入），「收起」反向缩回；播放页图录风格——正在播放区（花体序号 + 衬线曲名 + 作者小字宽字距 + 墨线进度点击跳转 + 播放/暂停/上一首/下一首/静音）+ 全部曲目目录（目录号/曲名/作者/时长/播放中墨点，点击行播放或暂停）；**全局唯一 `<audio>`**（根布局 `MusicAudio` context，跨页播放不中断，ended 自动切下一首循环）；键盘 Space 播放/暂停、←/→ 切曲；曲目静态映射 `src/lib/music.ts`（10 首，ffprobe 实测时长）；mp3 在 `public/music/`
+
+### Added
 - **友链页（用户要求，先静态后动画）**：`/links` 页面 + 导航栏「友链」字段；数据 `src/lib/friends.ts`（9 位友站，静态不动 DB，SSG）；卡片含头像（远程源 unoptimized 直连 + 首字母占位兜底）/描述/tag 徽章；无链接条目渲染「链接待补充」卡片；tag 三色为站长指定例外色（DESIGN.md §2 例外条款，`--color-friend-*` 亮/暗两套）
 - **编辑器档案图候选（用户要求，ADR-0006）**：编辑页「获取 3 张」直连 Wellcome API（免 key）检索公共领域藏品 → license 白名单过滤 + 站内已用 work id 去重 → 下载 3 张入 PostGre（images 表 kind='cover' + 元数据列）→ 点选 1 张绑定封面；保存时服务端生成 `posts.cover_credit` 署名行，PostCard/CardInfo 优先展示；未选中候选 24h 孤儿清扫
 - **浮动底栏（用户要求）**：文章/归档/关于/友链页（含文章详情）的页脚改为固定视口底部的浮动底栏——**下滚出现、上滚隐藏**（fade + 16px，0.35s，easeOutQuint；reduced-motion 降级），顶部恒隐、底部恒显、内容短于一屏恒显；首页/登录/Dashboard/404 保持静态页脚不变

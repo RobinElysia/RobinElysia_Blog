@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { Moon, Sun } from "lucide-react";
+import { Disc3, Moon, Sun } from "lucide-react";
 import { subscribeHomeScroll, getHomeScroll } from "@/components/home/scroll-source";
+import { useMusic } from "@/components/music/music-audio";
+import { setRevealOrigin } from "@/components/music/circle-reveal";
 
 /**
  * 全局导航 —— 滚动后毛玻璃（黑白灰半透明 + backdrop-blur）
@@ -32,6 +35,8 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   // 主题状态：直接读 DOM（服务端返回 false；水合后 MutationObserver 实时同步）
   const dark = useSyncExternalStore(subscribeTheme, readTheme, () => false);
+  const router = useRouter();
+  const { isPlaying } = useMusic();
 
   useEffect(() => {
     // v0.21.0（修 D8）：不再全局 capture 监听兜底——
@@ -93,6 +98,30 @@ export function SiteHeader() {
           <Link href="/links" className="hidden transition-colors hover:text-ink sm:inline">
             友链
           </Link>
+          {/* 音乐页入口：点击后圆环从本图标半径向外覆盖全屏（circle-reveal.tsx） */}
+          <button
+            type="button"
+            onClick={(e) => {
+              const el = e.currentTarget;
+              const rect = el.getBoundingClientRect();
+              setRevealOrigin({
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2,
+                r: Math.max(rect.width, rect.height) / 2,
+              });
+              router.push("/music");
+            }}
+            aria-label={isPlaying ? "音乐（正在播放）" : "音乐"}
+            className="relative flex h-8 w-8 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-ink hover:text-ink"
+          >
+            <Disc3 size={14} strokeWidth={1.5} />
+            {isPlaying && (
+              <span
+                aria-hidden
+                className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-ink"
+              />
+            )}
+          </button>
           {/* 黑白模式切换（lucide-react 图标为独立 Client 用法，符合 server-client-boundary） */}
           <button
             type="button"

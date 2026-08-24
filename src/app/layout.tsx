@@ -5,6 +5,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { IntroAnimation } from "@/components/intro-animation";
+import { MusicAudio } from "@/components/music/music-audio";
 
 /**
  * ReZenKi (ReZen And KiKi) — 个人博客
@@ -65,12 +66,15 @@ export default async function RootLayout({
         {/* 首次加载手写动画（全站入口，同会话一次；reduced-motion 自动跳过） */}
         <IntroAnimation />
 
-        {/* 全局导航（滚动毛玻璃，见 motion-and-interaction.md） */}
-        <SiteHeader />
+        {/* 全局音频上下文（唯一 <audio>，跨页播放不中断；音乐页入口在导航栏） */}
+        <MusicAudio>
+          {/* 全局导航（滚动毛玻璃，见 motion-and-interaction.md） */}
+          <SiteHeader />
 
-        {children}
+          {children}
 
-        <SiteFooter />
+          <SiteFooter />
+        </MusicAudio>
       </body>
     </html>
   );
