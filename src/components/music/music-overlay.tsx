@@ -42,6 +42,8 @@ export function MusicOverlay() {
   // radius = 当前 clip-path 圆半径（0 = 未挂载）；全部 setState 都在 rAF/定时器回调内（异步）
   const [radius, setRadius] = useState(0);
   const progressRef = useRef<HTMLDivElement | null>(null);
+  // 会话令牌：快速开关 overlay 时，作废上一次动画的回调（防止旧 setTimeout 把新开的 overlay 杀掉）
+  const sessionRef = useRef(0);
 
   const reduce =
     typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -49,11 +51,15 @@ export function MusicOverlay() {
   // 打开/关闭动画驱动：首帧=图标半径 → 覆盖全域；关闭反向。reduced-motion 无过渡直达
   useEffect(() => {
     if (!origin) return;
+    const session = ++sessionRef.current;
+    const guard = () => session === sessionRef.current;
     if (isOpen) {
       const r1 = requestAnimationFrame(() => {
+        if (!guard()) return;
         setRadius(origin.r * 2);
         const r2 = requestAnimationFrame(() => {
           cancelAnimationFrame(r2);
+          if (!guard()) return;
           setRadius(coverRadius(origin.x, origin.y) * 2);
         });
       });
@@ -61,9 +67,12 @@ export function MusicOverlay() {
     }
     // 关闭：收回图标半径 → 动画结束后卸载
     const r1 = requestAnimationFrame(() => {
+      if (!guard()) return;
       setRadius(origin.r * 2);
     });
-    const t = window.setTimeout(() => setRadius(0), 700);
+    const t = window.setTimeout(() => {
+      if (guard()) setRadius(0);
+    }, 700);
     return () => {
       cancelAnimationFrame(r1);
       clearTimeout(t);
@@ -128,12 +137,13 @@ export function MusicOverlay() {
           transition: reduce ? "none" : `clip-path 0.65s ${EASE}`,
         }}
       >
-        <div className="mx-auto w-full max-w-4xl px-6 py-16 md:px-8 md:py-20">
-          {/* 页头：小字标题 + 收起 */}
+        <div className="mx-auto w-full max-w-4xl px-6 pt-24 pb-16 md:px-8 md:pt-28 md:pb-20">
+          {/* 页头：小字标题 + 收起（打开时自动聚焦） */}
           <div className="flex items-baseline justify-between">
             <h1 className="text-xs font-medium tracking-[0.25em] text-muted uppercase">音乐</h1>
             <button
               type="button"
+              autoFocus
               onClick={music.closeMusic}
               aria-label="收起音乐页"
               className="flex items-center gap-1.5 border border-line px-3 py-1 text-xs text-muted transition-colors hover:border-ink hover:text-ink"

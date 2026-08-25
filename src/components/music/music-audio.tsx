@@ -53,6 +53,8 @@ export function MusicAudio({ children }: { children: ReactNode }) {
   const [loopMode, setLoopMode] = useState<LoopMode>("all");
   // 记录"是否在播放"，供切歌后延续播放状态（ended 自切也算）
   const playingRef = useRef(false);
+  // 上次加载失败（如 mp3 缺失/损坏）的曲目 index——仅自动跳过一次，防死循环
+  const lastErrorIndexRef = useRef(-1);
 
   useEffect(() => {
     playingRef.current = isPlaying;
@@ -109,6 +111,8 @@ export function MusicAudio({ children }: { children: ReactNode }) {
     closeMusic: () => setIsOpen(false),
     playTrack: (i) => {
       if (i === index) return;
+      // 业务：点目录选曲 = 选中即播放（即使当前是暂停态——此前只切不播是缺陷）
+      playingRef.current = true;
       setIndex(i);
     },
     toggle: () => {
@@ -162,6 +166,16 @@ export function MusicAudio({ children }: { children: ReactNode }) {
           }
         }}
         onVolumeChange={(e) => setMuted(e.currentTarget.muted)}
+        onError={() => {
+          // 曲目加载失败（mp3 缺失/损坏）：自动跳下一首；同一曲只跳一次防死循环
+          if (lastErrorIndexRef.current === index) {
+            lastErrorIndexRef.current = -1;
+            setIsPlaying(false);
+            return;
+          }
+          lastErrorIndexRef.current = index;
+          setIndex((i) => (i + 1) % MUSIC_TRACKS.length);
+        }}
       />
       {children}
     </MusicCtx.Provider>
