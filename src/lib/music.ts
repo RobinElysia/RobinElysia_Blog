@@ -17,7 +17,7 @@ export const MUSIC_TRACKS: MusicTrack[] = [
     id: "01",
     title: "卡农",
     artist: "中国爱乐乐团 · 瑞鸣音乐",
-    src: "/music/中国爱乐乐团,瑞鸣音乐 - 卡农.mp3",
+    src: "/music/中国爱乐乐团·瑞鸣音乐 - 卡农.mp3",
     duration: 319,
   },
   {
@@ -31,7 +31,7 @@ export const MUSIC_TRACKS: MusicTrack[] = [
     id: "03",
     title: "Concerto For Piano And Orchestra No. 5 In F Minor, BWV 1056 II. Largo",
     artist: "Glenn Gould · Columbia Symphony Orchestra",
-    src: "/music/Glenn Gould,Vladimir Golschmann,Columbia Symphony Orchestra - Concerto For Piano And Orchestra No. 5 In F Minor, BWV 1056II. Largo.mp3",
+    src: "/music/Glenn Gould·Vladimir Golschmann·Columbia Symphony Orchestra - Concerto For Piano And Orchestra No. 5 In F Minor, BWV 1056II. Largo.mp3",
     duration: 176,
   },
   {
@@ -73,7 +73,7 @@ export const MUSIC_TRACKS: MusicTrack[] = [
     id: "09",
     title: "Flying Free",
     artist: "Vancouver Children's Choir · Andrew Dawes",
-    src: "/music/Vancouver Children's Choir,Andrew Dawes - Flying Free.mp3",
+    src: "/music/Vancouver Childrens Choir·Andrew Dawes - Flying Free.mp3",
     duration: 211,
   },
   {

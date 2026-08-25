@@ -21,6 +21,7 @@ last-updated: 2026-08-22
 - `eslint-plugin-react` 显式声明为 devDependency（`react/jsx-no-leaked-render` 依赖它；pnpm 严格模式不提升传递依赖，eslint.config.mjs 显式注册修复解析失败）
 
 ### Changed
+- **音乐不可播放修复（线上事故）**：文件名含**半角逗号/撇号**的曲目（`%,` 等）在生产 `next start` 下 404——浏览器 URL 编码**不转义逗号**（子分隔符原样发送），Next 生产静态服务对原样逗号 404（实测 `%2C` 200 / 原样 `,` 404；本地 dev 无此问题所以未暴露）。三首受影响：01 卡农、03 Glenn Gould、09 Flying Free；另发现 09 music.ts 的 src 与磁盘文件名不一致（误含撇号）。修复：文件重命名（`,→·`、`’→’` 均会被百分号编码的安全字符），`music.ts` src 全量对齐磁盘文件名（10/10 校验通过）；`onError` 自动跳下一首继续兜底
 - **音乐加载优化（v0.23.1，线上实测慢）**：`next.config.ts` 为 `/music/:path*` 配 `Cache-Control: public, max-age=31536000, immutable`——Next 对 public 静态文件默认 `max-age=0`（每次访问回源），VPS 带宽有限（实测 ~400KB/s）导致加载慢；加入一年缓存后**首次慢、此后浏览器不再回源**。已确认线上 Range 请求 206 ✅（拖进度/分段播放正常）。⚠️ 服务器务必先 `git pull && docker compose up -d --build` 部署 128kbps 压缩版（线上实测还在发 13MB 未压缩原文件）
 - **播放器业务逻辑修复（v0.23.0 增量）**：目录选曲改为**选中即播放**（此前暂停态下点目录行只切歌不播，是缺陷）；快速开关 overlay 的竞态守卫（会话令牌作废旧动画回调，防旧定时器把新打开的 overlay 杀掉）；mp3 缺失/损坏时自动跳下一首（同一曲仅跳一次，防死循环）；「收起」按钮打开时自动聚焦；内容区顶部留白加大避开导航栏遮挡
 - **线上封面图碎图修复**（品牌改名后生产库残留旧文件名）：`0001-brand-rezenki.sql` 增补路径级 `REPLACE`（任何 `cover_image` 残留 `hello-robinelysia` → `hello-rezenki`，不依赖 slug——覆盖管理员改过标题/slug 的帖子）；`public/archive/` 保留旧文件名兼容副本，未执行迁移的库也不会再碎图
