@@ -11,6 +11,23 @@ const nextConfig: NextConfig = {
   // 注：Next.js 16 中 serverActions.bodySizeLimit 移入 experimental，且默认 1MB
   // 对纯文本评论已足够；如需调大（如上传图片评论），用
   // experimental: { serverActions: { bodySizeLimit: "5mb" } }
+
+  // 音频静态缓存（v0.23.1）：mp3 文件内容不变，一年期 immutable——
+  // 服务器带宽有限（VPS 实测 ~400KB/s），首次慢、此后浏览器不再回源
+  // （Next 对 /public 文件默认 max-age=0，每次访问都重新下载）
+  async headers() {
+    return [
+      {
+        source: "/music/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

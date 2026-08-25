@@ -21,6 +21,7 @@ last-updated: 2026-08-22
 - `eslint-plugin-react` 显式声明为 devDependency（`react/jsx-no-leaked-render` 依赖它；pnpm 严格模式不提升传递依赖，eslint.config.mjs 显式注册修复解析失败）
 
 ### Changed
+- **音乐加载优化（v0.23.1，线上实测慢）**：`next.config.ts` 为 `/music/:path*` 配 `Cache-Control: public, max-age=31536000, immutable`——Next 对 public 静态文件默认 `max-age=0`（每次访问回源），VPS 带宽有限（实测 ~400KB/s）导致加载慢；加入一年缓存后**首次慢、此后浏览器不再回源**。已确认线上 Range 请求 206 ✅（拖进度/分段播放正常）。⚠️ 服务器务必先 `git pull && docker compose up -d --build` 部署 128kbps 压缩版（线上实测还在发 13MB 未压缩原文件）
 - **播放器业务逻辑修复（v0.23.0 增量）**：目录选曲改为**选中即播放**（此前暂停态下点目录行只切歌不播，是缺陷）；快速开关 overlay 的竞态守卫（会话令牌作废旧动画回调，防旧定时器把新打开的 overlay 杀掉）；mp3 缺失/损坏时自动跳下一首（同一曲仅跳一次，防死循环）；「收起」按钮打开时自动聚焦；内容区顶部留白加大避开导航栏遮挡
 - **线上封面图碎图修复**（品牌改名后生产库残留旧文件名）：`0001-brand-rezenki.sql` 增补路径级 `REPLACE`（任何 `cover_image` 残留 `hello-robinelysia` → `hello-rezenki`，不依赖 slug——覆盖管理员改过标题/slug 的帖子）；`public/archive/` 保留旧文件名兼容副本，未执行迁移的库也不会再碎图
 - **Docker 依赖安装韧性修复**（服务器慢网络实测 `pnpm install` 超时失败）：`pnpm install` 改 CLI 强制 `--fetch-timeout=600000`/`--fetch-retries=5`/`--network-concurrency=4`（.npmrc 的 fetch-timeout 在 pnpm 11 慢网络下并非总生效——60s 默认超时在 next/mermaid/katex 等大包上必中）；install 失败自动重试至多 3 次，pnpm store 同层保留只补缺失大包；镜像源可配 `PROD_NPM_REGISTRY`（compose build arg，默认 npmmirror，海外可换 registry.npmjs.org）；DEPLOY.md 生产域名更新 meowin.asia
